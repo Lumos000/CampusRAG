@@ -50,15 +50,40 @@ class NumericEngine:
         if not evidence:
             return []
         preferred = [e for e in evidence if any(term in e.title for term in title_terms)]
-        doc_id = (preferred or evidence)[0].doc_id
-        template = next(e for e in evidence if e.doc_id == doc_id)
         output = []
-        for row in self.connection.execute("SELECT id,text FROM chunks WHERE doc_id=? AND kind='text' ORDER BY id", (doc_id,)):
-            if any(term in row['text'] for term in text_terms):
-                output.append(Evidence(row['id'],row['text'],template.score,doc_id,template.title,
-                    template.source_url,template.department,template.published_at,chunk_id=row['id']))
+        # Do not silently resolve competing documents by selecting the first hit.
+        templates = {e.doc_id:e for e in (preferred or evidence)}
+        for doc_id,template in templates.items():
+            for row in self.connection.execute("SELECT id,text FROM chunks WHERE doc_id=? AND kind='text' ORDER BY id", (doc_id,)):
+                if any(term in row['text'] for term in text_terms):
+                    output.append(Evidence(row['id'],row['text'],template.score,doc_id,template.title,
+                        template.source_url,template.department,template.published_at,chunk_id=row['id']))
         return output
 
+    @staticmethod
+    def text_facts(evidence):
+        """Exact label/value/unit spans only; page numbers and prose guesses are excluded."""
+        from campus_rag.database.normalization import quantity
+        facts, seen = {}, set()
+        pattern = r'(?P<label>[\u4e00-\u9fffA-Za-z][\u4e00-\u9fffA-Za-z·]{1,23}?)(?:为|有|是|[:：])\s*(?P<raw>\d[\d,]*(?:\.\d+)?\s*(?:万元|亿元|元|万人|千人|人|平方米|㎡|台|本|项|个|年|天|小时|%|％))'
+        for item in evidence:
+            if item.table_id is not None:
+                continue
+            for match in re.finditer(pattern,item.text):
+                key = (item.doc_id,match['label'],match['raw'])
+                if key in seen:
+                    continue
+                seen.add(key)
+                value,unit = quantity(match['raw'])
+                if value is None:
+                    continue
+                fid = 'f'+str(len(facts)+1)
+                facts[fid] = {'fact_id':fid,'field':match['label'],'raw_value':match['raw'],
+                    'value':str(value),'unit':unit,'quote':match.group(),'span':[match.start(),match.end()],
+                    'doc_id':item.doc_id,'evidence_id':item.evidence_id,'evidence':item}
+        # Conflicting labels remain unavailable rather than silently choosing one value.
+        conflicts = {f['field'] for f in facts.values() if len({(x['value'],x['unit']) for x in facts.values() if x['field']==f['field']})>1}
+        return {fid:f for fid,f in facts.items() if f['field'] not in conflicts}
     @staticmethod
     def extract(label, pattern, unit, evidence):
         matches = []
@@ -217,6 +242,13 @@ class NumericEngine:
         answer += '筛选明细：'+'；'.join(f"{d['field']} {d['value']}人" for d in details)+f'。算式：{expression} = {number(total)}人。'
         result = CalculationResult(True,total,'人',expression,details,evidence=[used])
         return NumericOutcome(True,result,answer,details)
+
+
+def render_calculation(result):
+    value = result.value
+    if value.as_tuple().exponent < -6:
+        value = value.quantize(Decimal('0.000001'),rounding=ROUND_HALF_UP)
+    return f'结果为{number(value)}{result.unit}。算式：{result.expression}。'
 
 
 def eligible(requirement, selected):

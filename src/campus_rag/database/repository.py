@@ -113,6 +113,8 @@ class Repository:
                         cell.get("unit", ""), f"{table.locator}:R{row_index + 1}C{column_index + 1}",
                     ),
                 )
+        from campus_rag.database.normalization import normalize_table
+        normalize_table(self.connection, table_id)
         self._commit()
         return table_id
 

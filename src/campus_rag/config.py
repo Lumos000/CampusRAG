@@ -25,6 +25,7 @@ class Settings:
     rerank_top_k: int = 8
     max_context_tokens: int = 7168
     max_new_tokens: int = 512
+    numeric_shortcuts: bool = True
 
 
 def _path(value: str) -> Path:

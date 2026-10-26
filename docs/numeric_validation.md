@@ -1,6 +1,6 @@
 # 数值抽取 Python计算 与答案核对
 
-当前知识库与索引不需要重建。新的 NumericEngine 在检索和年份过滤之后运行，仅从已召回文档补充相关原文，或读取实际候选表格。Python 负责解析确定格式、验证数据、执行 Decimal 运算并生成核验模板。Qwen 继续参与意图规划和语言组织，但不能替换系统计算的结果。
+当前知识库与索引不需要重建。NumericEngine 在检索和年份过滤之后运行，仅从已召回文档补充相关原文，或读取实际候选表格。Python 负责解析确定格式、验证数据、执行 Decimal 运算并生成核验模板。通用分步计算现已接入，详见 [受限分步数值推理](step_reasoning.md)；已有数据库需先离线运行 `scripts/normalize_tables.py`。Qwen 按需生成计算计划，已核验数值由程序直接输出，不再调用模型改写。
 
 ## 已支持的工具
 
@@ -14,9 +14,9 @@
 
 每个原文事实记录 field、raw_value、value、unit、quote、doc_id、evidence_id 和去空白文本中的 normalized_span。表格事实记录 row_id、table_id 和 cell_id，最终引用由这些实际来源生成。页码不会被当作师资人数，因为抽取规则要求数值紧邻对应字段；同一字段出现不同值时不自动选择一个。
 
-当前答案核对采用严格回退：只有模型草稿去空白后与核验文本相同才直接采用；其他措辞一律回退到 Python 模板。这样也能拦截数字相同但标签互换的情况。该方法会牺牲语言灵活性，不是通用的语义等价判断。审计中的 model_draft 是未被采用的模型草稿，不应作为正确答案提交。
+旧版 check_draft 的严格回退逻辑保留兼容测试；当前服务直接使用 Python 核验模板，不生成数值答案草稿。历史审计中的 model_draft 是未被采用的模型草稿，不应作为正确答案提交。
 
-AnswerResult.numeric_verification 包含 verified、used_template、reason、model_draft 和 facts。缺少证据或不支持的数值问题返回 verified=false；普通非数值问答的该字段为空，不能据此宣称其所有附加数字均已验证。
+AnswerResult.numeric_verification 包含 verified、used_template、method，以及快捷工具的 facts 或通用执行器的 steps。拒答记录包含 reason；历史记录还可能包含 model_draft。缺少证据或不支持的数值问题返回 verified=false；普通非数值问答的该字段为空，不能据此宣称其所有附加数字均已验证。
 
 ## 验证与使用
 

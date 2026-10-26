@@ -93,3 +93,11 @@ CREATE TABLE IF NOT EXISTS ingestion_state (
     completed_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Derived offline metadata; original table names, headers, and cells remain intact.
+CREATE TABLE IF NOT EXISTS table_metadata (
+    table_id INTEGER PRIMARY KEY REFERENCES tables(id) ON DELETE CASCADE,
+    version INTEGER NOT NULL,
+    periods TEXT NOT NULL,
+    row_metadata TEXT NOT NULL
+);
+

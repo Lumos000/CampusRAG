@@ -98,6 +98,9 @@ class QueryPlan:
     needs_text: bool = True
     needs_table: bool = False
     calculation: CalculationSpec = field(default_factory=CalculationSpec)
+    table_id: int | None = None
+    steps: list[dict[str, Any]] = field(default_factory=list)
+    output: str = ""
 
 
 @dataclass
@@ -109,6 +112,8 @@ class CalculationResult:
     details: list[dict[str, Any]] = field(default_factory=list)
     error: str = ""
     evidence: list[Evidence] = field(default_factory=list)
+    steps: list[dict[str, Any]] = field(default_factory=list)
+    repairable: bool = False
 
 
 @dataclass

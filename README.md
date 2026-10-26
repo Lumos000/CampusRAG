@@ -89,9 +89,11 @@ python scripts/batch_answer.py --input data/eval/questions.csv --output results.
 
 ## 查询和计算安全边界
 
+新的通用数值路径见 [受限分步数值推理](docs/step_reasoning.md)：先检索，再向 Qwen 提供真实 Schema，使用字段 ID 和 JSON 步骤在 SQLite 全表执行，直接输出程序核验的结果与来源。既有数据库请先运行 `python scripts/normalize_tables.py`；该操作自动备份并保留原始数据及所有 ID，不需要重建当前索引。
+
 当前新增的数值核验支持专业类别学费及上浮比例、住宿费与多年合计、师资人数及折算/生师比、首选/再选科目筛选招生计划。来源缺失、同一字段冲突、选科关系不明确时拒绝计算。核验日志保留原文数值和单元格位置；最终数值回答使用经过校验的模板，不接受模型任意改写数值或字段。详见 [数值核验说明](docs/numeric_validation.md)。
 
-Qwen 的第一轮输出必须通过查询计划 JSON 校验。系统最多修复一次格式；仍失败时退化为普通文本检索。模型不能提交 SQL 或 Python。
+数值计划必须通过 JSON、字段、范围、年份、单位和完整性校验。格式或计划错误最多共享一次修复机会；证据或统计条件不足时明确拒答。普通文字事实题不预先调用规划器。模型不能提交 SQL 或 Python，已核验的数值答案不再交给模型改写。
 
 结构化查询仅支持白名单筛选操作 `contains/eq/gt/gte/lt/lte`，以及 `sum/count/avg/ratio/difference/multiply/average`。Python 将字段映射为数据库列并使用参数化查询；数值使用 `Decimal`。多值歧义、空结果、单位冲突、分母为零和不支持的单位转换都会拒绝计算。
 
