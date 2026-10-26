@@ -1,0 +1,18 @@
+{
+  "database_path": "data/processed/campus.db",
+  "index_dir": "data/index",
+  "embedding_model": "models/bge-small-zh-v1.5",
+  "reranker_model": "models/bge-reranker-base",
+  "generator_model": "models/Qwen3-0.6B",
+  "chunk_target_min": 280,
+  "chunk_target_max": 420,
+  "chunk_hard_max": 480,
+  "chunk_overlap": 48,
+  "bm25_top_k": 40,
+  "dense_top_k": 40,
+  "fusion_top_k": 25,
+  "rerank_top_k": 8,
+  "max_context_tokens": 7168,
+  "max_new_tokens": 512
+}
+

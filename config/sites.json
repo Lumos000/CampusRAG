@@ -1,0 +1,44 @@
+{
+  "allowed_domains": [
+    "njupt.edu.cn"
+  ],
+  "seed_urls": [
+    "https://zs.njupt.edu.cn/2026/0521/c2562a302356/pagem.htm",
+    "https://jwc.njupt.edu.cn/2025/1229/c1770a295517/page.htm",
+    "https://zs.njupt.edu.cn/2562/list.htm",
+    "https://zs.njupt.edu.cn/2563/list.htm",
+    "https://zs.njupt.edu.cn/2578/list.htm",
+    "https://zs.njupt.edu.cn/2026/0428/c2578a301108/page.htm",
+    "https://jwc.njupt.edu.cn/1770/list.psp",
+    "https://jwc.njupt.edu.cn/1746/list.htm",
+    "https://jwc.njupt.edu.cn/1502/list.htm",
+    "https://jwc.njupt.edu.cn/1535/list.htm",
+    "https://xsc.njupt.edu.cn/",
+    "https://xsc.njupt.edu.cn/1154/list.htm",
+    "https://xsc.njupt.edu.cn/1158/list.htm",
+    "https://xsc.njupt.edu.cn/fwzn/list.htm",
+    "http://lib.njupt.edu.cn/",
+    "http://lib.njupt.edu.cn/1381/list.htm",
+    "http://lib.njupt.edu.cn/1385/list.htm",
+    "http://lib.njupt.edu.cn/1395/list.htm",
+    "http://lib.njupt.edu.cn/1400/list.htm",
+    "https://cwc.njupt.edu.cn/",
+    "https://www.njupt.edu.cn/111/list.htm"
+  ],
+  "departments": {
+    "njupt.edu.cn": "南京邮电大学",
+    "zs.njupt.edu.cn": "本科招生办公室",
+    "jwc.njupt.edu.cn": "本科生院",
+    "xsc.njupt.edu.cn": "学生工作部（处）",
+    "lib.njupt.edu.cn": "图书馆",
+    "cwc.njupt.edu.cn": "财务处"
+  },
+  "priority_keywords": ["综合评价", "招生计划", "招生章程", "教学质量报告", "办事指南", "服务指南", "收费", "学费", "住宿费", "学生手册", "规章制度", "借阅规则", "入馆", "开放时间", "奖学金", "资助", "学籍", "转专业", "毕业", "选课", "补办"],
+  "max_pages": 200,
+  "max_depth": 3,
+  "max_file_mb": 40,
+  "retries": 2,
+  "request_interval_seconds": 0.8,
+  "timeout_seconds": 20
+}
+

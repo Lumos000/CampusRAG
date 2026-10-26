@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+*.egg-info/
+.tmp/
+downloads/
+data/raw/*
+data/processed/*
+data/index/*
+models/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/index/.gitkeep
+!models/.gitkeep
+results.csv
+
