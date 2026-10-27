@@ -352,9 +352,9 @@ def _step_plan(data, *, require_final=False):
                 f['field_id'] = canonical_id(f['field_id'])
             if not isinstance(f,dict) or set(f)!={'field_id','op','value'} or type(f['field_id']) is not int:
                 raise ValueError(sid+': 筛选必须包含field_id,op,value')
-            if not isinstance(f['op'],str) or f['op'] not in {'eq','contains','in','gt','gte','lt','lte'}:
+            if not isinstance(f['op'],str) or f['op'] not in {'eq','contains','in','not_in','gt','gte','lt','lte'}:
                 raise ValueError(sid+': 筛选操作无效')
-            values = f['value'] if f['op']=='in' else [f['value']]
+            values = f['value'] if f['op'] in {'in','not_in'} else [f['value']]
             if not isinstance(values,list) or not values or len(values)>30 or any(not isinstance(v,(str,int,float)) or isinstance(v,bool) for v in values):
                 raise ValueError(sid+': 筛选值无效')
         if 'fact_id' in step and not isinstance(step['fact_id'],str):

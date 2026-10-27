@@ -29,9 +29,12 @@ def year_header(header):
 
 def header_unit(header):
     text = compact(header)
-    match = re.search(r'\(([^()]+)\)', text)
-    if match and match.group(1) in UNITS:
-        return UNITS[match.group(1)]
+    for level in reversed(re.split(r'\s+/\s+',str(header))):
+        units = {UNITS[u] for u in re.findall(r'\(([^()]+)\)',compact(level)) if u in UNITS}
+        if len(units)>1:
+            return ''
+        if units:
+            return units.pop()
     if '人数' in text:
         return '人'
     if text.endswith('百分比'):

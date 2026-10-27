@@ -1,0 +1,124 @@
+{
+  "baseline_commit": "15f0c7a",
+  "method": "Direct supplied plans on an independent synthetic table; no model calls; not an end-to-end accuracy score. Baseline query module replayed from Git; shared normalization does not change this simple fixture.",
+  "baseline_query_sha256": "214e19cd3f4101e1ba6684f525f6570d6d55912da51732d59dc413534d589df9",
+  "table": [
+    [
+      "研究类",
+      "甲项目",
+      "7"
+    ],
+    [
+      "研究类",
+      "乙项目",
+      "11"
+    ],
+    [
+      "服务类",
+      "丙项目",
+      "13"
+    ]
+  ],
+  "probes": [
+    {
+      "id": "compound_filter",
+      "question": "研究类中金额大于10元的记录有多少条？",
+      "plan": {
+        "table_id": 1,
+        "steps": [
+          {
+            "id": "a",
+            "op": "count",
+            "filters": [
+              {
+                "field_id": 1,
+                "op": "eq",
+                "value": "研究类"
+              },
+              {
+                "field_id": 3,
+                "op": "gt",
+                "value": "10"
+              }
+            ]
+          }
+        ]
+      },
+      "before": {
+        "ok": false,
+        "value": "None",
+        "unit": "",
+        "error": "问题约束：计划未覆盖列举对象的全部匹配记录：研究类"
+      },
+      "after": {
+        "ok": true,
+        "value": "1",
+        "unit": "项",
+        "error": ""
+      }
+    },
+    {
+      "id": "wrong_operation",
+      "question": "全部项目有多少条？",
+      "plan": {
+        "table_id": 1,
+        "steps": [
+          {
+            "id": "a",
+            "op": "sum",
+            "field_id": 3
+          }
+        ]
+      },
+      "before": {
+        "ok": true,
+        "value": "31",
+        "unit": "元",
+        "error": ""
+      },
+      "after": {
+        "ok": false,
+        "value": "None",
+        "unit": "",
+        "error": "问题约束：问题要求记录计数，结果必须来自count或合法计数相加，不能对金额等度量求和"
+      }
+    },
+    {
+      "id": "reversed_exclusion",
+      "question": "除研究类之外的项目有多少条？",
+      "plan": {
+        "table_id": 1,
+        "steps": [
+          {
+            "id": "a",
+            "op": "count",
+            "filters": [
+              {
+                "field_id": 1,
+                "op": "eq",
+                "value": "研究类"
+              }
+            ]
+          }
+        ]
+      },
+      "before": {
+        "ok": true,
+        "value": "2",
+        "unit": "项",
+        "error": ""
+      },
+      "after": {
+        "ok": false,
+        "value": "None",
+        "unit": "",
+        "error": "问题约束：筛选包含/排除方向与原问题不符；明确排除对象使用not_in"
+      }
+    }
+  ],
+  "header_unit": {
+    "header": "场馆统计（2026版） / 面积（平方米）",
+    "before": "",
+    "after": "平方米"
+  }
+}

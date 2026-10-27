@@ -33,6 +33,11 @@ def _legal_fields(columns):
     return '；合法字段：'+','.join(str(fid)+':'+c['original_name']+'('+_field_role(c)+','+(c['unit'] or '未标单位')+')' for fid,c in columns.items())
 
 
+def _excluded_object(value,question):
+    clauses = re.findall(r'除(?:了)?(.*?)(?:之外|以外)|(?:不含|不包括|不包含|排除)([^，。；？?]+)',compact(question))
+    return any(compact(value) in text for parts in clauses for text in parts)
+
+
 def _object_key(value):
     return re.sub(r'(?:工程)?实验教学中心|实验室|中心|学院|专业|场馆|组别','',compact(value))
 
@@ -162,6 +167,11 @@ class StructuredQueryEngine:
                     value,unit,expression = self._step_arithmetic(op,operands)
                     value_record = {'value':value,'unit':unit,'expression':expression,
                                     'details':[d for v in operands for d in v['details']]}
+                    kinds = [v.get('kind','value') for v in operands]
+                    value_record['kind'] = 'count' if op in {'add','sum'} and set(kinds)=={'count'} else op
+                    if op=='divide' and kinds==['sum','count'] and {
+                            d.get('row_id') for d in operands[0]['details']}=={d.get('row_id') for d in operands[1]['details']}:
+                        value_record.update(kind='average',unit=operands[0]['unit'])
                     if op in {'add','sum','subtract','average'} and all(v.get('per_unit')==operands[0].get('per_unit') for v in operands) and operands[0].get('per_unit'):
                         value_record['per_unit'] = operands[0]['per_unit']
                     if op=='multiply' and any(v.get('per_unit') for v in operands):
@@ -235,7 +245,8 @@ class StructuredQueryEngine:
                         if op=='average':
                             value /= len(numbers)
                             expression = f'({expression}) / {len(numbers)}'
-                    value_record = {'value':value,'unit':unit,'expression':expression,'details':details}
+                    value_record = {'value':value,'unit':unit,'expression':expression,'details':details,
+                                    'kind':'sum' if op=='lookup' and step.get('scope')=='total' else op}
                 if not value_record['value'].is_finite():
                     raise ValueError(sid+': 计算结果非有限数值')
                 values[sid] = value_record
@@ -264,6 +275,14 @@ class StructuredQueryEngine:
             if table is not None:
                 scope_details = result['details']
                 final = plan.steps[-1]
+                denominator_question = question.split('占',1)[-1] if '占' in question else ''
+                if final['op']=='ratio' and re.search(r'全部|所有|整张|全表|表内合计|总面积|总额|总人数',denominator_question):
+                    denominator = self._step_input(final['inputs'][1],values,question)
+                    actual_rows = {d['row_id'] for d in denominator['details'] if 'row_id' in d}
+                    detail_rows = {r['id'] for r in rows if not r['is_total']}
+                    total_rows = {r['id'] for r in rows if r['is_total']}
+                    if actual_rows!=detail_rows and not (len(total_rows)==1 and actual_rows==total_rows):
+                        raise QuestionConstraintError('问题约束：分母未覆盖问题要求的全表明细或唯一合计行，不能使用局部计数')
                 if final['op']=='ratio' and isinstance(final['inputs'][0],str) and any(
                     s['id']==final['inputs'][0] and s['op'] in {'sum','add','average','count'} for s in plan.steps):
                     scope_details = values[final['inputs'][0]]['details']
@@ -330,8 +349,20 @@ class StructuredQueryEngine:
             if signature==[c['normalized_name'] for c in cols.values()] and contents(rows)!=contents(candidates):
                 raise ValueError('多张同结构候选表数据不同，需明确资料或统计范围')
 
-    @staticmethod
-    def _check_requested_objects(rows,columns,question,details):
+    def _check_requested_objects(self,rows,columns,question,details):
+        # Rebuild the threshold domain from the question, independently of the
+        # proposed plan, so omitted filters cannot legitimize extra records.
+        numeric_filters = []
+        relations = {'大于等于':'gte','不少于':'gte','至少':'gte','小于等于':'lte','不超过':'lte','至多':'lte','大于':'gt','超过':'gt','小于':'lt','低于':'lt'}
+        for match in re.finditer('('+'|'.join(relations)+r')\s*(\d+(?:\.\d+)?)(万元|亿元|元|万人|千人|人|平方米|台|个|项|小时|%)?',question):
+            candidates = [c for c in columns.values() if c['data_type']=='number' and c['unit'] and
+                (not match[3] or quantity(match[2]+match[3])[1]==c['unit'])]
+            best = max((_field_question_score(c,question) for c in candidates),default=-1)
+            candidates = [c for c in candidates if _field_question_score(c,question)==best]
+            if len(candidates)!=1:
+                raise QuestionConstraintError('问题约束：数值阈值无法唯一绑定字段'+_legal_fields(columns))
+            numeric_filters.append({'field_id':candidates[0]['id'],'op':relations[match[1]],'value':match[2]})
+        domain = self._step_filter([r for r in rows if not r['is_total']],columns,numeric_filters,question)
         candidates = []
         for fid,col in columns.items():
             if col['data_type']!='text' or _field_role(col) in {'identifier','time'}:
@@ -339,9 +370,17 @@ class StructuredQueryEngine:
             labels = {r['cells'][fid]['normalized_value'] for r in rows if not r['is_total']
                 and _object_mentioned(r['cells'][fid]['normalized_value'],question)}
             if labels:
-                required = {r['id'] for r in rows if not r['is_total'] and r['cells'][fid]['normalized_value'] in labels}
+                excluded = {v for v in labels if _excluded_object(v,question)}
+                included = labels-excluded
+                required = {r['id'] for r in domain if r['cells'][fid]['normalized_value'] not in excluded
+                    and (not included or r['cells'][fid]['normalized_value'] in included)}
                 candidates.append((len(labels),_field_question_score(col,question,labels),fid,required,labels))
         if not candidates:
+            if numeric_filters or re.search(r'全部|所有|整张',question):
+                required = {r['id'] for r in domain}
+                actual = {d['row_id'] for d in details if 'row_id' in d}
+                if actual!=required:
+                    raise QuestionConstraintError('问题约束：结果未覆盖问题指定的完整筛选范围')
             return
         # More complete object coverage and explicit field names disambiguate
         # repeated categories from another column containing a similar label.
@@ -381,6 +420,18 @@ class StructuredQueryEngine:
     def _check_question_operation(plan,question,result):
         compare = bool(re.search(r'相差|差额|比.*(?:多|少|高|低).*多少|减去|相比.*还剩',question))
         final = next(s for s in plan.steps if s['id']==plan.output)
+        record_count = bool(re.search(r'(?:多少|几)(?:条|行)|共有几(?:个|项)|有多少个',question))
+        if record_count and not re.search(r'占|百分比|平均',question) and not compare and result.get('kind')!='count':
+            raise PlanError('问题要求记录计数，结果必须来自count或合法计数相加，不能对金额等度量求和')
+        if record_count and result.get('kind')=='count' and result['value']!=len({
+                (d['table_id'],d['row_id']) for d in result['details'] if 'row_id' in d}):
+            raise PlanError('记录计数重复使用同一记录，不能把重叠集合重复相加')
+        if not compare and not re.search(r'占|百分比',question):
+            average = '平均' in question.replace('平均学分绩点','绩点')
+            if average and result.get('kind')!='average':
+                raise PlanError('问题要求平均值，应使用average或同范围sum除以count')
+            if not average and re.search(r'合计|总计|之和|总额',question) and result.get('kind')=='average':
+                raise PlanError('问题要求合计，不能返回平均值')
         if compare and final['op']!='subtract':
             raise PlanError('问题要求比较差额，最终步骤必须subtract，不能只返回一个lookup')
         required = 'multiply' if re.search(r'相乘|乘积|乘以|单价.*数量|标准乘',question) else 'divide' if '除以' in question else None
@@ -409,13 +460,15 @@ class StructuredQueryEngine:
             fid,op = spec['field_id'],spec['op']
             if fid not in columns:
                 raise PlanError('筛选field_id不在所选表格中'+_legal_fields(columns))
-            targets = spec['value'] if op=='in' else [spec['value']]
+            targets = spec['value'] if op in {'in','not_in'} else [spec['value']]
             matches = set()
             for target in targets:
                 text = compact(target)
-                if op in {'eq','in','contains'}:
+                if op in {'eq','in','not_in','contains'}:
                     if not _object_mentioned(text,question) and text not in {'合计','总计','小计'}:
                         raise PlanError('筛选对象未在问题中出现：'+str(target))
+                    if _excluded_object(text,question)!=(op=='not_in'):
+                        raise QuestionConstraintError('问题约束：筛选包含/排除方向与原问题不符；明确排除对象使用not_in')
                     if op=='contains' and not re.search(r'包含|含有',question):
                         raise QuestionConstraintError('问题约束：不能把明确对象擅自扩大为contains模糊匹配')
                     alternatives = [cid for cid,c in columns.items() if c['data_type']=='text' and
@@ -454,7 +507,7 @@ class StructuredQueryEngine:
                         if {'gt':value>threshold,'gte':value>=threshold,'lt':value<threshold,'lte':value<=threshold}[op]:
                             found.append(row)
                 matches.update(r['id'] for r in found)
-            selected = [r for r in selected if r['id'] in matches]
+            selected = [r for r in selected if (r['id'] not in matches if op=='not_in' else r['id'] in matches)]
         return selected
 
     @staticmethod

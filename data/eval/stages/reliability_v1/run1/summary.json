@@ -1,0 +1,505 @@
+{
+  "overall": {
+    "correct": 33,
+    "total": 36,
+    "accuracy": 0.9166666666666666
+  },
+  "answerable_accuracy": 0.90625,
+  "categories": {
+    "fact": {
+      "correct": 8,
+      "total": 8,
+      "accuracy": 1.0
+    },
+    "procedure": {
+      "correct": 6,
+      "total": 6,
+      "accuracy": 1.0
+    },
+    "list": {
+      "correct": 6,
+      "total": 6,
+      "accuracy": 1.0
+    },
+    "calculation": {
+      "correct": 5,
+      "total": 8,
+      "accuracy": 0.625
+    },
+    "temporal": {
+      "correct": 4,
+      "total": 4,
+      "accuracy": 1.0
+    },
+    "refusal": {
+      "correct": 4,
+      "total": 4,
+      "accuracy": 1.0
+    }
+  },
+  "verdict_counts": {
+    "correct": 29,
+    "refusal": 7
+  },
+  "numeric_execution_accuracy": 0.625,
+  "refusal_accuracy": 1.0,
+  "false_refusal_rate": 0.09375,
+  "refusal_precision": 0.5714285714285714,
+  "citation_completeness": 0.90625,
+  "citation_precision": 1.0,
+  "citation_counts": {
+    "relevant": 29,
+    "total": 29
+  },
+  "retrieval": {
+    "bm25": {
+      "hit@5": 0.9375,
+      "recall@5": 0.8201650943396226,
+      "evidence_group_recall@5": 0.9375,
+      "all_evidence_hit@5": 0.9375,
+      "hit@10": 1,
+      "recall@10": 0.8567216981132075,
+      "evidence_group_recall@10": 1.0,
+      "all_evidence_hit@10": 1,
+      "hit@20": 1,
+      "recall@20": 0.8685141509433962,
+      "evidence_group_recall@20": 1.0,
+      "all_evidence_hit@20": 1,
+      "rr@20": 0.8630208333333333
+    },
+    "dense": {
+      "hit@5": 0.90625,
+      "recall@5": 0.7485259433962265,
+      "evidence_group_recall@5": 0.90625,
+      "all_evidence_hit@5": 0.90625,
+      "hit@10": 0.9375,
+      "recall@10": 0.8066037735849056,
+      "evidence_group_recall@10": 0.9375,
+      "all_evidence_hit@10": 0.9375,
+      "hit@20": 0.96875,
+      "recall@20": 0.8626179245283019,
+      "evidence_group_recall@20": 0.96875,
+      "all_evidence_hit@20": 0.96875,
+      "rr@20": 0.7677608543417367
+    },
+    "hybrid": {
+      "hit@5": 1,
+      "recall@5": 0.8567216981132075,
+      "evidence_group_recall@5": 1.0,
+      "all_evidence_hit@5": 1,
+      "hit@10": 1,
+      "recall@10": 0.8661556603773585,
+      "evidence_group_recall@10": 1.0,
+      "all_evidence_hit@10": 1,
+      "hit@20": 1,
+      "recall@20": 0.8844339622641509,
+      "evidence_group_recall@20": 1.0,
+      "all_evidence_hit@20": 1,
+      "rr@20": 0.8145833333333333
+    },
+    "rerank": {
+      "hit@5": 0.9375,
+      "recall@5": 0.8213443396226415,
+      "evidence_group_recall@5": 0.9375,
+      "all_evidence_hit@5": 0.9375,
+      "hit@10": 1,
+      "recall@10": 0.8602594339622641,
+      "evidence_group_recall@10": 1.0,
+      "all_evidence_hit@10": 1,
+      "hit@20": 1,
+      "recall@20": 0.8820754716981132,
+      "evidence_group_recall@20": 1.0,
+      "all_evidence_hit@20": 1,
+      "rr@20": 0.7726934523809523
+    }
+  },
+  "cases": [
+    {
+      "id": "F01",
+      "category": "fact",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "原文保留拍照、摄像须经图书馆同意，未再作可以自行的矛盾判断；入馆须知来源支持。",
+      "failure_stage": ""
+    },
+    {
+      "id": "F02",
+      "category": "fact",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "原文同时明确电子校友卡核实后按手续参观阅览及不具有借还权限，覆盖冻结的两个要点。额外要点的原金标边界仍保留说明。",
+      "failure_stage": ""
+    },
+    {
+      "id": "F03",
+      "category": "fact",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "引用2024办法第四条，保留学有余力且家庭经济困难两项限定；夹带解释条款属于冗长问题。",
+      "failure_stage": ""
+    },
+    {
+      "id": "F04",
+      "category": "fact",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "原文含本校组织、外语本专业四级或八级；没有改成大学英语四六级。但包含未问的运动员和救济条款，摘录范围仍过宽。",
+      "failure_stage": ""
+    },
+    {
+      "id": "F05",
+      "category": "fact",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "第十六条原文明确私自在校内外兼职不在办法管理之列，无相反结论。",
+      "failure_stage": ""
+    },
+    {
+      "id": "F06",
+      "category": "fact",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "原文3.1明确无偿、不附带任何条件，并由图书馆标准决定是否收藏，否定未反转。",
+      "failure_stage": ""
+    },
+    {
+      "id": "F07",
+      "category": "fact",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "第八条第一项明确首先向学院提出复核申请，额外程序真实但未被询问。",
+      "failure_stage": ""
+    },
+    {
+      "id": "F08",
+      "category": "fact",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "成绩单规定原文明确毕业满三年的往届生出国成绩单在档案馆办理。",
+      "failure_stage": ""
+    },
+    {
+      "id": "P01",
+      "category": "procedure",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "原文委托办理部分完整列出亲笔委托书、当事人及被委托人身份证复印件；其它流程摘录过多。",
+      "failure_stage": ""
+    },
+    {
+      "id": "P02",
+      "category": "procedure",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "原文完整保留身份证或教务账号密码登录、在校生校园卡登录以及校园卡扣费，没有批量代扣等新增说法。",
+      "failure_stage": ""
+    },
+    {
+      "id": "P03",
+      "category": "procedure",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "2025指南原文明确首次贷款学生与共同借款人一起前往双方户籍所在地县级资助部门。双方户籍所在地确有原文依据，不应误判为无依据扩写。",
+      "failure_stage": ""
+    },
+    {
+      "id": "P04",
+      "category": "procedure",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "更换共同借款人原句列出学生和新共同借款人一起、双方身份证原件、户口簿原件、学生证原件及县级资助部门。未生成拼接清单，但摘录仍带其它办理情形。",
+      "failure_stage": ""
+    },
+    {
+      "id": "P05",
+      "category": "procedure",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "应征入伍段明确全国征兵网在线填写表Ⅰ、双面正反打印、一式两份；后续退役流程属于未问的冗长摘录。",
+      "failure_stage": ""
+    },
+    {
+      "id": "P06",
+      "category": "procedure",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "第十三条明确转专业申请表与家长或监护人书面同意意见。",
+      "failure_stage": ""
+    },
+    {
+      "id": "L01",
+      "category": "list",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "指定第十条的五类禁止情形完整，与第九条放宽条件分开；相邻块补全记录可追溯同文档真实块ID。",
+      "failure_stage": ""
+    },
+    {
+      "id": "L02",
+      "category": "list",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "学位办法第七条原文保留硕士、主要成员认可竞赛国家奖、省级荣誉或符合口径的精神文明表现，并保留期限、本人申请和委员会审议。没有使用手册奖学金第七条。",
+      "failure_stage": ""
+    },
+    {
+      "id": "L03",
+      "category": "list",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "论文提交规定原文明确PDF格式、不允许加密；不是仅给提交渠道。",
+      "failure_stage": ""
+    },
+    {
+      "id": "L04",
+      "category": "list",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "校友段原文完整给出1、6、7、12月及法定节假日不接待，没有编造其它日期。",
+      "failure_stage": ""
+    },
+    {
+      "id": "L05",
+      "category": "list",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "三条原始表记录分别包含B0204103S、TX617409C、B04060K1C，不再只回退第一条。",
+      "failure_stage": ""
+    },
+    {
+      "id": "L06",
+      "category": "list",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "2025指南原句明确优先学费住宿费、超出用于日常生活费，没有将贷款用途与还款条款混成新结论。",
+      "failure_stage": ""
+    },
+    {
+      "id": "C01",
+      "category": "calculation",
+      "correct": false,
+      "verdict": "refusal",
+      "numeric_correct": false,
+      "citation_complete": false,
+      "reason": "酬金标准与问题工时均有来源，但首次及唯一修复均遗漏常数lookup，right未定义，安全拒答；未完成应答。",
+      "failure_stage": "plan_validation"
+    },
+    {
+      "id": "C02",
+      "category": "calculation",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": true,
+      "citation_complete": true,
+      "reason": "核对第十七条每周/每月上限及原问题四周。五步明确为8小时每周×4周=32小时，40-32=8小时；没有猜测周月换算，实际引用支持。",
+      "failure_stage": ""
+    },
+    {
+      "id": "C03",
+      "category": "calculation",
+      "correct": false,
+      "verdict": "refusal",
+      "numeric_correct": false,
+      "citation_complete": false,
+      "reason": "首次漏掉right；唯一修复补齐lookup但颠倒对象，算得-5000元。问题方向约束拒绝该结果，未将执行完成当作语义正确。",
+      "failure_stage": "question_validation"
+    },
+    {
+      "id": "C04",
+      "category": "calculation",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": true,
+      "citation_complete": true,
+      "reason": "两个fact_id均在2026版学位办法第二条，实际引用学生手册内同一规则。原PDF已在阶段2核验；1.8-1.5=0.3绩点，没有使用第五条例外。",
+      "failure_stage": ""
+    },
+    {
+      "id": "C05",
+      "category": "calculation",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": true,
+      "citation_complete": true,
+      "reason": "完整SQLite范围按慕课名称等值筛选，实际计数3条，来源及计算一致。",
+      "failure_stage": ""
+    },
+    {
+      "id": "C06",
+      "category": "calculation",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": true,
+      "citation_complete": true,
+      "reason": "对照表慕课名称精确筛选模拟电子线路A，完整SQLite匹配10个展开记录，按行计数而非样例计数；唯一引用支持该表。",
+      "failure_stage": ""
+    },
+    {
+      "id": "C07",
+      "category": "calculation",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": true,
+      "citation_complete": true,
+      "reason": "完整匹配慕课名称字段的六条明细，行ID与冻结源证据一致，两类分别3条。count(6条明细)等价于3+3，不按名称去重。",
+      "failure_stage": ""
+    },
+    {
+      "id": "C08",
+      "category": "calculation",
+      "correct": false,
+      "verdict": "refusal",
+      "numeric_correct": false,
+      "citation_complete": false,
+      "reason": "首次及唯一修复都遗漏全表分母的count步骤，right未定义；未用示例行或模型猜测分母，安全拒答但问题未答。",
+      "failure_stage": "plan_validation"
+    },
+    {
+      "id": "T01",
+      "category": "temporal",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "2026清明公告原文明确4月5日闭馆，4月4、6日按周末开放。",
+      "failure_stage": ""
+    },
+    {
+      "id": "T02",
+      "category": "temporal",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "2026五一公告原文明确5月3日至5日按周末开放，5月9日按周二开放；未反转闭馆或星期口径。",
+      "failure_stage": ""
+    },
+    {
+      "id": "T03",
+      "category": "temporal",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "2026暑假通知借还服务段明确三牌楼、周一周四、上午9:00—11:30，与7月6、7日整理时间和阅览服务分开保留。",
+      "failure_stage": ""
+    },
+    {
+      "id": "T04",
+      "category": "temporal",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "2026办法第十条原文明确废止校发〔2024〕82号旧修订办法。",
+      "failure_stage": ""
+    },
+    {
+      "id": "R01",
+      "category": "refusal",
+      "correct": true,
+      "verdict": "refusal",
+      "numeric_correct": null,
+      "citation_complete": false,
+      "reason": "公开资料边界明确拒绝查询所问个人记录或实时信息，不编造课表教室，不再附无关排课制度来源。",
+      "failure_stage": ""
+    },
+    {
+      "id": "R02",
+      "category": "refusal",
+      "correct": true,
+      "verdict": "refusal",
+      "numeric_correct": null,
+      "citation_complete": false,
+      "reason": "未找到目标年份证据，未拿其他年份冒充。",
+      "failure_stage": ""
+    },
+    {
+      "id": "R03",
+      "category": "refusal",
+      "correct": true,
+      "verdict": "refusal",
+      "numeric_correct": null,
+      "citation_complete": false,
+      "reason": "拒绝给出没有实时证据的空座位数，无猜测数值。",
+      "failure_stage": ""
+    },
+    {
+      "id": "R04",
+      "category": "refusal",
+      "correct": true,
+      "verdict": "refusal",
+      "numeric_correct": null,
+      "citation_complete": false,
+      "reason": "问题明确未提供本金、合同利率和还款期限；程序忠实说明缺失条件，不把公共示例或上下限当作个人数据，未生成金额或无关引用。",
+      "failure_stage": ""
+    }
+  ],
+  "baseline_commit": "a44fed7848cc8df4ffbc94df2f57e4a65a9a25e8",
+  "manifest_sha256": "4d49a28e63d759b42dbfacce9af564f213badad71be77e3b9dd7175bf1f9810f",
+  "reviewer": "Codex主助手逐题语义复核，非独立真人专家或双人复核；未调用额外模型裁判。",
+  "artifact_hashes": {
+    "gold_sha256": "dd633cfb78d6187ed83e11887f3f893f98930168c1726e00e3343a0947babf45",
+    "results_sha256": "f188a834100d978009770c00b5385f8f24f58b6445563bafff486ef90afd2487",
+    "reviews_sha256": "7f21e840d5dcf1aa9a186c46ea32fbc312a10804a61c8ee550c2eac01cb57da3",
+    "scoring_script_sha256": "b37def27a6d7e73deea32cf388de817259197c0c87f6865f394c21512b3a4992"
+  },
+  "annotation_caveats": {
+    "F02": "原冻结要点包含超出问句主体的参观办理背景；本轮长摘录同时覆盖，因此按不变口径通过，不能据此声称意图理解改善。",
+    "F01": "原基线措辞有须经同意与可以自行的矛盾；本轮原文回退完整保留审批条件，无相反判断。",
+    "R04": "原基线虽安全拒答但解释缺失；阶段2已修复，本轮完整说明问题明确缺失的个人计算参数，评为正确拒答。"
+  },
+  "safe_refusal_count": 3,
+  "safe_refusal_total": 4,
+  "model_init_seconds": 22.229467099999965,
+  "device": "NVIDIA GeForce RTX 4050 Laptop GPU",
+  "network_attempt_count": 0,
+  "performance": {
+    "mean_service_seconds_estimate": 2.5157777777777777,
+    "median_service_seconds_estimate": 2.2104999999999997,
+    "max_service_seconds_estimate": 6.965,
+    "process_peak_working_set_bytes": 2842542080,
+    "gpu_peak_allocated_bytes": 3178214912,
+    "gpu_peak_reserved_bytes": 3602907136
+  }
+}

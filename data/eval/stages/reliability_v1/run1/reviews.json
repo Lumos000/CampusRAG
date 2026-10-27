@@ -1,0 +1,627 @@
+{
+  "reviewer": "Codex主助手逐题语义复核，非独立真人专家或双人复核；未调用额外模型裁判。",
+  "method": "11题与阶段3的答案、实际引用及计算完全相同，复用已审结果；其余25题逐题核对冻结要点、原文适用条件及每个实际引用。24道文字/时效题均为保守摘录回退，分数衡量冻结核心要点及文档级支持，不衡量简洁性或模型自由生成能力。非独立真人或双盲评分。",
+  "annotation_caveats": {
+    "F02": "原冻结要点包含超出问句主体的参观办理背景；本轮长摘录同时覆盖，因此按不变口径通过，不能据此声称意图理解改善。",
+    "F01": "原基线措辞有须经同意与可以自行的矛盾；本轮原文回退完整保留审批条件，无相反判断。",
+    "R04": "原基线虽安全拒答但解释缺失；阶段2已修复，本轮完整说明问题明确缺失的个人计算参数，评为正确拒答。"
+  },
+  "cases": {
+    "F01": {
+      "verdict": "correct",
+      "points_met": [
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "原文保留拍照、摄像须经图书馆同意，未再作可以自行的矛盾判断；入馆须知来源支持。",
+      "citations": [
+        {
+          "reference": "入馆须知｜图书馆｜2011-05-31｜http://lib.njupt.edu.cn/2011/0531/c1383a15823/page.htm",
+          "doc_id": 330,
+          "relevant": true,
+          "reason": "原文保留拍照、摄像须经图书馆同意，未再作可以自行的矛盾判断；入馆须知来源支持。"
+        }
+      ]
+    },
+    "F02": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "原文同时明确电子校友卡核实后按手续参观阅览及不具有借还权限，覆盖冻结的两个要点。额外要点的原金标边界仍保留说明。",
+      "citations": [
+        {
+          "reference": "入馆须知｜图书馆｜2011-05-31｜http://lib.njupt.edu.cn/2011/0531/c1383a15823/page.htm",
+          "doc_id": 330,
+          "relevant": true,
+          "reason": "原文同时明确电子校友卡核实后按手续参观阅览及不具有借还权限，覆盖冻结的两个要点。额外要点的原金标边界仍保留说明。"
+        }
+      ]
+    },
+    "F03": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "引用2024办法第四条，保留学有余力且家庭经济困难两项限定；夹带解释条款属于冗长问题。",
+      "citations": [
+        {
+          "reference": "校学发〔2024〕6号本科学生勤工助学管理办法｜学生工作部（处）｜2024-04-07｜https://xsc.njupt.edu.cn/_upload/article/files/3c/92/c078c33945918f4a794899e4f642/a2b5f055-9415-4133-9198-ab49f728d17b.pdf",
+          "doc_id": 253,
+          "relevant": true,
+          "reason": "引用2024办法第四条，保留学有余力且家庭经济困难两项限定；夹带解释条款属于冗长问题。"
+        }
+      ]
+    },
+    "F04": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "原文含本校组织、外语本专业四级或八级；没有改成大学英语四六级。但包含未问的运动员和救济条款，摘录范围仍过宽。",
+      "citations": [
+        {
+          "reference": "南京邮电大学普通高等教育本科毕业生学士学位授予办法（修订）｜本科生院｜2026-06-25｜https://jwc.njupt.edu.cn/2026/0625/c1746a305440/page.htm",
+          "doc_id": 87,
+          "relevant": true,
+          "reason": "原文含本校组织、外语本专业四级或八级；没有改成大学英语四六级。但包含未问的运动员和救济条款，摘录范围仍过宽。"
+        }
+      ]
+    },
+    "F05": {
+      "verdict": "correct",
+      "points_met": [
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "第十六条原文明确私自在校内外兼职不在办法管理之列，无相反结论。",
+      "citations": [
+        {
+          "reference": "校学发〔2024〕6号本科学生勤工助学管理办法｜学生工作部（处）｜2024-04-07｜https://xsc.njupt.edu.cn/_upload/article/files/3c/92/c078c33945918f4a794899e4f642/a2b5f055-9415-4133-9198-ab49f728d17b.pdf",
+          "doc_id": 253,
+          "relevant": true,
+          "reason": "第十六条原文明确私自在校内外兼职不在办法管理之列，无相反结论。"
+        }
+      ]
+    },
+    "F06": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "原文3.1明确无偿、不附带任何条件，并由图书馆标准决定是否收藏，否定未反转。",
+      "citations": [
+        {
+          "reference": "捐赠指南｜图书馆｜http://lib.njupt.edu.cn/tsjz/list.htm",
+          "doc_id": 478,
+          "relevant": true,
+          "reason": "原文3.1明确无偿、不附带任何条件，并由图书馆标准决定是否收藏，否定未反转。"
+        }
+      ]
+    },
+    "F07": {
+      "verdict": "correct",
+      "points_met": [
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "第八条第一项明确首先向学院提出复核申请，额外程序真实但未被询问。",
+      "citations": [
+        {
+          "reference": "南京邮电大学普通高等教育本科毕业生学士学位授予办法（修订）｜本科生院｜2026-06-25｜https://jwc.njupt.edu.cn/2026/0625/c1746a305440/page.htm",
+          "doc_id": 87,
+          "relevant": true,
+          "reason": "第八条第一项明确首先向学院提出复核申请，额外程序真实但未被询问。"
+        }
+      ]
+    },
+    "F08": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "成绩单规定原文明确毕业满三年的往届生出国成绩单在档案馆办理。",
+      "citations": [
+        {
+          "reference": "南京邮电大学本科学生办理成绩单的暂行规定（修订）｜本科生院｜2021-06-04｜https://jwc.njupt.edu.cn/2021/0604/c1548a195395/page.htm",
+          "doc_id": 60,
+          "relevant": true,
+          "reason": "成绩单规定原文明确毕业满三年的往届生出国成绩单在档案馆办理。"
+        }
+      ]
+    },
+    "P01": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "原文委托办理部分完整列出亲笔委托书、当事人及被委托人身份证复印件；其它流程摘录过多。",
+      "citations": [
+        {
+          "reference": "南京邮电大学本科学生办理成绩单的暂行规定（修订）｜本科生院｜2021-06-04｜https://jwc.njupt.edu.cn/2021/0604/c1548a195395/page.htm",
+          "doc_id": 60,
+          "relevant": true,
+          "reason": "原文委托办理部分完整列出亲笔委托书、当事人及被委托人身份证复印件；其它流程摘录过多。"
+        }
+      ]
+    },
+    "P02": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "原文完整保留身份证或教务账号密码登录、在校生校园卡登录以及校园卡扣费，没有批量代扣等新增说法。",
+      "citations": [
+        {
+          "reference": "南京邮电大学本科学生办理成绩单的暂行规定（修订）｜本科生院｜2021-06-04｜https://jwc.njupt.edu.cn/2021/0604/c1548a195395/page.htm",
+          "doc_id": 60,
+          "relevant": true,
+          "reason": "原文完整保留身份证或教务账号密码登录、在校生校园卡登录以及校园卡扣费，没有批量代扣等新增说法。"
+        }
+      ]
+    },
+    "P03": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "2025指南原文明确首次贷款学生与共同借款人一起前往双方户籍所在地县级资助部门。双方户籍所在地确有原文依据，不应误判为无依据扩写。",
+      "citations": [
+        {
+          "reference": "生源地国家助学贷款申请指南（2025）｜学生工作部（处）｜2025-05-08｜https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+          "doc_id": 257,
+          "relevant": true,
+          "reason": "2025指南原文明确首次贷款学生与共同借款人一起前往双方户籍所在地县级资助部门。双方户籍所在地确有原文依据，不应误判为无依据扩写。"
+        }
+      ]
+    },
+    "P04": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "更换共同借款人原句列出学生和新共同借款人一起、双方身份证原件、户口簿原件、学生证原件及县级资助部门。未生成拼接清单，但摘录仍带其它办理情形。",
+      "citations": [
+        {
+          "reference": "生源地国家助学贷款申请指南（2025）｜学生工作部（处）｜2025-05-08｜https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+          "doc_id": 257,
+          "relevant": true,
+          "reason": "更换共同借款人原句列出学生和新共同借款人一起、双方身份证原件、户口簿原件、学生证原件及县级资助部门。未生成拼接清单，但摘录仍带其它办理情形。"
+        }
+      ]
+    },
+    "P05": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "应征入伍段明确全国征兵网在线填写表Ⅰ、双面正反打印、一式两份；后续退役流程属于未问的冗长摘录。",
+      "citations": [
+        {
+          "reference": "服兵役学生国家教育资助申请流程｜学生工作部（处）｜2026-03-27｜https://xsc.njupt.edu.cn/_upload/article/files/4f/23/52b9125c48748eb03a9858eaa2df/e4606a8d-1427-4bbc-909b-e9f4bbf762ac.pdf",
+          "doc_id": 254,
+          "relevant": true,
+          "reason": "应征入伍段明确全国征兵网在线填写表Ⅰ、双面正反打印、一式两份；后续退役流程属于未问的冗长摘录。"
+        }
+      ]
+    },
+    "P06": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "第十三条明确转专业申请表与家长或监护人书面同意意见。",
+      "citations": [
+        {
+          "reference": "南京邮电大学本科生转专业管理办法（2025年9月18日修订）｜本科生院｜2025-09-26｜https://jwc.njupt.edu.cn/2025/0926/c1746a289496/page.psp",
+          "doc_id": 79,
+          "relevant": true,
+          "reason": "第十三条明确转专业申请表与家长或监护人书面同意意见。"
+        }
+      ]
+    },
+    "L01": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "指定第十条的五类禁止情形完整，与第九条放宽条件分开；相邻块补全记录可追溯同文档真实块ID。",
+      "citations": [
+        {
+          "reference": "南京邮电大学本科生转专业管理办法（2025年9月18日修订）｜本科生院｜2025-09-26｜https://jwc.njupt.edu.cn/2025/0926/c1746a289496/page.psp",
+          "doc_id": 79,
+          "relevant": true,
+          "reason": "指定第十条的五类禁止情形完整，与第九条放宽条件分开；相邻块补全记录可追溯同文档真实块ID。"
+        }
+      ]
+    },
+    "L02": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "学位办法第七条原文保留硕士、主要成员认可竞赛国家奖、省级荣誉或符合口径的精神文明表现，并保留期限、本人申请和委员会审议。没有使用手册奖学金第七条。",
+      "citations": [
+        {
+          "reference": "南京邮电大学普通高等教育本科毕业生学士学位授予办法（修订）｜本科生院｜2026-06-25｜https://jwc.njupt.edu.cn/2026/0625/c1746a305440/page.htm",
+          "doc_id": 87,
+          "relevant": true,
+          "reason": "学位办法第七条原文保留硕士、主要成员认可竞赛国家奖、省级荣誉或符合口径的精神文明表现，并保留期限、本人申请和委员会审议。没有使用手册奖学金第七条。"
+        }
+      ]
+    },
+    "L03": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "论文提交规定原文明确PDF格式、不允许加密；不是仅给提交渠道。",
+      "citations": [
+        {
+          "reference": "关于学位论文提交的规定｜图书馆｜2013-02-25｜http://lib.njupt.edu.cn/2013/0225/c1399a20675/page.htm",
+          "doc_id": 335,
+          "relevant": true,
+          "reason": "论文提交规定原文明确PDF格式、不允许加密；不是仅给提交渠道。"
+        }
+      ]
+    },
+    "L04": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "校友段原文完整给出1、6、7、12月及法定节假日不接待，没有编造其它日期。",
+      "citations": [
+        {
+          "reference": "入馆须知｜图书馆｜2011-05-31｜http://lib.njupt.edu.cn/2011/0531/c1383a15823/page.htm",
+          "doc_id": 330,
+          "relevant": true,
+          "reason": "校友段原文完整给出1、6、7、12月及法定节假日不接待，没有编造其它日期。"
+        }
+      ]
+    },
+    "L05": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "三条原始表记录分别包含B0204103S、TX617409C、B04060K1C，不再只回退第一条。",
+      "citations": [
+        {
+          "reference": "附件1：2026-2027学年第一学期我校开设的在线开放课程（慕课）和校内课程对照表.xlsx｜本科生院｜2026-09-20｜https://jwc.njupt.edu.cn/_upload/article/files/7a/63/eb6dfa754559a5b7bd005c9260fc/f566d632-f0c5-4c68-bdb8-2ddf7e077d7d.xlsx",
+          "doc_id": 129,
+          "relevant": true,
+          "reason": "三条原始表记录分别包含B0204103S、TX617409C、B04060K1C，不再只回退第一条。"
+        }
+      ]
+    },
+    "L06": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "2025指南原句明确优先学费住宿费、超出用于日常生活费，没有将贷款用途与还款条款混成新结论。",
+      "citations": [
+        {
+          "reference": "生源地国家助学贷款申请指南（2025）｜学生工作部（处）｜2025-05-08｜https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+          "doc_id": 257,
+          "relevant": true,
+          "reason": "2025指南原句明确优先学费住宿费、超出用于日常生活费，没有将贷款用途与还款条款混成新结论。"
+        }
+      ]
+    },
+    "C01": {
+      "verdict": "refusal",
+      "points_met": [
+        false,
+        false
+      ],
+      "citation_complete": false,
+      "failure_stage": "plan_validation",
+      "reason": "酬金标准与问题工时均有来源，但首次及唯一修复均遗漏常数lookup，right未定义，安全拒答；未完成应答。",
+      "citations": []
+    },
+    "C02": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "核对第十七条每周/每月上限及原问题四周。五步明确为8小时每周×4周=32小时，40-32=8小时；没有猜测周月换算，实际引用支持。",
+      "citations": [
+        {
+          "reference": "校学发〔2024〕6号本科学生勤工助学管理办法｜学生工作部（处）｜2024-04-07｜https://xsc.njupt.edu.cn/_upload/article/files/3c/92/c078c33945918f4a794899e4f642/a2b5f055-9415-4133-9198-ab49f728d17b.pdf",
+          "doc_id": 253,
+          "relevant": true,
+          "reason": "核对第十七条每周/每月上限及原问题四周。五步明确为8小时每周×4周=32小时，40-32=8小时；没有猜测周月换算，实际引用支持。"
+        }
+      ]
+    },
+    "C03": {
+      "verdict": "refusal",
+      "points_met": [
+        false,
+        false
+      ],
+      "citation_complete": false,
+      "failure_stage": "question_validation",
+      "reason": "首次漏掉right；唯一修复补齐lookup但颠倒对象，算得-5000元。问题方向约束拒绝该结果，未将执行完成当作语义正确。",
+      "citations": []
+    },
+    "C04": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "两个fact_id均在2026版学位办法第二条，实际引用学生手册内同一规则。原PDF已在阶段2核验；1.8-1.5=0.3绩点，没有使用第五条例外。",
+      "citations": [
+        {
+          "reference": "南京邮电大学学生手册（2026版）｜学生工作部（处）｜2026-09-02｜https://xsc.njupt.edu.cn/_upload/article/files/16/7a/75132f5b4fee8149bfa51df2abb2/bb906988-b1b4-42ce-97ba-27918520a804.pdf",
+          "doc_id": 246,
+          "relevant": true,
+          "reason": "两个fact_id均在2026版学位办法第二条，实际引用学生手册内同一规则。原PDF已在阶段2核验；1.8-1.5=0.3绩点，没有使用第五条例外。"
+        }
+      ]
+    },
+    "C05": {
+      "verdict": "correct",
+      "points_met": [
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "完整SQLite范围按慕课名称等值筛选，实际计数3条，来源及计算一致。",
+      "citations": [
+        {
+          "reference": "附件1：2026-2027学年第一学期我校开设的在线开放课程（慕课）和校内课程对照表.xlsx｜本科生院｜2026-09-20｜https://jwc.njupt.edu.cn/_upload/article/files/7a/63/eb6dfa754559a5b7bd005c9260fc/f566d632-f0c5-4c68-bdb8-2ddf7e077d7d.xlsx",
+          "doc_id": 129,
+          "relevant": true,
+          "reason": "实际参与计数的完整课程表及三条记录"
+        }
+      ]
+    },
+    "C06": {
+      "verdict": "correct",
+      "points_met": [
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "对照表慕课名称精确筛选模拟电子线路A，完整SQLite匹配10个展开记录，按行计数而非样例计数；唯一引用支持该表。",
+      "citations": [
+        {
+          "reference": "附件1：2026-2027学年第一学期我校开设的在线开放课程（慕课）和校内课程对照表.xlsx｜本科生院｜2026-09-20｜https://jwc.njupt.edu.cn/_upload/article/files/7a/63/eb6dfa754559a5b7bd005c9260fc/f566d632-f0c5-4c68-bdb8-2ddf7e077d7d.xlsx",
+          "doc_id": 129,
+          "relevant": true,
+          "reason": "引用的真实资料支持上述操作数、口径及计算。"
+        }
+      ]
+    },
+    "C07": {
+      "verdict": "correct",
+      "points_met": [
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "完整匹配慕课名称字段的六条明细，行ID与冻结源证据一致，两类分别3条。count(6条明细)等价于3+3，不按名称去重。",
+      "citations": [
+        {
+          "reference": "附件1：2026-2027学年第一学期我校开设的在线开放课程（慕课）和校内课程对照表.xlsx｜本科生院｜2026-09-20｜https://jwc.njupt.edu.cn/_upload/article/files/7a/63/eb6dfa754559a5b7bd005c9260fc/f566d632-f0c5-4c68-bdb8-2ddf7e077d7d.xlsx",
+          "doc_id": 129,
+          "relevant": true,
+          "reason": "完整匹配慕课名称字段的六条明细，行ID与冻结源证据一致，两类分别3条。count(6条明细)等价于3+3，不按名称去重。"
+        }
+      ]
+    },
+    "C08": {
+      "verdict": "refusal",
+      "points_met": [
+        false,
+        false
+      ],
+      "citation_complete": false,
+      "failure_stage": "plan_validation",
+      "reason": "首次及唯一修复都遗漏全表分母的count步骤，right未定义；未用示例行或模型猜测分母，安全拒答但问题未答。",
+      "citations": []
+    },
+    "T01": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "2026清明公告原文明确4月5日闭馆，4月4、6日按周末开放。",
+      "citations": [
+        {
+          "reference": "图书馆关于2026年清明节开放安排的通知｜图书馆｜2026-04-01｜http://lib.njupt.edu.cn/2026/0401/c1429a298932/page.htm",
+          "doc_id": 339,
+          "relevant": true,
+          "reason": "2026清明公告原文明确4月5日闭馆，4月4、6日按周末开放。"
+        }
+      ]
+    },
+    "T02": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "2026五一公告原文明确5月3日至5日按周末开放，5月9日按周二开放；未反转闭馆或星期口径。",
+      "citations": [
+        {
+          "reference": "图书馆关于2026年“五一”劳动节开放安排的通知｜图书馆｜2026-04-27｜http://lib.njupt.edu.cn/2026/0427/c1429a300896/page.htm",
+          "doc_id": 340,
+          "relevant": true,
+          "reason": "2026五一公告原文明确5月3日至5日按周末开放，5月9日按周二开放；未反转闭馆或星期口径。"
+        }
+      ]
+    },
+    "T03": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "2026暑假通知借还服务段明确三牌楼、周一周四、上午9:00—11:30，与7月6、7日整理时间和阅览服务分开保留。",
+      "citations": [
+        {
+          "reference": "2026年暑假图书馆开放通知｜图书馆｜2026-06-29｜http://lib.njupt.edu.cn/2026/0629/c1429a305540/page.htm",
+          "doc_id": 342,
+          "relevant": true,
+          "reason": "2026暑假通知借还服务段明确三牌楼、周一周四、上午9:00—11:30，与7月6、7日整理时间和阅览服务分开保留。"
+        }
+      ]
+    },
+    "T04": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "failure_stage": "",
+      "reason": "2026办法第十条原文明确废止校发〔2024〕82号旧修订办法。",
+      "citations": [
+        {
+          "reference": "南京邮电大学普通高等教育本科毕业生学士学位授予办法（修订）｜本科生院｜2026-06-25｜https://jwc.njupt.edu.cn/2026/0625/c1746a305440/page.htm",
+          "doc_id": 87,
+          "relevant": true,
+          "reason": "2026办法第十条原文明确废止校发〔2024〕82号旧修订办法。"
+        }
+      ]
+    },
+    "R01": {
+      "verdict": "refusal",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": false,
+      "failure_stage": "",
+      "reason": "公开资料边界明确拒绝查询所问个人记录或实时信息，不编造课表教室，不再附无关排课制度来源。",
+      "citations": [],
+      "refusal_correct": true
+    },
+    "R02": {
+      "verdict": "refusal",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": false,
+      "failure_stage": "",
+      "reason": "未找到目标年份证据，未拿其他年份冒充。",
+      "citations": [],
+      "refusal_correct": true,
+      "safe_abstention": true
+    },
+    "R03": {
+      "verdict": "refusal",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": false,
+      "failure_stage": "",
+      "reason": "拒绝给出没有实时证据的空座位数，无猜测数值。",
+      "citations": [],
+      "refusal_correct": true,
+      "safe_abstention": true
+    },
+    "R04": {
+      "verdict": "refusal",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": false,
+      "failure_stage": "",
+      "reason": "问题明确未提供本金、合同利率和还款期限；程序忠实说明缺失条件，不把公共示例或上下限当作个人数据，未生成金额或无关引用。",
+      "citations": [],
+      "refusal_correct": true,
+      "safe_abstention": true
+    }
+  }
+}

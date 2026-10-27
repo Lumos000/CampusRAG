@@ -4,6 +4,8 @@
 
 版本与评测入口见 [代码与版本核对记录（2026-10-27）](docs/current_code_status.md)，包括本地与 GitHub 提交差异、模块职责及当前可用边界。
 
+后续可靠性优化见 [修改与验证报告](docs/reliability_optimization_v1.md)及 [36 题逐题对照](docs/reliability_case_comparison.md)。冻结开发诊断的核心要点评分由 24/36 增至 33/36；文字回答主要依赖保守原文回退，平均长度明显增加，数值规划仍为 5/8，独立 v2 尚未评测。
+
 ## 运行环境
 
 - Windows 10/11，Python 3.10 或 3.11。
