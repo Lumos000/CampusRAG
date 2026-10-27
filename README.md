@@ -2,6 +2,8 @@
 
 这是《大数据项目实践》的离线 RAG 实现。系统将公开校园资料解析为正文块和结构化 SQLite 表格，通过 BM25、BGE 向量检索、RRF 和小型 Reranker 找到证据。Qwen3-0.6B 只负责查询规划和回答组织；Python 负责参数化筛选、单位验证、Decimal 计算以及参考资料生成。
 
+版本与评测入口见 [代码与版本核对记录（2026-10-27）](docs/current_code_status.md)，包括本地与 GitHub 提交差异、模块职责及当前可用边界。
+
 ## 运行环境
 
 - Windows 10/11，Python 3.10 或 3.11。

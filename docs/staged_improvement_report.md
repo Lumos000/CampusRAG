@@ -8,7 +8,7 @@
 |0：冻结与日志|79|12/12|19/36|1/8|`e02577d`；[阶段 0](stage0_evaluation.md)|
 |1：正文数值表示|86|12/12|19/36|1/8|`4c18506`；[阶段 1](stage1_evaluation.md)|
 |2：Schema 与计划|103|12/12|22/36|3/8|`793b855`；[阶段 2](stage2_evaluation.md)|
-|3：执行与问题约束|109|12/12|24/36|5/8|独立阶段提交；[阶段 3](stage3_evaluation.md)|
+|3：执行与问题约束|109|12/12|24/36|5/8|`fede697`；[阶段 3](stage3_evaluation.md)|
 
 代码修改清单：`rag/numeric.py` 保留界限、复合单位、绩点量种、主体/周期/条款及可定位原文；`rag/planner.py` 使用真实 Schema/Facts 构造受限分步示例、固定模型最终输出、共享一次修复预算；`database/query.py` 提供字段角色、完整内容判重、真实对象绑定、分类多行筛选、唯一 lookup、原始数据核验及问题约束；`database/normalization.py` 规范化表格派生元数据并按叶级表头识别年份；`rag/service.py` 保留原检索流程，记录各阶段诊断，校验通过后直接生成数值答案和真实引用。`scripts/evaluate_stage.py`、`compare_stage.py` 与原评测脚本保留每阶段快照和语义复核；新增 `scripts/refresh_table_metadata.py` 保留数据库备份及原始数据哈希审计。新增测试集中于 `tests/test_step_reasoning.py` 及已有评测测试。
 
