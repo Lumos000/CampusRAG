@@ -62,28 +62,95 @@ class NumericEngine:
 
     @staticmethod
     def text_facts(evidence):
-        """Exact label/value/unit spans only; page numbers and prose guesses are excluded."""
+        """Extract explicit quantities, preserving bounds, scope and original offsets.
+
+        Whitespace (including PDF line breaks) is ignored for matching only. Quotes
+        always point back to the unmodified evidence; missing values are not inferred.
+        """
         from campus_rag.database.normalization import quantity
         facts, seen = {}, set()
-        pattern = r'(?P<label>[\u4e00-\u9fffA-Za-z][\u4e00-\u9fffA-Za-z·]{1,23}?)(?:为|有|是|[:：])\s*(?P<raw>\d[\d,]*(?:\.\d+)?\s*(?:万元|亿元|元|万人|千人|人|平方米|㎡|台|本|项|个|年|天|小时|%|％))'
+        units = r'万元|亿元|元|万人|千人|人|平方米|㎡|台|本|项|个|学年|学期|年|月|周|天|小时|分钟|%|％'
+        amount = re.compile(r'(?<![\d.])(?P<number>\d[\d,]*(?:\.\d+)?)(?P<unit>'+units+r')?(?P<denominator>/(?:小时|分钟|天|周|月|学年|年|人|次|台|个))?')
+        relations = {'不超过':'lte','不高于':'lte','至多':'lte','最多':'lte','上限为':'lte',
+            '不低于':'gte','不少于':'gte','至少':'gte','最低为':'gte','下限为':'gte',
+            '超过':'gt','高于':'gt','低于':'lt','小于':'lt','大于':'gt',
+            '为':'eq','有':'eq','是':'eq',':':'eq','：':'eq'}
+        connector = re.compile('('+'|'.join(sorted(relations,key=len,reverse=True))+r')(?:每(?:小时|分钟|天|周|月|年|人))?$')
         for item in evidence:
             if item.table_id is not None:
                 continue
-            for match in re.finditer(pattern,item.text):
-                key = (item.doc_id,match['label'],match['raw'])
+            offsets = [i for i,char in enumerate(item.text) if not char.isspace()]
+            text = ''.join(item.text[i] for i in offsets)
+            for match in amount.finditer(text):
+                start = max(text.rfind(p,0,match.start()) for p in '。；;！？')+1
+                prefix = text[start:match.start()]
+                # A nearby number alone is not a fact (page numbers, dates, codes).
+                local = re.split('[，,]',prefix)[-1]
+                relation = connector.search(local)
+                suffix = re.match(r'(及以上|及以下|以上|以下)',text[match.end():])
+                gpa = bool(re.search(r'(?:平均学分)?绩点(?:要求)?(?:为|不低于|不超过|高于|低于)?$',local))
+                gpa = gpa or bool('绩点' in local and re.search(r'(?:但|且)(?:高于|低于|不低于|不高于)$',local))
+                if not relation and not suffix and not re.search(r'(?:额度|金额|标准|预算|期限|时长|人数)$',local):
+                    continue
+                if not match['unit'] and not gpa:
+                    continue
+                if re.search(r'约|大约|左右|大致',local[-12:]):
+                    continue
+                comparison = relations[relation[1]] if relation else 'eq'
+                if suffix:
+                    comparison = 'gte' if '以上' in suffix[1] else 'lte'
+                label = local[:relation.start()] if relation else local
+                if not label:
+                    # A second bound may share the explicitly stated subject.
+                    first = re.search('|'.join(sorted(relations,key=len,reverse=True)),prefix)
+                    label = prefix[:first.start()] if first else ''
+                if re.fullmatch(r'每(?:小时|分钟|天|周|月|年|人)',label):
+                    label = prefix.split('每',1)[0]+label
+                label = re.sub(r'每(?:小时|分钟|天|周|月|年|人)$','',label).strip('：:，,')
+                label = re.sub(r'^第[一二三四五六七八九十百\d]+条','',label)
+                label = re.sub(r'^（[一二三四五六七八九十]+）','',label)
+                if not label or not re.search(r'[\u4e00-\u9fffA-Za-z]',label):
+                    continue
+                raw = match['number']+(match['unit'] or '')
+                value,unit = quantity(raw) if match['unit'] else (Decimal(match['number']), '')
+                if value is None and match['unit'] in {'学年','学期','月','周','分钟'}:
+                    value,unit = Decimal(match['number'].replace(',','')),match['unit']
+                if value is None:
+                    continue
+                per = re.search(r'每(小时|分钟|天|周|月|年|人)$',prefix)
+                if match['denominator']:
+                    unit += match['denominator']
+                elif per and unit=='元':
+                    unit += '/'+per[1]
+                periods = re.findall(r'每(?:人每年|学年|学期|小时|分钟|天|周|月|年|人)',prefix)
+                period = periods[-1] if periods else ''
+                clauses = re.findall(r'第[一二三四五六七八九十百\d]+条',text[:match.start()])
+                clause = clauses[-1] if clauses else ''
+                subject = re.split(r'每|(?:平均学分)?绩点|额度|金额|预算|时长',label,maxsplit=1)[0] or label
+                end = match.end()+(len(suffix[1]) if suffix else 0)
+                original_start,original_end = offsets[start],offsets[end-1]+1
+                boundary = re.search('[。；;！？]',text[end:])
+                scope_end = end+boundary.start() if boundary else len(text)
+                scope = {'clause':clause,'period':period,'context':text[start:scope_end]}
+                key = (item.doc_id,subject,label,clause,period,comparison,str(value),unit)
                 if key in seen:
                     continue
                 seen.add(key)
-                value,unit = quantity(match['raw'])
-                if value is None:
-                    continue
                 fid = 'f'+str(len(facts)+1)
-                facts[fid] = {'fact_id':fid,'field':match['label'],'raw_value':match['raw'],
-                    'value':str(value),'unit':unit,'quote':match.group(),'span':[match.start(),match.end()],
-                    'doc_id':item.doc_id,'evidence_id':item.evidence_id,'evidence':item}
-        # Conflicting labels remain unavailable rather than silently choosing one value.
-        conflicts = {f['field'] for f in facts.values() if len({(x['value'],x['unit']) for x in facts.values() if x['field']==f['field']})>1}
-        return {fid:f for fid,f in facts.items() if f['field'] not in conflicts}
+                facts[fid] = {'fact_id':fid,'field':label,'subject':subject,'raw_value':raw,
+                    'value':str(value),'unit':unit,'comparison':comparison,'scope':scope,
+                    'quote':item.text[original_start:original_end],'span':[original_start,original_end],
+                    'doc_id':item.doc_id,'evidence_id':item.evidence_id,'source_url':item.source_url,'evidence':item}
+        # Conflicts concern the same subject, clause, period and comparison, not
+        # unrelated objects that happen to have the same measure name.
+        groups = {}
+        for fid,fact in facts.items():
+            key = (fact['doc_id'],fact['subject'],fact['field'],fact['scope']['clause'],
+                fact['scope']['period'],fact['comparison'])
+            groups.setdefault(key,[]).append(fid)
+        conflicts = {fid for ids in groups.values()
+            if len({(facts[f]['value'],facts[f]['unit']) for f in ids})>1 for fid in ids}
+        return {fid:f for fid,f in facts.items() if fid not in conflicts}
     @staticmethod
     def extract(label, pattern, unit, evidence):
         matches = []

@@ -150,6 +150,67 @@ def test_verified_text_facts_and_no_invented_numbers(table_db):
     assert not StructuredQueryEngine(repo.connection).execute_steps(p,[],'预算相差多少？',facts).ok
 
 
+def test_text_facts_preserve_bounds_scope_and_original_offsets():
+    text = '第七条 学生每周不超过7小时，每月不超过28小时。岗位酬金不低于每小时19\n元。'
+    source = Evidence('bounds',text,1,1,'办法','https://example.edu/rule')
+    facts = list(NumericEngine.text_facts([source]).values())
+    assert [(f['value'],f['unit'],f['comparison']) for f in facts]==[
+        ('7','小时','lte'),('28','小时','lte'),('19','元/小时','gte')]
+    assert [f['scope']['period'] for f in facts]==['每周','每月','每小时']
+    for fact in facts:
+        a,b = fact['span']
+        assert fact['quote']==text[a:b] and fact['subject']
+        assert fact['scope']['clause']=='第七条'
+        assert fact['source_url']==source.source_url
+
+
+def test_text_facts_dimensionless_gpa_and_subjects():
+    source = Evidence('gpa','第二条 普通申请人平均学分绩点为2.3及以上。运动员平均学分绩点要求为1.9及以上。',
+        1,1,'学位办法','https://example.edu/degree')
+    facts = list(NumericEngine.text_facts([source]).values())
+    assert len(facts)==2 and {f['subject'] for f in facts}=={'普通申请人','运动员'}
+    assert all(f['unit']=='' and f['comparison']=='gte' for f in facts)
+
+
+def test_text_facts_distinguish_upper_lower_and_reject_unknown_numbers():
+    source = Evidence('limits','甲类贷款额度不超过18000元，不低于900元；乙类贷款额度不超过23000元。'
+        '第36页。编号为2026123。预算约为500元。缺失补助金额。',1,1,'贷款','https://example.edu/loan')
+    facts = list(NumericEngine.text_facts([source]).values())
+    assert [(f['value'],f['comparison']) for f in facts]==[('18000','lte'),('900','gte'),('23000','lte')]
+    assert '甲类' in facts[0]['subject'] and '乙类' in facts[2]['subject']
+
+
+def test_conflicting_same_scope_facts_are_not_silently_selected():
+    source = Evidence('conflict','甲项目预算为110元。甲项目预算为130元。乙项目预算为90元。',
+        1,1,'预算','https://example.edu/budget')
+    facts = list(NumericEngine.text_facts([source]).values())
+    assert len(facts)==1 and facts[0]['value']=='90'
+
+
+def test_text_facts_keep_post_value_applicability_and_dimensionless_interval():
+    source = Evidence('scope','补贴金额为140元（仅限已备案人员），未备案者不适用。'
+        '平均学分绩点低于2.6但高于2.1。',1,1,'申请规则','https://example.edu/scope')
+    facts = list(NumericEngine.text_facts([source]).values())
+    assert '未备案者不适用' in facts[0]['scope']['context']
+    assert [(f['value'],f['unit'],f['comparison']) for f in facts[1:]]==[
+        ('2.6','','lt'),('2.1','','gt')]
+
+
+@pytest.mark.parametrize('reverse',[False,True])
+def test_compound_unit_decimal_calculation_from_text(table_db,reverse):
+    repo,_,_,_ = table_db
+    source = Evidence('rate','临时岗位酬金不低于每小时19.25元。',1,1,'报酬规则','https://example.edu/pay')
+    facts = NumericEngine.text_facts([source])
+    operands = ['a',{'literal':'6','unit':'小时'}]
+    p = parse_plan(json.dumps({'steps':[{'id':'a','op':'lookup','fact_id':'f1'},
+        {'id':'b','op':'multiply','inputs':operands[::-1] if reverse else operands}]}))
+    result = StructuredQueryEngine(repo.connection).execute_steps(p,[],'按最低标准计算6小时酬金合计多少？',facts)
+    assert result.ok and result.value==Decimal('115.50') and result.unit=='元'
+    assert result.details[0]['comparison']=='gte' and result.evidence==[source]
+    p.steps[-1]['inputs'] = ['a',{'literal':'6','unit':'天'}]
+    assert not StructuredQueryEngine(repo.connection).execute_steps(p,[],'计算6小时酬金',facts).ok
+
+
 def test_service_retrieves_first_repairs_once_and_skips_final_llm(table_db):
     repo,tid,name,area = table_db
     calls=[]

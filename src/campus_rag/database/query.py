@@ -322,7 +322,7 @@ class StructuredQueryEngine:
         from campus_rag.tools.numbers import chinese_integer
         tokens = re.findall(r'\d+(?:\.\d+)?|[一二两三四五六七八九十]+',question)
         grounded = any((Decimal(t) if re.fullmatch(r'\d+(?:\.\d+)?',t) else Decimal(chinese_integer(t)))==value for t in tokens)
-        if not grounded or item['unit'] not in {'','年','次','个','台','人'}:
+        if not grounded or item['unit'] not in {'','年','学年','学期','月','周','天','小时','分钟','次','个','台','人','元','平方米'}:
             raise PlanError('常数或单位没有问题原文支持')
         if item['unit']:
             paired = [t for t in tokens if (Decimal(t) if re.fullmatch(r'\d+(?:\.\d+)?',t) else Decimal(chinese_integer(t)))==value
@@ -362,6 +362,8 @@ class StructuredQueryEngine:
                     unit = u
                 elif '/' in unit and unit.rsplit('/',1)[1]==u:
                     unit = unit.rsplit('/',1)[0]
+                elif '/' in u and u.rsplit('/',1)[1]==unit:
+                    unit = u.rsplit('/',1)[0]
                 elif unit in {'台','个','本','件','项','次'} and u=='元':
                     unit = '元'
                 elif u in {'台','个','本','件','项','次'} and unit=='元':
