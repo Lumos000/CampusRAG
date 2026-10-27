@@ -8,7 +8,7 @@ from dataclasses import asdict
 from campus_rag.config import Settings
 from campus_rag.database.query import StructuredQueryEngine
 from campus_rag.rag.citations import build_references
-from campus_rag.rag.planner import QueryPlanner, bind_legacy_plan
+from campus_rag.rag.planner import QueryPlanner, bind_legacy_plan, repair_json_delimiter, parse_plan
 from campus_rag.types import AnswerResult, CalculationResult, Evidence, QueryPlan
 from campus_rag.tools.temporal import question_periods, matches_period
 from campus_rag.rag.numeric import NumericEngine, render_calculation
@@ -43,6 +43,7 @@ class RAGService:
         self.last_diagnostics = {'route':'retrieval','retrieved':[], 'facts':[],
             'schema':[], 'attempts':[], 'citations':[], 'semantic_correct':None}
         self.planner.last_raw = ''
+        self.planner.last_prompt = ''
         result = self._answer(question)
         self.last_diagnostics['citations'] = list(result.references)
         self.last_diagnostics['cited_evidence_ids'] = [e.evidence_id for e in result.evidence]
@@ -70,6 +71,12 @@ class RAGService:
             prompt = ANSWER_PROMPT.format(question=question,evidence=self._format_evidence(evidence),calculation='不需要计算')
             answer = self.generator.generate(prompt,thinking=False,temperature=0.0,max_new_tokens=self.settings.max_new_tokens)
             return AnswerResult(question,answer,build_references(evidence),evidence)
+        missing = re.search(r'(?:我|本人)(?:还)?(?:没有|尚未|未)(?:提供|给出|明确)([^。；;？?]+)',question)
+        hypothetical = bool(re.search(r'(?:仅|只)(?:按|作|做)|假设|纯计算',question))
+        if missing and not hypothetical:
+            self.last_diagnostics['route'] = 'missing_question_inputs'
+            return self._refuse(question,'未提供'+missing[1].strip('，, ')+
+                '，不能用公共资料中的示例或上下限代替个人计算条件。')
         if self.settings.numeric_shortcuts:
             checked = self.numeric.resolve(question,evidence)
             if checked.handled:
@@ -91,17 +98,30 @@ class RAGService:
             facts=[{k:v for k,v in fact.items() if k!='evidence'} for fact in facts.values()])
         if not schema and not facts:
             return self._refuse(question,'没有可验证的表格或正文数值。')
-        error, previous = '', None
+        error, previous, syntax_repair = '', None, None
         for attempt in range(2):
             diagnostic = {'attempt':attempt+1,'kind':'initial' if attempt==0 else 'repair',
                 'feedback':error, 'syntax_ok':False, 'execution_ok':None,'semantic_correct':None}
             self.last_diagnostics['attempts'].append(diagnostic)
             try:
-                plan = self.planner.step_plan(question,context,error,previous)
-                diagnostic.update(raw_plan=self.planner.last_raw,syntax_ok=True)
-                if plan.steps and plan.table_id is None and any('field_id' in s or s.get('op')=='filter' for s in plan.steps):
+                if syntax_repair is not None:
+                    plan = parse_plan(syntax_repair,require_final=True)
+                    diagnostic.update(kind='syntax_repair',raw_plan=syntax_repair,syntax_ok=True,
+                        normalization='single_closing_delimiter; repair budget consumed')
+                else:
+                    plan = self.planner.step_plan(question,context,error,previous)
+                    diagnostic.update(raw_plan=self.planner.last_raw,syntax_ok=True)
+                diagnostic['prompt'] = getattr(self.planner,'last_prompt','')
+                if plan.steps and plan.table_id is None and any(
+                        s.get('op') in {'filter','lookup','sum','average','count'} and
+                        not any(k in s for k in ['fact_id','literal','inputs']) for s in plan.steps):
+                    fields = {s['field_id'] for s in plan.steps if 'field_id' in s}
+                    fields.update(f['field_id'] for s in plan.steps for f in s.get('filters',[]))
+                    candidates = [t for t in schema if fields and fields<={c['field_id'] for c in t['columns']}]
                     if len(schema)==1:
                         plan.table_id = schema[0]['table_id']
+                    elif len(candidates)==1:
+                        plan.table_id = candidates[0]['table_id']
                 if not plan.steps:
                     plan = bind_legacy_plan(plan,schema) if plan.calculation.operands else plan
                 plan.time_range = periods
@@ -114,9 +134,10 @@ class RAGService:
             except (ValueError,TypeError) as exc:
                 error = str(exc)
                 diagnostic.update(raw_plan=getattr(self.planner,'last_raw',''),error=error,
-                    failure_stage='plan_validation')
+                    failure_stage='plan_validation',prompt=getattr(self.planner,'last_prompt',''))
                 previous = getattr(self.planner,'last_raw',None)
                 if attempt == 0:
+                    syntax_repair = repair_json_delimiter(previous) if isinstance(previous,str) else None
                     continue
                 return self._refuse(question,'计划校验失败：'+error)
             calculation = self.structured.execute_steps(plan,allowed_ids,question,facts)

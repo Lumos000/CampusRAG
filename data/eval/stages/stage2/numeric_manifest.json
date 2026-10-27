@@ -1,0 +1,9 @@
+{
+  "stage_manifest_sha256": "3dea843a196b39ddba12851005fc9e9836df72b1c2b96712e23c8353caf37ab0",
+  "results_sha256": "7daadee1fed8a50426d0aea72714e2172b24c697bbd4fcdb59ee6069036dbfbc",
+  "runner_sha256": "774ebe4f85ccba8ff2db2058465b72211794fba1893beb5ff416b16f7579e26c",
+  "dataset_sha256": "b3a18efaf4f157e858cc81b8a94232af22b5fa77a47efa275b8a86845a72fd6d",
+  "automated_tests_passed": 103,
+  "correct": 12,
+  "total": 12
+}

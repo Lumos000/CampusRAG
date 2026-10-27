@@ -20,6 +20,42 @@ def _object_key(value):
     return re.sub(r'(?:工程)?实验教学中心|实验室|中心|学院|专业|场馆|组别','',compact(value))
 
 
+def _object_mentioned(value, question):
+    text, query = compact(value), compact(question)
+    if not text or text in {'合计','总计','小计'}:
+        return False
+    if text in query:
+        return True
+    suffix = re.search(r'((?:工程)?实验教学中心|实验室|中心|场馆)$',text)
+    if not suffix:
+        return False
+    core = text[:suffix.start()]
+    kind = re.sub(r'^工程','',suffix[1])
+    return len(core)>=2 and core in query and kind in query
+
+
+def _field_role(column, values=()):
+    name = compact(column.get('original_name',column.get('name','')))
+    dtype = column.get('data_type',column.get('type',''))
+    if re.search(r'序号|编号|代码|学号|工号|^id$',name):
+        return 'identifier'
+    if dtype=='number' and column.get('unit') and column['unit']!='年':
+        return 'measure'
+    if dtype=='year' or re.search(r'年度|年份|日期',name) or (
+            re.search(r'学年|时间',name) and not (dtype=='number' and column.get('unit'))):
+        return 'time'
+    if dtype=='number':
+        return 'measure'
+    nonempty = [compact(v) for v in values if compact(v) and compact(v) not in {'合计','总计','小计'}]
+    if re.search(r'类别|类型|学院|组别|分类',name) or len(set(nonempty))<len(nonempty):
+        return 'category'
+    return 'entity'
+
+
+def _business_scope(text):
+    return tuple(word for word in ['对照','替代','安排','汇总','明细','预算','名单','统计','本科','研究生'] if word in text)
+
+
 class StructuredQueryEngine:
     def __init__(self, connection: sqlite3.Connection):
         self.connection = connection
@@ -42,17 +78,33 @@ class StructuredQueryEngine:
             ranked = []
             for row in rows:
                 cells = self.connection.execute('SELECT column_id,raw_value FROM table_cells WHERE row_id=? ORDER BY column_id',(row['id'],)).fetchall()
-                mentions = [_object_key(c['raw_value']) for c in cells if len(_object_key(c['raw_value']))>1 and _object_key(c['raw_value']) in compact(question)]
+                mentions = [compact(c['raw_value']) for c in cells
+                    if any(col['id']==c['column_id'] and col['data_type']=='text' and
+                        _field_role(dict(col))!='identifier' for col in columns)
+                    and _object_mentioned(c['raw_value'],question)]
                 score = sum(map(len,mentions))
                 position = min((compact(question).find(v) for v in mentions),default=len(question))
                 ranked.append((score,position,row['id'],cells))
             for _,_,rid,cells in sorted(ranked,key=lambda x:(-x[0],x[1]))[:3]:
                 examples.append({'row_id':rid,'cells':{str(c['column_id']):c['raw_value'][:120] for c in cells}})
+            described, matched = [], []
+            for col in columns:
+                values = [next(c['raw_value'] for c in cells if c['column_id']==col['id']) for _,_,_,cells in ranked]
+                role = _field_role(dict(col),values)
+                described.append({'field_id':col['id'],'name':col['original_name'],
+                    'type':col['data_type'],'unit':col['unit'],'role':role})
+                labels = list(dict.fromkeys(v for v in values if _object_mentioned(v,question))) if role in {'entity','category'} else []
+                labels.sort(key=lambda v:compact(question).find(compact(v)) if compact(v) in compact(question)
+                    else compact(question).find(_object_key(v)))
+                if labels:
+                    matched.append({'field_id':col['id'],'values':labels})
+            business = _business_scope(table['title']+' '+table['name'])
             output.append({'table_id':tid,'name':table['name'],'document':table['title'],
                 'periods':question_periods(table['title']+' '+table['name']),
-                'columns':[{'field_id':c['id'],'name':c['original_name'],'type':c['data_type'],'unit':c['unit']} for c in columns],
+                'columns':described,'question_matches':matched,'business_scope':business,
+                'total_row_count':sum(any(compact(c['raw_value']) in {'合计','总计','小计'} for c in cells) for _,_,_,cells in ranked),
                 'row_count':len(rows),'examples_only':True,'examples':examples})
-            signature = (tuple((compact(c['original_name']),c['unit'],c['data_type']) for c in columns),
+            signature = (business,tuple((compact(c['original_name']),c['unit'],c['data_type']) for c in columns),
                 tuple(tuple(compact(c['raw_value']) for c in cells) for _,_,_,cells in ranked))
             if signature in seen_contents:
                 old_index = seen_contents[signature]
@@ -65,7 +117,9 @@ class StructuredQueryEngine:
                     continue
             seen_contents[signature] = len(output)-1
         exact = [t for t in output if compact(t['name']) in compact(question) or compact(t['document']) in compact(question)]
-        return (exact or output)[:4]
+        requested = set(_business_scope(question))-{'统计','本科','研究生'}
+        scoped = [t for t in output if requested & set(t['business_scope'])] if requested else []
+        return (exact or scoped or output)[:4]
 
     def execute_steps(self, plan, table_ids, question, facts=None):
         trace, used = [], []
@@ -91,6 +145,10 @@ class StructuredQueryEngine:
                     value,unit,expression = self._step_arithmetic(op,operands)
                     value_record = {'value':value,'unit':unit,'expression':expression,
                                     'details':[d for v in operands for d in v['details']]}
+                elif 'literal' in step:
+                    if op!='lookup' or set(step)!={'id','op','literal','unit'}:
+                        raise PlanError(sid+': 问题常数只能使用lookup和literal、unit')
+                    value_record = self._step_input({'literal':step['literal'],'unit':step['unit']},values,question)
                 elif 'fact_id' in step:
                     if op!='lookup' or set(step)-{'id','op','fact_id'} or step['fact_id'] not in facts:
                         raise PlanError(sid+': fact_id不在已核验正文事实中')
@@ -125,6 +183,8 @@ class StructuredQueryEngine:
                     field = step.get('field_id')
                     if (op!='count' or field is not None) and field not in columns:
                         raise PlanError(sid+': field_id不在所选表格Schema内')
+                    if op in {'sum','average'} and _field_role(columns[field]) in {'identifier','time'}:
+                        raise PlanError(sid+': 标识或时间字段不可求和或平均，请选择度量字段或使用count统计记录')
                     details = []
                     for row in selected:
                         cell = row['cells'].get(field) if field else None
@@ -153,9 +213,10 @@ class StructuredQueryEngine:
                     raise ValueError(sid+': 计算结果非有限数值')
                 values[sid] = value_record
                 trace.append({'id':sid,'op':op,'operands':[
-                    {'value':str(v['value']),'unit':v['unit']} for v in operands] if inputs is not None else [],
+                    {'value':str(v['value']),'unit':v['unit'],**({'source':v['source']} if 'source' in v else {})} for v in operands] if inputs is not None else [],
                     'value':str(value_record['value']),'unit':value_record['unit'],
-                    'expression':value_record['expression'],'details':value_record['details']})
+                    'expression':value_record['expression'],'details':value_record['details'],
+                    **({'source':value_record['source']} if 'source' in value_record else {})})
             result = values[plan.output]
             if 'value' not in result:
                 raise PlanError('最终步骤必须产生数值')
@@ -167,6 +228,7 @@ class StructuredQueryEngine:
                         needed.add(step['rows'])
             if needed!={step['id'] for step in plan.steps}:
                 raise PlanError('存在未参与最终结果的步骤')
+            self._check_question_operation(plan,question,result)
             # Include every executed source, including intermediate computations.
             used = [d for entry in trace for d in entry.get('details',[])]
             if table is not None:
@@ -251,6 +313,31 @@ class StructuredQueryEngine:
                 raise PlanError('计划包含问题列举范围之外的明细对象')
 
     @staticmethod
+    def _check_question_operation(plan,question,result):
+        compare = bool(re.search(r'相差|差额|比.*(?:多|少|高|低).*多少|减去|相比.*还剩',question))
+        final = next(s for s in plan.steps if s['id']==plan.output)
+        if compare and final['op']!='subtract':
+            raise PlanError('问题要求比较差额，最终步骤必须subtract，不能只返回一个lookup')
+        required = 'multiply' if re.search(r'相乘|乘积|乘以|单价.*数量|标准乘',question) else 'divide' if '除以' in question else None
+        if required and final['op']!=required:
+            raise PlanError('问题明确要求'+required+'，不能只返回一个操作数，必须保留两个操作数和最终运算')
+        if not compare and re.search(r'百分比|占.*(?:比例|多少)',question) and final['op']!='ratio':
+            raise PlanError('问题要求百分比，最终步骤必须ratio，不能只返回计数或求和')
+        if result['value']<0 and re.search(r'相差|高多少|多多少|还剩',question):
+            raise PlanError('差额方向与问题不符：请核对被比较对象顺序和周期，不能直接相减不同周期的上限')
+        target = re.search(r'多少(元|小时|平方米)',compact(question))
+        if target and result['unit']!=target[1]:
+            raise PlanError('结果单位与问题要求不符：要求'+target[1]+'；请补齐费率、时长等必要运算')
+        periods = {d.get('scope',{}).get('period') for d in result['details'] if isinstance(d.get('scope'),dict)}
+        constants = [s['literal'] for s in plan.steps if 'literal' in s]
+        constants += [v['literal'] for s in plan.steps for v in s.get('inputs',[]) if isinstance(v,dict)]
+        from campus_rag.tools.numbers import chinese_integer
+        for match in re.finditer(r'(?:连续|累计|为期|共计)(\d+|[一二两三四五六七八九十]+)(周|月|天|学期)',compact(question)):
+            value = Decimal(match[1]) if match[1].isdigit() else Decimal(chinese_integer(match[1]))
+            if '每'+match[2] in periods and value not in {Decimal(v) for v in constants}:
+                raise PlanError('问题给定的周期数未参与计算，必须先算周期内已用量再比较总范围')
+
+    @staticmethod
     def _step_filter(rows,columns,filters,question):
         selected = list(rows)
         for spec in filters:
@@ -326,10 +413,13 @@ class StructuredQueryEngine:
             raise PlanError('常数或单位没有问题原文支持')
         if item['unit']:
             paired = [t for t in tokens if (Decimal(t) if re.fullmatch(r'\d+(?:\.\d+)?',t) else Decimal(chinese_integer(t)))==value
-                and re.search(re.escape(t)+r'(?:个)?(?:学)?'+re.escape(item['unit']),question)]
+                and re.search(re.escape(t)+r'\s*(?:个)?(?:学)?'+re.escape(item['unit']),question)]
             if not paired:
                 raise PlanError('常数的单位未紧邻对应数值出现在问题中')
-        return {'value':value,'unit':item['unit'],'expression':str(value),'details':[]}
+        token = next(t for t in tokens if (Decimal(t) if re.fullmatch(r'\d+(?:\.\d+)?',t) else Decimal(chinese_integer(t)))==value)
+        located = re.search(r'(?<!\d)'+re.escape(token)+r'(?!\d)'+(r'\s*(?:个)?(?:学)?'+re.escape(item['unit']) if item['unit'] else ''),question)
+        return {'value':value,'unit':item['unit'],'expression':str(value),'details':[],
+            'source':{'kind':'question','quote':located.group(),'span':list(located.span())}}
 
     @staticmethod
     def _step_arithmetic(op,operands):

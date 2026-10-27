@@ -112,7 +112,9 @@ class NumericEngine:
                 if not label or not re.search(r'[\u4e00-\u9fffA-Za-z]',label):
                     continue
                 raw = match['number']+(match['unit'] or '')
-                value,unit = quantity(raw) if match['unit'] else (Decimal(match['number']), '')
+                # A quantity-kind label distinguishes dimensionless GPA from an
+                # unknown unit or an arbitrary scalar; it is not a physical unit.
+                value,unit = quantity(raw) if match['unit'] else (Decimal(match['number']), '绩点')
                 if value is None and match['unit'] in {'学年','学期','月','周','分钟'}:
                     value,unit = Decimal(match['number'].replace(',','')),match['unit']
                 if value is None:

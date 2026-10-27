@@ -7,10 +7,11 @@ import pytest
 
 from campus_rag.config import Settings
 from campus_rag.database import Repository
-from campus_rag.database.query import StructuredQueryEngine
+from campus_rag.database.query import StructuredQueryEngine, _field_role, _object_mentioned
 from campus_rag.database.normalization import normalize_existing_tables
 from campus_rag.rag.numeric import NumericEngine
 from campus_rag.rag.planner import parse_plan
+from campus_rag.rag.planner import operation_hint, step_example, repair_json_delimiter
 from campus_rag.rag.service import RAGService
 from campus_rag.tools.numbers import normalize_cell
 from campus_rag.types import Evidence, ParsedTable, SourceDocument
@@ -45,6 +46,215 @@ def test_schema_samples_are_not_aggregate_domain(table_db):
     assert len(result.details)==4
     assert all(d['cell_id'] and d['locator'] and d['raw_value'] for d in result.details)
     assert result.evidence[0].source_url=='https://example.edu/source'
+
+
+def test_schema_roles_and_examples_bind_real_question_objects(table_db):
+    repo,_,_,_ = table_db
+    doc = repo.add_document(SourceDocument('2028产品对照表','https://example.edu/products',sha256='products'))
+    table = ParsedTable('产品对照',['序号','部门','产品名称','件数（个）'],[
+        ['1','管理部门','探测器','4'],['2','管理部门','探测器','7'],['3','生产部门','连接器','9']])
+    tid = repo.add_table(doc,table,[[normalize_cell(v) for v in row] for row in table.rows])
+    q = '产品对照表中产品名称为探测器的对应记录合计多少条？'
+    engine = StructuredQueryEngine(repo.connection)
+    schema = engine.schema_context([tid],[],q)
+    cols = schema[0]['columns']
+    assert [c['role'] for c in cols]==['identifier','category','category','measure']
+    assert schema[0]['question_matches']==[{'field_id':cols[2]['field_id'],'values':['探测器']}]
+    raw = step_example(operation_hint(q),json.dumps({'tables':schema}),q)
+    example = parse_plan(raw)
+    assert example.steps[0]['op']=='count'
+    assert example.steps[0]['filters']==[{'field_id':cols[2]['field_id'],'op':'eq','value':'探测器'}]
+    result = engine.execute_steps(example,[tid],q)
+    assert result.ok and result.value==2
+    invalid = plan(tid,[{'id':'a','op':'sum','field_id':cols[0]['field_id']}],year='')
+    result = engine.execute_steps(invalid,[tid],'所有序号之和多少？')
+    assert not result.ok and result.repairable and '标识' in result.error
+
+
+def test_examples_do_not_invent_tables_fields_or_thresholds(table_db):
+    repo,tid,_,_ = table_db
+    schema = StructuredQueryEngine(repo.connection).schema_context([tid],[],'场馆共有几个？')
+    raw = json.loads(step_example('count',json.dumps({'tables':schema}),'场馆共有几个？'))
+    assert raw['table_id']==tid and raw['steps']==[{'id':'a','op':'count'}]
+    context = json.dumps({'facts':[{'fact_id':'f8','unit':'元'},{'fact_id':'f9','unit':'元'}]})
+    raw = json.loads(step_example('subtract',context,'两个预算相差多少元？'))
+    assert raw['table_id'] is None and [s.get('fact_id') for s in raw['steps'][:2]]==['f8','f9']
+    assert all('field_id' not in s for s in raw['steps'])
+    assert operation_hint('一般申请人与运动员的平均学分绩点门槛相差多少？')=='subtract'
+    assert operation_hint('所有场馆平均面积多少？')=='average'
+
+
+def test_schema_dedup_uses_full_contents_and_business_scope(table_db):
+    repo,tid,_,_ = table_db
+    for name,last in [('另一份用房统计','16'),('用房安排','15')]:
+        doc = repo.add_document(SourceDocument(name,'https://example.edu/'+last,sha256=name))
+        table = ParsedTable(name,['场馆','面积（平方米）'],[
+            ['东馆','12'],['西馆','8'],['南馆','5'],['北馆',last],['合 计','40']])
+        repo.add_table(doc,table,[[normalize_cell(v) for v in row] for row in table.rows])
+    ids = [r['id'] for r in repo.connection.execute('SELECT id FROM tables')]
+    schema = StructuredQueryEngine(repo.connection).schema_context(ids,[],'面积多少？')
+    assert len(schema)==3
+
+
+def test_duration_measure_is_distinct_from_calendar_time():
+    assert _field_role({'original_name':'工作时间（小时）','data_type':'number','unit':'小时'})=='measure'
+    assert _field_role({'original_name':'办理时间','data_type':'text','unit':''})=='time'
+    assert _field_role({'original_name':'年度','data_type':'year','unit':''})=='time'
+    assert _field_role({'original_name':'年度预算（元）','data_type':'number','unit':'元'})=='measure'
+
+
+@pytest.mark.parametrize('quantity',['9小时','9 小时'])
+def test_question_constant_lookup_uses_verified_question_span(table_db,quantity):
+    repo,_,_,_ = table_db
+    source = Evidence('wage','岗位酬金不低于每小时17元。',1,1,'计酬规则','https://example.edu/wage')
+    facts = NumericEngine.text_facts([source])
+    p = parse_plan(json.dumps({'steps':[{'id':'a','op':'lookup','fact_id':'f1'},
+        {'id':'b','op':'lookup','literal':'9','unit':'小时'},
+        {'id':'c','op':'multiply','inputs':['a','b']}]}))
+    q = f'按最低标准计算{quantity}酬金合计多少元？'
+    result = StructuredQueryEngine(repo.connection).execute_steps(p,[],q,facts)
+    assert result.ok and result.value==153 and result.unit=='元'
+    assert result.steps[1]['source']['kind']=='question'
+    a,b = result.steps[1]['source']['span']
+    assert q[a:b]==result.steps[1]['source']['quote']==quantity
+    p.steps[1]['literal']='99'
+    assert not StructuredQueryEngine(repo.connection).execute_steps(p,[],q,facts).ok
+
+
+def test_comparison_cannot_succeed_with_lookup_or_wrong_direction(table_db):
+    repo,_,_,_ = table_db
+    source = Evidence('budget','甲项目预算为90元；乙项目预算为150元。',1,1,'预算','https://example.edu/b')
+    facts = NumericEngine.text_facts([source]); engine=StructuredQueryEngine(repo.connection)
+    steps = [{'id':'a','op':'lookup','fact_id':'f1'},{'id':'b','op':'lookup','fact_id':'f2'}]
+    p = parse_plan(json.dumps({'steps':steps}))
+    result = engine.execute_steps(p,[],'乙项目比甲项目高多少元？',facts)
+    assert not result.ok and result.repairable and 'subtract' in result.error
+    p = parse_plan(json.dumps({'steps':steps+[{'id':'c','op':'subtract','inputs':['a','b']}]}))
+    result = engine.execute_steps(p,[],'乙项目比甲项目高多少元？',facts)
+    assert not result.ok and result.repairable and '方向' in result.error
+
+
+def test_period_multiplier_cannot_be_omitted(table_db):
+    repo,_,_,_ = table_db
+    source=Evidence('period','学生每周不超过6小时，每月不超过30小时。',1,1,'工时','https://example.edu/h')
+    facts=NumericEngine.text_facts([source])
+    p=parse_plan(json.dumps({'steps':[{'id':'a','op':'lookup','fact_id':'f2'},
+        {'id':'b','op':'lookup','fact_id':'f1'},{'id':'c','op':'subtract','inputs':['a','b']}]}))
+    result=StructuredQueryEngine(repo.connection).execute_steps(p,[],
+        '连续三周每周工作6小时，与每月上限相比还剩多少小时？',facts)
+    assert not result.ok and result.repairable and '周期数' in result.error
+
+
+def test_explicit_missing_personal_inputs_do_not_use_public_examples(table_db):
+    repo,_,_,_ = table_db
+    calls=[]
+    class Index:
+        def search(self,*args,**kwargs):
+            calls.append('search')
+            return [Evidence('example','某合同还款期限为16年。',1,1,'还款示例','https://example.edu/example')]
+    class Generator:
+        def generate(self,*args,**kwargs):
+            raise AssertionError('Explicitly missing personal inputs must not be planned')
+    p=Path('.')
+    service=RAGService(Settings(p,p,p,p,p),Index(),Generator(),repo.connection)
+    result=service.answer('请计算我的应付利息；我没有提供借款金额、适用利率和计息期限。')
+    assert calls==['search'] and not result.references and result.numeric_verification['verified'] is False
+    assert '借款金额、适用利率和计息期限' in result.answer
+    assert service.last_diagnostics['route']=='missing_question_inputs'
+
+
+def test_public_standard_calculation_does_not_require_personal_identity(table_db):
+    repo,_,_,_ = table_db
+    class Index:
+        def search(self,*args,**kwargs):
+            return [Evidence('rule','岗位酬金不低于每小时17元。',1,1,'计酬规则','https://example.edu/rule')]
+    class Generator:
+        def generate(self,*args,**kwargs):
+            return json.dumps({'steps':[{'id':'a','op':'lookup','fact_id':'f1'},
+                {'id':'b','op':'lookup','literal':'9','unit':'小时'},
+                {'id':'c','op':'multiply','inputs':['a','b']}]})
+    p=Path('.')
+    result=RAGService(Settings(p,p,p,p,p),Index(),Generator(),repo.connection).answer(
+        '我没有提供个人身份，但只按公开最低标准，计算9小时酬金合计多少元？')
+    assert result.calculation.ok and result.calculation.value==153 and result.references
+
+
+def test_self_reference_feedback_identifies_legal_predecessors():
+    raw={'steps':[{'id':'price','op':'lookup','fact_id':'f1'},
+        {'id':'result','op':'multiply','inputs':['price','result']}]}
+    with pytest.raises(ValueError,match='合法前序id：price'):
+        parse_plan(json.dumps(raw))
+
+
+def test_model_output_must_not_discard_final_arithmetic():
+    raw=json.dumps({'steps':[{'id':'left','op':'lookup','fact_id':'f1'},
+        {'id':'right','op':'lookup','fact_id':'f2'},
+        {'id':'result','op':'multiply','inputs':['left','right']}],'output':'left'})
+    model_plan = parse_plan(raw,require_final=True)
+    assert model_plan.output=='result' and len(model_plan.steps)==3
+    assert len(parse_plan(raw).steps)==1  # Existing explicit API selection remains compatible.
+
+
+def test_missing_table_binds_only_unique_schema_field_ids(table_db):
+    repo,tid,name,area = table_db
+    doc=repo.add_document(SourceDocument('2026设备预算','https://example.edu/other',sha256='budget-bind'))
+    table=ParsedTable('设备预算',['设备','预算（元）'],[['网关','50']])
+    other=repo.add_table(doc,table,[[normalize_cell(v) for v in row] for row in table.rows])
+    class Index:
+        def search(self,*args,**kwargs):
+            return [Evidence('room','用房表',1,1,'2026测试统计','https://example.edu/source',table_id=tid),
+                Evidence('budget','预算表',1,doc,'2026设备预算','https://example.edu/other',table_id=other)]
+    class Generator:
+        def generate(self,*args,**kwargs):
+            return json.dumps({'table_id':None,'steps':[{'id':'a','op':'lookup','field_id':area,
+                'filters':[{'field_id':name,'op':'eq','value':'东馆'}]}]})
+    p=Path('.')
+    service=RAGService(Settings(p,p,p,p,p),Index(),Generator(),repo.connection)
+    result=service.answer('东馆面积多少平方米？')
+    assert len(service.last_diagnostics['schema'])==2
+    assert result.calculation.ok and result.calculation.value==12 and service.last_plan.table_id==tid
+
+
+def test_examples_preserve_question_order_without_shortening_class_names(table_db):
+    repo,tid,name,area=table_db
+    q='北馆比东馆面积多多少平方米？'
+    schema=StructuredQueryEngine(repo.connection).schema_context([tid],[],q)
+    assert schema[0]['question_matches'][0]['values']==['北馆','东馆']
+    example=json.loads(step_example('subtract',json.dumps({'tables':schema}),q))
+    assert 'output' not in example
+    assert [s['filters'][0]['value'] for s in example['steps'][:2]]==['北馆','东馆']
+    assert not _object_mentioned('管理学院','战略管理对应哪个学院？')
+
+
+@pytest.mark.parametrize('filtered',[False,True])
+def test_single_delimiter_repair_consumes_shared_repair_budget(table_db,filtered):
+    repo,tid,name,area=table_db
+    calls=[]
+    step={'id':'a','op':'lookup','field_id':area}
+    if filtered:step['filters']=[{'field_id':name,'op':'eq','value':'东馆'}]
+    valid=json.dumps({'table_id':tid,'steps':[step]})
+    malformed=valid[:-2]+valid[-1]  # Remove only the steps closing bracket.
+    assert repair_json_delimiter(malformed)==valid
+    class Index:
+        def search(self,*args,**kwargs):
+            return [Evidence('t','表格',1,1,'2026测试统计','https://example.edu/source',table_id=tid)]
+    class Generator:
+        def generate(self,*args,**kwargs):
+            calls.append(1)
+            return malformed
+    p=Path('.')
+    service=RAGService(Settings(p,p,p,p,p),Index(),Generator(),repo.connection)
+    result=service.answer('东馆面积多少平方米？')
+    assert len(calls)==1 and result.calculation.ok==filtered
+    assert len(service.last_diagnostics['attempts'])==2
+    assert service.last_diagnostics['attempts'][1]['kind']=='syntax_repair'
+    assert service.planner.last_raw==malformed
+    if filtered:assert result.calculation.value==12
+
+
+def test_format_repair_never_supplies_values_or_changes_valid_json():
+    assert repair_json_delimiter('{"steps":[{"id":"a","op":"lookup","literal":,"unit":"元"}]}') is None
+    assert repair_json_delimiter('{"steps":[{"id":"a","op":"lookup","fact_id":"f1"}]}') is None
 
 
 def test_filter_sum_total_ratio_and_value_changes(table_db):
@@ -169,7 +379,7 @@ def test_text_facts_dimensionless_gpa_and_subjects():
         1,1,'学位办法','https://example.edu/degree')
     facts = list(NumericEngine.text_facts([source]).values())
     assert len(facts)==2 and {f['subject'] for f in facts}=={'普通申请人','运动员'}
-    assert all(f['unit']=='' and f['comparison']=='gte' for f in facts)
+    assert all(f['unit']=='绩点' and f['comparison']=='gte' for f in facts)
 
 
 def test_text_facts_distinguish_upper_lower_and_reject_unknown_numbers():
@@ -193,7 +403,7 @@ def test_text_facts_keep_post_value_applicability_and_dimensionless_interval():
     facts = list(NumericEngine.text_facts([source]).values())
     assert '未备案者不适用' in facts[0]['scope']['context']
     assert [(f['value'],f['unit'],f['comparison']) for f in facts[1:]]==[
-        ('2.6','','lt'),('2.1','','gt')]
+        ('2.6','绩点','lt'),('2.1','绩点','gt')]
 
 
 @pytest.mark.parametrize('reverse',[False,True])
