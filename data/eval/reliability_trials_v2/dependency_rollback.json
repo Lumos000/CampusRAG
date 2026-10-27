@@ -1,0 +1,16 @@
+{
+  "files_restored_exactly": {
+    "src/campus_rag/rag/generator.py": true,
+    "src/campus_rag/rag/planner.py": true,
+    "pyproject.toml": true
+  },
+  "new_packages_removed": {
+    "lmformatenforcer": true,
+    "interegular": true,
+    "pydantic": true,
+    "pydantic_core": true,
+    "annotated_types": true,
+    "typing_inspection": true
+  },
+  "pip_check": "No broken requirements found."
+}

@@ -1,0 +1,373 @@
+{
+  "baseline": "b3711e0",
+  "final_stage": "sentence_selection_v5",
+  "trials": [
+    {
+      "stage": "sentence_selection_v1",
+      "overall": {
+        "correct": 32,
+        "total": 36,
+        "accuracy": 0.8888888888888888
+      },
+      "numeric": {
+        "initial_plan_valid": 3,
+        "plan_valid_after_repair": 6,
+        "execution_completed": 6,
+        "executor_verified": 5,
+        "semantic_correct": 5,
+        "observed_case_seconds": {
+          "C01": 5.763,
+          "C02": 5.264,
+          "C03": 5.936,
+          "C04": 7.263,
+          "C05": 2.915,
+          "C06": 3.413,
+          "C07": 3.783,
+          "C08": 9.478
+        }
+      },
+      "text": {
+        "count": 24,
+        "mean_characters": 493.5,
+        "baseline_mean_characters": 610.4166666666666,
+        "length_reduction": 0.19153583617747438,
+        "excerpt_fallback_count": 12,
+        "mean_service_seconds": 1.2759583333333333,
+        "caveat": "Core-point correctness is not sentence-level relevance; mixed conditions and unrelated spans remain explicitly noted per case."
+      },
+      "citations": {
+        "relevant": 29,
+        "total": 29
+      },
+      "regression": {
+        "correct": 12,
+        "total": 12,
+        "accuracy": 1.0
+      },
+      "taskbook_four": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "automatic_tests_passed": 137,
+      "network_attempt_count": 0,
+      "selected": false,
+      "gold_unchanged": true,
+      "csv_compatible": true,
+      "hashes": {
+        "manifest.json": "ab9ec984fcdfaf667cb94b4482ff1fcb2d8b2afdc27774c724af894e41afdbc0",
+        "candidate.patch": "a836204cc54605d89bd6ad11acdc32048600e7ededaad7df75c6bcc50efb8861",
+        "run1/results.json": "5bd2caf23ae223c080db6708c389cde5a1ba87efc2fda01cd7dce1072aa84b27",
+        "run1/reviews.json": "0e8fc3838084261fae5fe240c86c5328035253a58f5731ea4c7fb2f5751e11af",
+        "run1/summary.json": "0811e4aac7d003f87c6f51e97726521cd45a29dd82992310aab2eecbc0d88586",
+        "numeric_results.json": "c6c15338cf31c7c4c1578542421b4e6014507aa25d7e0d52e1ba52ab85148edd"
+      }
+    },
+    {
+      "stage": "sentence_selection_v2",
+      "overall": {
+        "correct": 33,
+        "total": 36,
+        "accuracy": 0.9166666666666666
+      },
+      "numeric": {
+        "initial_plan_valid": 3,
+        "plan_valid_after_repair": 6,
+        "execution_completed": 6,
+        "executor_verified": 5,
+        "semantic_correct": 5,
+        "observed_case_seconds": {
+          "C01": 4.647,
+          "C02": 5.131,
+          "C03": 5.988,
+          "C04": 7.565,
+          "C05": 2.709,
+          "C06": 2.66,
+          "C07": 2.76,
+          "C08": 6.923
+        }
+      },
+      "text": {
+        "count": 24,
+        "mean_characters": 468.125,
+        "baseline_mean_characters": 610.4166666666666,
+        "length_reduction": 0.23310580204778153,
+        "excerpt_fallback_count": 2,
+        "mean_service_seconds": 1.6830416666666665,
+        "caveat": "Core-point correctness is not sentence-level relevance; mixed conditions and unrelated spans remain explicitly noted per case."
+      },
+      "citations": {
+        "relevant": 29,
+        "total": 29
+      },
+      "regression": {
+        "correct": 12,
+        "total": 12,
+        "accuracy": 1.0
+      },
+      "taskbook_four": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "automatic_tests_passed": 138,
+      "network_attempt_count": 0,
+      "selected": false,
+      "gold_unchanged": true,
+      "csv_compatible": true,
+      "hashes": {
+        "manifest.json": "0c0f2db7e4f6be6ec297f7b359813ac8f811ae108c05d4dc2621ce7024064c72",
+        "candidate.patch": "3984c45b6ac2b300c18b39e98c99713496b4f45a75724a84afac4c97b636e932",
+        "run1/results.json": "f99537eeec2585ffdd7e8d32c938a1e0c20a890cbb5c43e2f399f18bf96640d6",
+        "run1/reviews.json": "a3c37aaee38274506059a5373d92c0e06832c2efc3b134d31d27e2efd9042e21",
+        "run1/summary.json": "3a47bd69f71f48b09e1a24ad456b6b1b06d9f77fffd0729cd6498d4ab6fdfc4f",
+        "numeric_results.json": "fd564d3b646f6153022becc91531582dfd7101de43743e29864c53cbf8cfd7b3"
+      }
+    },
+    {
+      "stage": "sentence_selection_v3",
+      "overall": {
+        "correct": 33,
+        "total": 36,
+        "accuracy": 0.9166666666666666
+      },
+      "numeric": {
+        "initial_plan_valid": 3,
+        "plan_valid_after_repair": 6,
+        "execution_completed": 6,
+        "executor_verified": 5,
+        "semantic_correct": 5,
+        "observed_case_seconds": {
+          "C01": 26.966,
+          "C02": 32.764,
+          "C03": 39.685,
+          "C04": 39.837,
+          "C05": 11.375,
+          "C06": 12.069,
+          "C07": 15.026,
+          "C08": 45.382
+        }
+      },
+      "text": {
+        "count": 24,
+        "mean_characters": 312.1666666666667,
+        "baseline_mean_characters": 610.4166666666666,
+        "length_reduction": 0.4886006825938566,
+        "excerpt_fallback_count": 2,
+        "mean_service_seconds": 5.142916666666666,
+        "caveat": "Core-point correctness is not sentence-level relevance; mixed conditions and unrelated spans remain explicitly noted per case."
+      },
+      "citations": {
+        "relevant": 29,
+        "total": 29
+      },
+      "regression": {
+        "correct": 12,
+        "total": 12,
+        "accuracy": 1.0
+      },
+      "taskbook_four": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "automatic_tests_passed": 138,
+      "network_attempt_count": 0,
+      "selected": false,
+      "gold_unchanged": true,
+      "csv_compatible": true,
+      "hashes": {
+        "manifest.json": "32cce1505855b2ffd27d45ccecb336a66de880885ea696040dfcf8752715c715",
+        "candidate.patch": "871fe29417f4568f38d4897cfff107847673d20b4bbb9ef25de0ebe95b155d12",
+        "run1/results.json": "e24a8721a2486529eb6f0d750df8367751dcff5a60ba2bc5544ff56c2d2eea17",
+        "run1/reviews.json": "a3c37aaee38274506059a5373d92c0e06832c2efc3b134d31d27e2efd9042e21",
+        "run1/summary.json": "030197e547248e4c70b38829b5b059b9ac1cf8deea67bef190f02c4ac2a98fd1",
+        "numeric_results.json": "2066488889bafacddc89b6f11eeeff73c6fa396674dcc3db180480ae2754121f"
+      }
+    },
+    {
+      "stage": "sentence_selection_v4",
+      "overall": {
+        "correct": 33,
+        "total": 36,
+        "accuracy": 0.9166666666666666
+      },
+      "numeric": {
+        "initial_plan_valid": 3,
+        "plan_valid_after_repair": 6,
+        "execution_completed": 6,
+        "executor_verified": 5,
+        "semantic_correct": 5,
+        "observed_case_seconds": {
+          "C01": 15.14,
+          "C02": 18.035,
+          "C03": 17.721,
+          "C04": 19.795,
+          "C05": 7.432,
+          "C06": 7.441,
+          "C07": 7.384,
+          "C08": 22.856
+        }
+      },
+      "text": {
+        "count": 24,
+        "mean_characters": 312.1666666666667,
+        "baseline_mean_characters": 610.4166666666666,
+        "length_reduction": 0.4886006825938566,
+        "excerpt_fallback_count": 2,
+        "mean_service_seconds": 3.6021666666666667,
+        "caveat": "Core-point correctness is not sentence-level relevance; mixed conditions and unrelated spans remain explicitly noted per case."
+      },
+      "citations": {
+        "relevant": 29,
+        "total": 29
+      },
+      "regression": {
+        "correct": 12,
+        "total": 12,
+        "accuracy": 1.0
+      },
+      "taskbook_four": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "automatic_tests_passed": 139,
+      "network_attempt_count": 0,
+      "selected": false,
+      "gold_unchanged": true,
+      "csv_compatible": true,
+      "hashes": {
+        "manifest.json": "a5034145cb0f8a01baec6a9411acadd68190269d7d2a4c4fd3c3294923f072df",
+        "candidate.patch": "4eed4ffd0ffe0a2433bd8b56d9b4a8a1910fa14c7c7a11010e43f7d338ad825f",
+        "run1/results.json": "d687c648fe6494fc8a455fbd2aea023b1766c3fae9cff4e224a1e61cfc73763d",
+        "run1/reviews.json": "a3c37aaee38274506059a5373d92c0e06832c2efc3b134d31d27e2efd9042e21",
+        "run1/summary.json": "e5de9f785a3511e32b0addcffabb839c521a99a4325deb16eca38b8813afad0b",
+        "numeric_results.json": "fa4c5fcf5bb8fcbb24df61caf6870bc68348cce97181cf272282fa28281c9a0f"
+      }
+    },
+    {
+      "stage": "constrained_plan_v1",
+      "overall": {
+        "correct": 32,
+        "total": 36,
+        "accuracy": 0.8888888888888888
+      },
+      "numeric": {
+        "initial_plan_valid": 4,
+        "plan_valid_after_repair": 4,
+        "execution_completed": 4,
+        "executor_verified": 4,
+        "semantic_correct": 4,
+        "observed_case_seconds": {
+          "C01": 223.733,
+          "C02": 209.715,
+          "C03": 67.265,
+          "C04": 35.02,
+          "C05": 56.317,
+          "C06": 13.922,
+          "C07": 14.302,
+          "C08": 293.272
+        }
+      },
+      "text": {
+        "count": 24,
+        "mean_characters": 312.1666666666667,
+        "baseline_mean_characters": 610.4166666666666,
+        "length_reduction": 0.4886006825938566,
+        "excerpt_fallback_count": 2,
+        "mean_service_seconds": 3.130125,
+        "caveat": "Core-point correctness is not sentence-level relevance; mixed conditions and unrelated spans remain explicitly noted per case."
+      },
+      "citations": {
+        "relevant": 28,
+        "total": 28
+      },
+      "regression": {
+        "correct": 12,
+        "total": 12,
+        "accuracy": 1.0
+      },
+      "taskbook_four": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "automatic_tests_passed": 145,
+      "network_attempt_count": 0,
+      "selected": false,
+      "gold_unchanged": true,
+      "csv_compatible": true,
+      "hashes": {
+        "manifest.json": "e9f2c886cd4125d41d76d9c036a6f1f5a113509d8babe4660d6352d34f06a2d7",
+        "candidate.patch": "c2f54c3a542a68fd5ae0a8bd04959fbed55946469a2023d3746be5df7b9ae0cd",
+        "run1/results.json": "54ab61f2ba55c6d3853527e0d8c60e6b4bd4d4553f888ec0e8d78884c8e46fee",
+        "run1/reviews.json": "251e7daca6022467a8acf21caf00e21b6bb91521bdcf29bc9222f7f3b57050df",
+        "run1/summary.json": "ccbbd665e81c98c5f7485b70729cc173a95748d04bcb00ea0760762b2c6c3562",
+        "numeric_results.json": "3c07382d124715275b56b16f4d78f83d1afc2557f69ee4c2a7896869ab421b30"
+      }
+    },
+    {
+      "stage": "sentence_selection_v5",
+      "overall": {
+        "correct": 33,
+        "total": 36,
+        "accuracy": 0.9166666666666666
+      },
+      "numeric": {
+        "initial_plan_valid": 3,
+        "plan_valid_after_repair": 6,
+        "execution_completed": 6,
+        "executor_verified": 5,
+        "semantic_correct": 5,
+        "observed_case_seconds": {
+          "C01": 33.951,
+          "C02": 40.484,
+          "C03": 27.856,
+          "C04": 43.463,
+          "C05": 12.618,
+          "C06": 8.709,
+          "C07": 5.125,
+          "C08": 31.559
+        }
+      },
+      "text": {
+        "count": 24,
+        "mean_characters": 312.75,
+        "baseline_mean_characters": 610.4166666666666,
+        "length_reduction": 0.48764505119453927,
+        "excerpt_fallback_count": 3,
+        "mean_service_seconds": 5.007875,
+        "caveat": "Core-point correctness is not sentence-level relevance; mixed conditions and unrelated spans remain explicitly noted per case."
+      },
+      "citations": {
+        "relevant": 29,
+        "total": 29
+      },
+      "regression": {
+        "correct": 12,
+        "total": 12,
+        "accuracy": 1.0
+      },
+      "taskbook_four": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "automatic_tests_passed": 141,
+      "network_attempt_count": 0,
+      "selected": true,
+      "gold_unchanged": true,
+      "csv_compatible": true,
+      "hashes": {
+        "manifest.json": "d4b3154912977e43dd51deed7a36359d4c3e79b08b7bb016940cc93c72879428",
+        "candidate.patch": "eabad8a5df80c5caa78392a68bf10fa3c0adb4e72e52aa139ee330158c4df3cf",
+        "run1/results.json": "4cd99d3f90a62467e0236453f25721806f0c76ecfae2607d1233a71b40e7027f",
+        "run1/reviews.json": "a3c37aaee38274506059a5373d92c0e06832c2efc3b134d31d27e2efd9042e21",
+        "run1/summary.json": "82c35c5bc505d2a730aeecaec01f9077fc51b6597b95523c8d0ff4823ed57281",
+        "numeric_results.json": "f1ebfe83c75c365ace43c92854c1c61a2472f7cb94cfeaf9145a7be4bedacfc5"
+      }
+    }
+  ],
+  "methodology": "Each candidate is one whole run; no best-of-case mixing. Same-assistant reviews, no held-out v2 evaluation."
+}

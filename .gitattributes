@@ -1,0 +1,6 @@
+# Frozen evaluation records are hashed as bytes; do not normalize line endings.
+data/eval/reliability_trials_v2/** -text whitespace=cr-at-eol
+data/eval/stages/sentence_selection_v*/** -text whitespace=cr-at-eol
+data/eval/stages/constrained_plan_v1/** -text whitespace=cr-at-eol
+# A unified diff's blank context line deliberately contains one space.
+data/eval/stages/*/candidate.patch -whitespace

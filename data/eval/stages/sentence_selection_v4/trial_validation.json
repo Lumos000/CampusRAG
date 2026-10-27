@@ -1,0 +1,61 @@
+{
+  "stage": "sentence_selection_v4",
+  "overall": {
+    "correct": 33,
+    "total": 36,
+    "accuracy": 0.9166666666666666
+  },
+  "numeric": {
+    "initial_plan_valid": 3,
+    "plan_valid_after_repair": 6,
+    "execution_completed": 6,
+    "executor_verified": 5,
+    "semantic_correct": 5,
+    "observed_case_seconds": {
+      "C01": 15.14,
+      "C02": 18.035,
+      "C03": 17.721,
+      "C04": 19.795,
+      "C05": 7.432,
+      "C06": 7.441,
+      "C07": 7.384,
+      "C08": 22.856
+    }
+  },
+  "text": {
+    "count": 24,
+    "mean_characters": 312.1666666666667,
+    "baseline_mean_characters": 610.4166666666666,
+    "length_reduction": 0.4886006825938566,
+    "excerpt_fallback_count": 2,
+    "mean_service_seconds": 3.6021666666666667,
+    "caveat": "Core-point correctness is not sentence-level relevance; mixed conditions and unrelated spans remain explicitly noted per case."
+  },
+  "citations": {
+    "relevant": 29,
+    "total": 29
+  },
+  "regression": {
+    "correct": 12,
+    "total": 12,
+    "accuracy": 1.0
+  },
+  "taskbook_four": {
+    "correct": 4,
+    "total": 4,
+    "accuracy": 1.0
+  },
+  "automatic_tests_passed": 139,
+  "network_attempt_count": 0,
+  "selected": false,
+  "gold_unchanged": true,
+  "csv_compatible": true,
+  "hashes": {
+    "manifest.json": "a5034145cb0f8a01baec6a9411acadd68190269d7d2a4c4fd3c3294923f072df",
+    "candidate.patch": "4eed4ffd0ffe0a2433bd8b56d9b4a8a1910fa14c7c7a11010e43f7d338ad825f",
+    "run1/results.json": "d687c648fe6494fc8a455fbd2aea023b1766c3fae9cff4e224a1e61cfc73763d",
+    "run1/reviews.json": "a3c37aaee38274506059a5373d92c0e06832c2efc3b134d31d27e2efd9042e21",
+    "run1/summary.json": "e5de9f785a3511e32b0addcffabb839c521a99a4325deb16eca38b8813afad0b",
+    "numeric_results.json": "fa4c5fcf5bb8fcbb24df61caf6870bc68348cce97181cf272282fa28281c9a0f"
+  }
+}

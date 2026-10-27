@@ -117,7 +117,7 @@ def test_text_citations_only_include_selected_real_evidence(tmp_path):
         def search(self,*a,**k): return evidence
     class Generator:
         def generate(self,prompt,**k):
-            return json.dumps({'answer':'捐赠不得附带条件。','evidence_ids':['E1']},ensure_ascii=False)
+            return json.dumps({'sentence_ids':['S1']})
     with Repository(tmp_path/'text.db') as repo:
         repo.initialize()
         result=RAGService(Settings(tmp_path,tmp_path,tmp_path,tmp_path,tmp_path),Index(),Generator(),repo.connection).answer('捐赠可以附带条件吗？')
@@ -224,7 +224,7 @@ def test_personal_process_question_can_still_use_public_guidance(tmp_path):
     class Index:
         def search(self,*a,**k):return [Evidence('real','在个人业务系统查看成绩。',1,1,'办理指南','https://example.edu/guide')]
     class Generator:
-        def generate(self,*a,**k):return json.dumps({'answer':'在个人业务系统查看成绩。','evidence_ids':['E1']},ensure_ascii=False)
+        def generate(self,*a,**k):return json.dumps({'sentence_ids':['S1']})
     with Repository(tmp_path/'text.db') as repo:
         repo.initialize()
         result=RAGService(Settings(tmp_path,tmp_path,tmp_path,tmp_path,tmp_path),Index(),Generator(),repo.connection).answer('如何查询我的学业成绩？')

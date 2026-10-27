@@ -1,0 +1,20 @@
+{
+  "baseline_commit": "b3711e08a252bc5c2a7938a3437f051aa733b809",
+  "baseline_results_sha256": "f188a834100d978009770c00b5385f8f24f58b6445563bafff486ef90afd2487",
+  "gold_sha256": "dd633cfb78d6187ed83e11887f3f893f98930168c1726e00e3343a0947babf45",
+  "text": {
+    "preserve_all_previously_correct_cases": true,
+    "max_mean_characters": 427.29166666666663,
+    "no_new_wrong_refusals_or_condition_omissions": true,
+    "manual_relevance_review_required": true
+  },
+  "numeric": {
+    "semantic_correct_must_exceed": 5,
+    "total": 8,
+    "regression_correct_required": 12,
+    "taskbook_correct_required": 4,
+    "syntax_or_execution_improvement_alone_is_insufficient": true
+  },
+  "held_out_policy": "independent_v2 not opened or run",
+  "index_database_policy": "unchanged; no rebuild"
+}

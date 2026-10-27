@@ -1,0 +1,87 @@
+{
+  "C01": {
+    "verdict": "refusal",
+    "points_met": [
+      false,
+      false
+    ],
+    "reason": "JSON完整但遗漏问题常数lookup，引用未定义right；修复仍失败。不是正确数值答案。",
+    "citation_complete": false,
+    "failure_stage": "plan_validation",
+    "refusal_correct": false
+  },
+  "C02": {
+    "verdict": "correct",
+    "points_met": [
+      true,
+      true
+    ],
+    "reason": "逐步核对每周8小时、4周及月上限40小时：40-8×4=8小时，来源及问题常数均真实。",
+    "citation_complete": true,
+    "failure_stage": "",
+    "refusal_correct": false
+  },
+  "C03": {
+    "verdict": "refusal",
+    "points_met": [
+      false,
+      false
+    ],
+    "reason": "right定义在subtract之后，修复仍未调整顺序；未产生可信差额。",
+    "citation_complete": false,
+    "failure_stage": "plan_validation",
+    "refusal_correct": false
+  },
+  "C04": {
+    "verdict": "correct",
+    "points_met": [
+      true,
+      true
+    ],
+    "reason": "逐步核对一般学生1.8及高水平运动员1.5绩点门槛，按要求相减为0.3绩点。",
+    "citation_complete": true,
+    "failure_stage": "",
+    "refusal_correct": false
+  },
+  "C05": {
+    "verdict": "refusal",
+    "points_met": [
+      false
+    ],
+    "reason": "新增回归：count计划引用未定义或自身rows，初次与修复均失败；旧候选本题正确。",
+    "citation_complete": false,
+    "failure_stage": "plan_validation",
+    "refusal_correct": false
+  },
+  "C06": {
+    "verdict": "correct",
+    "points_met": [
+      true
+    ],
+    "reason": "真实慕课名称字段等值筛选模拟电子线路A，执行完整SQLite范围内10条对应记录，未去重。",
+    "citation_complete": true,
+    "failure_stage": "",
+    "refusal_correct": false
+  },
+  "C07": {
+    "verdict": "correct",
+    "points_met": [
+      true
+    ],
+    "reason": "真实慕课名称字段in筛选两项对象，完整记录共6项；计数口径与问题一致。",
+    "citation_complete": true,
+    "failure_stage": "",
+    "refusal_correct": false
+  },
+  "C08": {
+    "verdict": "refusal",
+    "points_met": [
+      false,
+      false
+    ],
+    "reason": "JSON完整但缺少全表分母步骤，仍引用未定义right；未给出比例。",
+    "citation_complete": false,
+    "failure_stage": "plan_validation",
+    "refusal_correct": false
+  }
+}
