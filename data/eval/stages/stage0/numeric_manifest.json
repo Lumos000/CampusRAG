@@ -1,0 +1,11 @@
+{
+  "stage_manifest_sha256": "a79bc4419ca165045da6096a237eb4237c0071c9067a2ada428d99176deeb745",
+  "files": {
+    "scripts/evaluate_numeric.py": "774ebe4f85ccba8ff2db2058465b72211794fba1893beb5ff416b16f7579e26c",
+    "data/eval/numeric_regression.json": "b3a18efaf4f157e858cc81b8a94232af22b5fa77a47efa275b8a86845a72fd6d",
+    "data/eval/numeric_after.json": "e13e076a5002486b7d53520d58802759a1b7d2d941d930cbf1ccaece5a9fc30d",
+    "config/settings.json": "db40e96fb1d8a153d88ef8f6060a24fceccab045d466d1b76bff1a8c1c919544"
+  },
+  "output": "numeric_results.json",
+  "purpose": "12-case existing development regression; not independent semantic accuracy"
+}

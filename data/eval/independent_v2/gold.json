@@ -1,0 +1,403 @@
+{
+  "description": "改进前预先编写的留出集；同一助手标注，非外部双盲；调试阶段不得运行或按本集改提示。",
+  "cases": [
+    {
+      "id": "V2C01",
+      "category": "calculation",
+      "question": "按《本科学生奖学金评定办法》，综合一等奖与二等奖的奖励金额相差多少元？",
+      "answer": "300元",
+      "points": [
+        "300元"
+      ],
+      "expected": "300",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 248,
+          "quote": "一等奖学金10003二等奖学金70010"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 248,
+          "quote": "一等奖学金10003二等奖学金70010",
+          "chunk_ids": [
+            "b4abf303-4533-4a1a-b465-9fdc7184e79e"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "V2C02",
+      "category": "calculation",
+      "question": "按《本科学生奖学金评定办法》，综合一、二、三等奖各发一份，奖励金额合计多少元？",
+      "answer": "2100元",
+      "points": [
+        "2100元"
+      ],
+      "expected": "2100",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 248,
+          "quote": "一等奖学金10003二等奖学金70010三等奖学金40015"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 248,
+          "quote": "一等奖学金10003二等奖学金70010三等奖学金40015",
+          "chunk_ids": [
+            "b4abf303-4533-4a1a-b465-9fdc7184e79e"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "V2C03",
+      "category": "calculation",
+      "question": "按《本科学生奖学金评定办法》，综合三等奖金额占一等奖金额的百分比是多少？",
+      "answer": "40%",
+      "points": [
+        "40%"
+      ],
+      "expected": "40",
+      "unit": "%",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 248,
+          "quote": "一等奖学金10003二等奖学金70010三等奖学金40015"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 248,
+          "quote": "一等奖学金10003二等奖学金70010三等奖学金40015",
+          "chunk_ids": [
+            "b4abf303-4533-4a1a-b465-9fdc7184e79e"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "V2C04",
+      "category": "calculation",
+      "question": "按《本科学生奖学金评定办法》，精神文明奖200元与示范宿舍长奖100元金额之和是多少？",
+      "answer": "300元",
+      "points": [
+        "300元"
+      ],
+      "expected": "300",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 248,
+          "quote": "奖励金额为200元。7.示范宿舍长奖（与综合奖可兼得）被评为“示范宿舍”的宿舍长，奖励金额为100元。"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 248,
+          "quote": "奖励金额为200元。7.示范宿舍长奖（与综合奖可兼得）被评为“示范宿舍”的宿舍长，奖励金额为100元。",
+          "chunk_ids": [
+            "decb5d1c-9179-48f8-9904-fd1316849af0"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "V2C05",
+      "category": "calculation",
+      "question": "按2025年甘霖励志奖学金的生均金额，若有13名学生获奖，共需多少元？",
+      "answer": "1300元",
+      "points": [
+        "1300元"
+      ],
+      "expected": "1300",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 259,
+          "quote": "生均奖励金额为100元"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 259,
+          "quote": "生均奖励金额为100元",
+          "chunk_ids": [
+            "e927388a-2dd3-4dfb-87cd-76aeeabfdb39"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "V2C06",
+      "category": "calculation",
+      "question": "按2025年甘霖励志奖学金志愿服务类每学年120小时的要求，已完成85小时，还差多少小时？",
+      "answer": "35小时",
+      "points": [
+        "35小时"
+      ],
+      "expected": "35",
+      "unit": "小时",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 259,
+          "quote": "每学年能够完成120小时的志愿服务时长"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 259,
+          "quote": "每学年能够完成120小时的志愿服务时长",
+          "chunk_ids": [
+            "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "V2C07",
+      "category": "calculation",
+      "question": "按《学生修读辅修专业管理办法》，辅修课程共4学期。如果已完成1学期，还剩多少学期？",
+      "answer": "3学期",
+      "points": [
+        "3学期"
+      ],
+      "expected": "3",
+      "unit": "学期",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 261,
+          "quote": "共4学期"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 261,
+          "quote": "共4学期",
+          "chunk_ids": [
+            "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "V2C08",
+      "category": "calculation",
+      "question": "按《学生修读辅修专业管理办法》，一般设置8至10门主干课程，上限比下限多多少门？",
+      "answer": "2门",
+      "points": [
+        "2门"
+      ],
+      "expected": "2",
+      "unit": "门",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 261,
+          "quote": "一般设置8-10门该专业的主要课程"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 261,
+          "quote": "一般设置8-10门该专业的主要课程",
+          "chunk_ids": [
+            "7d5644a7-3023-499e-a982-bb4f03f3938e"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "V2F01",
+      "category": "fact",
+      "question": "按《本科学生临时困难补助实施办法》，对申请学生的国籍有什么要求？",
+      "answer": "适用范围具有中华人民共和国国籍。",
+      "points": [
+        "适用范围具有中华人民共和国国籍。"
+      ],
+      "sources": [
+        {
+          "doc_id": 255,
+          "quote": "具有中华人民共和国国籍"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 255,
+          "quote": "具有中华人民共和国国籍",
+          "chunk_ids": [
+            "b59f117a-5fee-45a4-8e1b-79f2bf07b8e4"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "V2F02",
+      "category": "fact",
+      "question": "按《学生修读辅修专业管理办法》，辅修成绩是否计入平均学分绩点？",
+      "answer": "不计入平均学分绩点。",
+      "points": [
+        "不计入平均学分绩点。"
+      ],
+      "sources": [
+        {
+          "doc_id": 261,
+          "quote": "平均学分绩点"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 261,
+          "quote": "平均学分绩点",
+          "chunk_ids": [
+            "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "V2P01",
+      "category": "procedure",
+      "question": "院级临时困难补助明细应在每年什么时候前报学生工作处备案？",
+      "answer": "12月1日前。",
+      "points": [
+        "12月1日前。"
+      ],
+      "sources": [
+        {
+          "doc_id": 255,
+          "quote": "每年12月1日前"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 255,
+          "quote": "每年12月1日前",
+          "chunk_ids": [
+            "82843d70-90e7-4061-8690-3b5e2f8d66a8"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "V2L01",
+      "category": "list",
+      "question": "按《学生修读辅修专业管理办法》，哪些情形会被终止辅修学习？",
+      "answer": "予以编级或因辅修课程考核严重违纪或作弊者。",
+      "points": [
+        "予以编级或因辅修课程考核严重违纪或作弊者。"
+      ],
+      "sources": [
+        {
+          "doc_id": 261,
+          "quote": "作弊者"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 261,
+          "quote": "作弊者",
+          "chunk_ids": [
+            "c81f734d-dbb5-4a38-a892-aeff59e5ec67"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "V2T01",
+      "category": "temporal",
+      "question": "2026年端午节当天南京邮电大学图书馆开放吗？",
+      "answer": "6月19日端午节闭馆。",
+      "points": [
+        "6月19日端午节闭馆。"
+      ],
+      "sources": [
+        {
+          "doc_id": 341,
+          "quote": "6月19日（端午节）为法定节假日，图书馆闭馆"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 341,
+          "quote": "6月19日（端午节）为法定节假日，图书馆闭馆",
+          "chunk_ids": [
+            "581651a2-455c-47bf-9262-9be7cc814858"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "V2T02",
+      "category": "temporal",
+      "question": "2026年端午假期6月20日至21日图书馆几点开放、几点关闭？",
+      "answer": "8:30至22:00。",
+      "points": [
+        "8:30至22:00。"
+      ],
+      "sources": [
+        {
+          "doc_id": 341,
+          "quote": "6月20日-21日开放时间为8:30-22:00"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 341,
+          "quote": "6月20日-21日开放时间为8:30-22:00",
+          "chunk_ids": [
+            "581651a2-455c-47bf-9262-9be7cc814858"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "V2R01",
+      "category": "refusal",
+      "question": "我今年能否获得甘霖励志奖学金，最终会到账多少元？",
+      "answer": "缺少个人资格与评审结果，不能确定是否获奖及到账金额。",
+      "points": [
+        "缺少个人资格与评审结果，不能确定是否获奖及到账金额。"
+      ],
+      "refuse": true,
+      "sources": [],
+      "evidence_groups": []
+    },
+    {
+      "id": "V2R02",
+      "category": "refusal",
+      "question": "请给出2029年端午节南京邮电大学图书馆的实际开馆时间。",
+      "answer": "缺少2029年正式开放通知，不能确定。",
+      "points": [
+        "缺少2029年正式开放通知，不能确定。"
+      ],
+      "refuse": true,
+      "sources": [],
+      "evidence_groups": []
+    }
+  ]
+}

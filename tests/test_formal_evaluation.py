@@ -104,3 +104,23 @@ def test_reference_review_must_cover_every_actual_reference(formal):
     review = {'a': {'verdict': 'correct', 'points_met': [True], 'reason': 'correct', 'citations': []}}
     with pytest.raises(ValueError, match='Every actual reference'):
         scoring.summarize([case], [{'id': 'a', 'result': {'references': ['source']}}], review)
+
+
+def test_stage_comparison_requires_review_for_changed_answer(formal, tmp_path, monkeypatch):
+    comparison = importlib.import_module('compare_stage')
+    baseline, stage = tmp_path/'baseline', tmp_path/'stage'
+    for directory in [baseline,stage]:
+        (directory/'run1').mkdir(parents=True)
+    monkeypatch.setattr(comparison,'DEFAULT',baseline)
+    monkeypatch.setattr(comparison,'verify',lambda _:None)
+    formal.save(stage/'manifest.json',{'files':{}})
+    formal.save(stage/'gold.json',{'cases':[{'id':'a','category':'fact'}]})
+    formal.save(baseline/'run1/results.json',{'results':[{'id':'a','result':{'answer':'old','references':['source']}}]})
+    formal.save(baseline/'run1/reviews.json',{'cases':{'a':{'verdict':'correct'}}})
+    formal.save(stage/'run1/results.json',{'manifest_sha256':formal.digest(stage/'manifest.json'),
+        'results':[{'id':'a','result':{'answer':'new','references':['source']}}]})
+    comparison.compare(stage)
+    result = json.loads((stage/'comparison.json').read_text(encoding='utf-8'))
+    assert result['pending_semantic_review']==['a']
+    assert result['cases'][0]['after_verdict']=='pending_semantic_review'
+    assert not (stage/'run1/summary.json').exists()

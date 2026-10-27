@@ -71,6 +71,7 @@ def main():
                             abs(calc.value-Decimal(case['expected'])) <= Decimal(case.get('tolerance','0.000001')))
                     row = {'id':case['id'],'suite':suite,'correct':correct,'result':asdict(result),
                            'plan':asdict(service.last_plan),'raw_plan':getattr(service.planner,'last_raw','')}
+                    row['diagnostics'] = getattr(service,'last_diagnostics',{})
                 except Exception as exc:
                     row = {'id':case['id'],'suite':suite,'correct':False,'error':type(exc).__name__+': '+str(exc)}
             row['seconds'] = round(time.perf_counter()-started,2)

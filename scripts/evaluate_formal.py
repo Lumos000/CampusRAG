@@ -241,6 +241,7 @@ def run(directory, resume=False):
                 # No gold answer, expected value, or relevant ID is passed to the system.
                 result = service.answer(case['question'])
                 row.update(result=asdict(result), plan=asdict(service.last_plan), raw_plan=getattr(service.planner, 'last_raw', ''))
+                row['diagnostics'] = getattr(service, 'last_diagnostics', {})
             except Exception as exc:
                 row['error'] = type(exc).__name__ + ': ' + str(exc)
             if torch.cuda.is_available():

@@ -167,10 +167,22 @@ def test_service_retrieves_first_repairs_once_and_skips_final_llm(table_db):
                 'filters':[{'field_id':name,'op':'eq','value':'东馆'}]}],'output':'a'})
     dummy = Path('.')
     settings = Settings(dummy,dummy,dummy,dummy,dummy,numeric_shortcuts=False)
-    result = RAGService(settings,Index(),Generator(),repo.connection).answer('东馆面积合计多少？')
+    service = RAGService(settings,Index(),Generator(),repo.connection)
+    result = service.answer('东馆面积合计多少？')
     assert result.calculation.ok and result.calculation.value==12
     assert calls==['search','generate','generate']
     assert 'field_id' in result.numeric_verification['steps'][0]['details'][0]
+    diagnostic = service.last_diagnostics
+    assert diagnostic['semantic_correct'] is None
+    assert diagnostic['retrieved']==['table-chunk']
+    first,repair = diagnostic['attempts']
+    assert first['kind']=='initial' and first['syntax_ok'] and not first['execution_ok']
+    assert repair['kind']=='repair' and repair['feedback'] and repair['execution_ok']
+    assert first['raw_plan']!=repair['raw_plan']
+    assert repair['field_bindings'] and repair['execution']['steps']
+    assert diagnostic['citations']==result.references
+    service.answer('东馆面积合计多少？')
+    assert len(service.last_diagnostics['attempts'])==1  # Never retain a previous request.
 
 
 def test_direct_facts_use_only_one_generation(table_db):
