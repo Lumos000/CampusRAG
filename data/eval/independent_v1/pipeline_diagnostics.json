@@ -1,0 +1,1119 @@
+{
+  "method": "重建冻结日志中的前8条证据和初始上下文，不调用模型，不改变正式评分；手工正确计划仅隔离执行器能力。",
+  "formal_scores_unchanged": true,
+  "production_code_changed": false,
+  "source_matches_development_12_case_run": true,
+  "plain_prompt_token_stats": {
+    "min": 161,
+    "max": 3054,
+    "mean": 1925.8461538461538
+  },
+  "numeric_cases": [
+    {
+      "id": "C01",
+      "operation_hint": "multiply",
+      "planner_called": false,
+      "initial_plan_tokens": 413,
+      "actual_final_plan_tokens": 0,
+      "tables": [],
+      "facts": [],
+      "example": {
+        "table_id": 7,
+        "steps": [
+          {
+            "id": "a",
+            "op": "lookup",
+            "field_id": 72,
+            "filters": [
+              {
+                "field_id": 71,
+                "op": "eq",
+                "value": "甲库"
+              }
+            ]
+          },
+          {
+            "id": "b",
+            "op": "lookup",
+            "field_id": 73,
+            "filters": [
+              {
+                "field_id": 71,
+                "op": "eq",
+                "value": "甲库"
+              }
+            ]
+          },
+          {
+            "id": "c",
+            "op": "multiply",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          }
+        ],
+        "output": "c"
+      }
+    },
+    {
+      "id": "C02",
+      "operation_hint": "subtract",
+      "planner_called": true,
+      "initial_plan_tokens": 529,
+      "actual_final_plan_tokens": 128,
+      "tables": [],
+      "facts": [
+        {
+          "fact_id": "f1",
+          "field": "体满意度",
+          "raw_value": "91.32%",
+          "value": "0.9132",
+          "unit": "ratio",
+          "quote": "体满意度为91.32%",
+          "span": [
+            340,
+            351
+          ],
+          "doc_id": 130,
+          "evidence_id": "3406de34-750e-4fab-a33f-cc33b35f863d"
+        }
+      ],
+      "example": {
+        "table_id": 7,
+        "steps": [
+          {
+            "id": "a",
+            "op": "lookup",
+            "field_id": 72,
+            "filters": [
+              {
+                "field_id": 71,
+                "op": "eq",
+                "value": "甲库"
+              }
+            ]
+          },
+          {
+            "id": "b",
+            "op": "lookup",
+            "field_id": 72,
+            "filters": [
+              {
+                "field_id": 71,
+                "op": "eq",
+                "value": "乙库"
+              }
+            ]
+          },
+          {
+            "id": "c",
+            "op": "subtract",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          }
+        ],
+        "output": "c"
+      }
+    },
+    {
+      "id": "C03",
+      "operation_hint": "subtract",
+      "planner_called": true,
+      "initial_plan_tokens": 848,
+      "actual_final_plan_tokens": 138,
+      "tables": [
+        {
+          "table_id": 432,
+          "name": "第1页表1",
+          "document": "生源地国家助学贷款申请指南（2025）",
+          "periods": [
+            "2025"
+          ],
+          "columns": [
+            {
+              "field_id": 2710,
+              "name": "毕业当年（即2029年）",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2711,
+              "name": "12月20日",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2712,
+              "name": "偿还本年度9月1日至12月20日\n的利息，共111天，只需偿还利息",
+              "type": "text",
+              "unit": ""
+            }
+          ],
+          "row_count": 2,
+          "examples_only": true,
+          "examples": [
+            {
+              "row_id": 11890,
+              "cells": {
+                "2710": "2030年至2033年",
+                "2711": "每年的12月20日",
+                "2712": "偿还上一年度 12 月 21 日至本年度\n12 月 20 日的利息，只需偿还利息"
+              }
+            },
+            {
+              "row_id": 11891,
+              "cells": {
+                "2710": "2034年至2041年",
+                "2711": "每年的12月20日",
+                "2712": "一年的本金+利息"
+              }
+            }
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "fact_id": "f1",
+          "field": "年申请一笔期限",
+          "raw_value": "17年",
+          "value": "17",
+          "unit": "年",
+          "quote": "年申请一笔期限为17年",
+          "span": [
+            31,
+            42
+          ],
+          "doc_id": 257,
+          "evidence_id": "b041e5ac-5092-4d68-b210-6416a627844a"
+        }
+      ],
+      "example": {
+        "table_id": 7,
+        "steps": [
+          {
+            "id": "a",
+            "op": "lookup",
+            "field_id": 72,
+            "filters": [
+              {
+                "field_id": 71,
+                "op": "eq",
+                "value": "甲库"
+              }
+            ]
+          },
+          {
+            "id": "b",
+            "op": "lookup",
+            "field_id": 72,
+            "filters": [
+              {
+                "field_id": 71,
+                "op": "eq",
+                "value": "乙库"
+              }
+            ]
+          },
+          {
+            "id": "c",
+            "op": "subtract",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          }
+        ],
+        "output": "c"
+      }
+    },
+    {
+      "id": "C04",
+      "operation_hint": "average",
+      "planner_called": false,
+      "initial_plan_tokens": 320,
+      "actual_final_plan_tokens": 0,
+      "tables": [],
+      "facts": [],
+      "example": {
+        "table_id": 7,
+        "steps": [
+          {
+            "id": "a",
+            "op": "average",
+            "field_id": 72
+          }
+        ],
+        "output": "a"
+      }
+    },
+    {
+      "id": "C05",
+      "operation_hint": "count",
+      "planner_called": true,
+      "initial_plan_tokens": 1671,
+      "actual_final_plan_tokens": 56,
+      "tables": [
+        {
+          "table_id": 53,
+          "name": "Sheet1",
+          "document": "附件1：2026-2027学年第一学期我校开设的在线开放课程（慕课）和校内课程对照表.xlsx",
+          "periods": [
+            "2026-2027"
+          ],
+          "columns": [
+            {
+              "field_id": 204,
+              "name": "序号",
+              "type": "number",
+              "unit": ""
+            },
+            {
+              "field_id": 205,
+              "name": "学院",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 206,
+              "name": "慕课名称",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 207,
+              "name": "可替代的校内课程 / 课程代码",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 208,
+              "name": "可替代的校内课程 / 课程名称",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 209,
+              "name": "补充说明",
+              "type": "text",
+              "unit": ""
+            }
+          ],
+          "row_count": 254,
+          "examples_only": true,
+          "examples": [
+            {
+              "row_id": 5950,
+              "cells": {
+                "204": "6",
+                "205": "通信与信息工程学院",
+                "206": "光纤通信",
+                "207": "B0204103S",
+                "208": "光纤通信与数字传输",
+                "209": "学分认定仅支持课程重修"
+              }
+            },
+            {
+              "row_id": 5951,
+              "cells": {
+                "204": "6",
+                "205": "通信与信息工程学院",
+                "206": "光纤通信",
+                "207": "TX617409C",
+                "208": "光纤通信技术",
+                "209": "学分认定仅支持课程重修"
+              }
+            },
+            {
+              "row_id": 5952,
+              "cells": {
+                "204": "6",
+                "205": "通信与信息工程学院",
+                "206": "光纤通信",
+                "207": "B04060K1C",
+                "208": "光纤通信技术",
+                "209": "学分认定仅支持课程重修"
+              }
+            }
+          ]
+        },
+        {
+          "table_id": 381,
+          "name": "Sheet1",
+          "document": "附件-2026-2027学年第一学期中国大学MOOC平台慕课安排表（慕课堂）(20260911更新).xlsx",
+          "periods": [
+            "2026-2027"
+          ],
+          "columns": [
+            {
+              "field_id": 2383,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 序号",
+              "type": "number",
+              "unit": ""
+            },
+            {
+              "field_id": 2384,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 学院",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2385,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 课程名称",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2386,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 课程负责人",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2387,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 开课起止时间（年/月/日）",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2388,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 慕课堂二维码/课堂码",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2389,
+              "name": "列7",
+              "type": "text",
+              "unit": ""
+            }
+          ],
+          "row_count": 116,
+          "examples_only": true,
+          "examples": [
+            {
+              "row_id": 10886,
+              "cells": {
+                "2383": "6",
+                "2384": "通信与信息工程学院",
+                "2385": "光纤通信",
+                "2386": "沈建华",
+                "2387": "2026.8.30-2027.1.10",
+                "2388": "",
+                "2389": ""
+              }
+            },
+            {
+              "row_id": 10900,
+              "cells": {
+                "2383": "20",
+                "2384": "管理学院",
+                "2385": "质量管理",
+                "2386": "石盛林",
+                "2387": "2026年8月31日至2026年11月22日",
+                "2388": "课堂码：XCXT3W",
+                "2389": ""
+              }
+            },
+            {
+              "row_id": 10906,
+              "cells": {
+                "2383": "26",
+                "2384": "管理学院",
+                "2385": "人力资源管理",
+                "2386": "周文成",
+                "2387": "2026.9.3-2027.1",
+                "2388": "慕课堂码：XCBX4W QQ群 1108043692",
+                "2389": ""
+              }
+            }
+          ]
+        }
+      ],
+      "facts": [],
+      "example": {
+        "table_id": 53,
+        "steps": [
+          {
+            "id": "a",
+            "op": "count",
+            "filters": [
+              {
+                "field_id": 204,
+                "op": "gte",
+                "value": "10"
+              }
+            ]
+          }
+        ],
+        "output": "a"
+      }
+    },
+    {
+      "id": "C06",
+      "operation_hint": "count",
+      "planner_called": true,
+      "initial_plan_tokens": 1680,
+      "actual_final_plan_tokens": 57,
+      "tables": [
+        {
+          "table_id": 53,
+          "name": "Sheet1",
+          "document": "附件1：2026-2027学年第一学期我校开设的在线开放课程（慕课）和校内课程对照表.xlsx",
+          "periods": [
+            "2026-2027"
+          ],
+          "columns": [
+            {
+              "field_id": 204,
+              "name": "序号",
+              "type": "number",
+              "unit": ""
+            },
+            {
+              "field_id": 205,
+              "name": "学院",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 206,
+              "name": "慕课名称",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 207,
+              "name": "可替代的校内课程 / 课程代码",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 208,
+              "name": "可替代的校内课程 / 课程名称",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 209,
+              "name": "补充说明",
+              "type": "text",
+              "unit": ""
+            }
+          ],
+          "row_count": 254,
+          "examples_only": true,
+          "examples": [
+            {
+              "row_id": 5936,
+              "cells": {
+                "204": "2",
+                "205": "电子与光学工程学院",
+                "206": "模拟电子线路A",
+                "207": "B0400091S",
+                "208": "模拟电子线路A",
+                "209": "学分认定仅支持课程重修"
+              }
+            },
+            {
+              "row_id": 5937,
+              "cells": {
+                "204": "2",
+                "205": "电子与光学工程学院",
+                "206": "模拟电子线路A",
+                "207": "Q0400091S",
+                "208": "模拟电子线路A",
+                "209": "学分认定仅支持课程重修"
+              }
+            },
+            {
+              "row_id": 5938,
+              "cells": {
+                "204": "2",
+                "205": "电子与光学工程学院",
+                "206": "模拟电子线路A",
+                "207": "DG2006X0S",
+                "208": "模拟电子线路A",
+                "209": "学分认定仅支持课程重修"
+              }
+            }
+          ]
+        },
+        {
+          "table_id": 381,
+          "name": "Sheet1",
+          "document": "附件-2026-2027学年第一学期中国大学MOOC平台慕课安排表（慕课堂）(20260911更新).xlsx",
+          "periods": [
+            "2026-2027"
+          ],
+          "columns": [
+            {
+              "field_id": 2383,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 序号",
+              "type": "number",
+              "unit": ""
+            },
+            {
+              "field_id": 2384,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 学院",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2385,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 课程名称",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2386,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 课程负责人",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2387,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 开课起止时间（年/月/日）",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2388,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 慕课堂二维码/课堂码",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2389,
+              "name": "列7",
+              "type": "text",
+              "unit": ""
+            }
+          ],
+          "row_count": 116,
+          "examples_only": true,
+          "examples": [
+            {
+              "row_id": 10882,
+              "cells": {
+                "2383": "2",
+                "2384": "电子与光学工程学院",
+                "2385": "模拟电子线路A",
+                "2386": "黄丽亚",
+                "2387": "2026.8.31-2027.1.3",
+                "2388": "",
+                "2389": ""
+              }
+            },
+            {
+              "row_id": 10900,
+              "cells": {
+                "2383": "20",
+                "2384": "管理学院",
+                "2385": "质量管理",
+                "2386": "石盛林",
+                "2387": "2026年8月31日至2026年11月22日",
+                "2388": "课堂码：XCXT3W",
+                "2389": ""
+              }
+            },
+            {
+              "row_id": 10906,
+              "cells": {
+                "2383": "26",
+                "2384": "管理学院",
+                "2385": "人力资源管理",
+                "2386": "周文成",
+                "2387": "2026.9.3-2027.1",
+                "2388": "慕课堂码：XCBX4W QQ群 1108043692",
+                "2389": ""
+              }
+            }
+          ]
+        }
+      ],
+      "facts": [],
+      "example": {
+        "table_id": 53,
+        "steps": [
+          {
+            "id": "a",
+            "op": "count",
+            "filters": [
+              {
+                "field_id": 204,
+                "op": "gte",
+                "value": "10"
+              }
+            ]
+          }
+        ],
+        "output": "a"
+      }
+    },
+    {
+      "id": "C07",
+      "operation_hint": "sum",
+      "planner_called": true,
+      "initial_plan_tokens": 1666,
+      "actual_final_plan_tokens": 173,
+      "tables": [
+        {
+          "table_id": 53,
+          "name": "Sheet1",
+          "document": "附件1：2026-2027学年第一学期我校开设的在线开放课程（慕课）和校内课程对照表.xlsx",
+          "periods": [
+            "2026-2027"
+          ],
+          "columns": [
+            {
+              "field_id": 204,
+              "name": "序号",
+              "type": "number",
+              "unit": ""
+            },
+            {
+              "field_id": 205,
+              "name": "学院",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 206,
+              "name": "慕课名称",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 207,
+              "name": "可替代的校内课程 / 课程代码",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 208,
+              "name": "可替代的校内课程 / 课程名称",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 209,
+              "name": "补充说明",
+              "type": "text",
+              "unit": ""
+            }
+          ],
+          "row_count": 254,
+          "examples_only": true,
+          "examples": [
+            {
+              "row_id": 5955,
+              "cells": {
+                "204": "9",
+                "205": "管理学院",
+                "206": "战略管理",
+                "207": "B01030K5C",
+                "208": "企业战略管理",
+                "209": ""
+              }
+            },
+            {
+              "row_id": 5956,
+              "cells": {
+                "204": "9",
+                "205": "管理学院",
+                "206": "战略管理",
+                "207": "B0104062S",
+                "208": "企业战略管理",
+                "209": ""
+              }
+            },
+            {
+              "row_id": 5957,
+              "cells": {
+                "204": "9",
+                "205": "管理学院",
+                "206": "战略管理",
+                "207": "MOOC00009",
+                "208": "战略管理（任选课）",
+                "209": ""
+              }
+            }
+          ]
+        },
+        {
+          "table_id": 381,
+          "name": "Sheet1",
+          "document": "附件-2026-2027学年第一学期中国大学MOOC平台慕课安排表（慕课堂）(20260911更新).xlsx",
+          "periods": [
+            "2026-2027"
+          ],
+          "columns": [
+            {
+              "field_id": 2383,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 序号",
+              "type": "number",
+              "unit": ""
+            },
+            {
+              "field_id": 2384,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 学院",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2385,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 课程名称",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2386,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 课程负责人",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2387,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 开课起止时间（年/月/日）",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2388,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 慕课堂二维码/课堂码",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2389,
+              "name": "列7",
+              "type": "text",
+              "unit": ""
+            }
+          ],
+          "row_count": 116,
+          "examples_only": true,
+          "examples": [
+            {
+              "row_id": 10889,
+              "cells": {
+                "2383": "9",
+                "2384": "管理学院",
+                "2385": "战略管理",
+                "2386": "王娟",
+                "2387": "2026年09月01日 ~ 2026年12月31日",
+                "2388": "",
+                "2389": ""
+              }
+            },
+            {
+              "row_id": 10900,
+              "cells": {
+                "2383": "20",
+                "2384": "管理学院",
+                "2385": "质量管理",
+                "2386": "石盛林",
+                "2387": "2026年8月31日至2026年11月22日",
+                "2388": "课堂码：XCXT3W",
+                "2389": ""
+              }
+            },
+            {
+              "row_id": 10906,
+              "cells": {
+                "2383": "26",
+                "2384": "管理学院",
+                "2385": "人力资源管理",
+                "2386": "周文成",
+                "2387": "2026.9.3-2027.1",
+                "2388": "慕课堂码：XCBX4W QQ群 1108043692",
+                "2389": ""
+              }
+            }
+          ]
+        }
+      ],
+      "facts": [],
+      "example": {
+        "table_id": 53,
+        "steps": [
+          {
+            "id": "a",
+            "op": "sum",
+            "field_id": 204,
+            "filters": [
+              {
+                "field_id": 205,
+                "op": "in",
+                "value": [
+                  "管理学院",
+                  "管理学院",
+                  "管理学院"
+                ]
+              }
+            ]
+          }
+        ],
+        "output": "a"
+      }
+    },
+    {
+      "id": "C08",
+      "operation_hint": "ratio",
+      "planner_called": true,
+      "initial_plan_tokens": 1727,
+      "actual_final_plan_tokens": 122,
+      "tables": [
+        {
+          "table_id": 381,
+          "name": "Sheet1",
+          "document": "附件-2026-2027学年第一学期中国大学MOOC平台慕课安排表（慕课堂）(20260911更新).xlsx",
+          "periods": [
+            "2026-2027"
+          ],
+          "columns": [
+            {
+              "field_id": 2383,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 序号",
+              "type": "number",
+              "unit": ""
+            },
+            {
+              "field_id": 2384,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 学院",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2385,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 课程名称",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2386,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 课程负责人",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2387,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 开课起止时间（年/月/日）",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2388,
+              "name": "南京邮电大学2026-2027学年第一学期中国大学MOOC课程安排表（慕课堂） / 慕课堂二维码/课堂码",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 2389,
+              "name": "列7",
+              "type": "text",
+              "unit": ""
+            }
+          ],
+          "row_count": 116,
+          "examples_only": true,
+          "examples": [
+            {
+              "row_id": 10889,
+              "cells": {
+                "2383": "9",
+                "2384": "管理学院",
+                "2385": "战略管理",
+                "2386": "王娟",
+                "2387": "2026年09月01日 ~ 2026年12月31日",
+                "2388": "",
+                "2389": ""
+              }
+            },
+            {
+              "row_id": 10900,
+              "cells": {
+                "2383": "20",
+                "2384": "管理学院",
+                "2385": "质量管理",
+                "2386": "石盛林",
+                "2387": "2026年8月31日至2026年11月22日",
+                "2388": "课堂码：XCXT3W",
+                "2389": ""
+              }
+            },
+            {
+              "row_id": 10906,
+              "cells": {
+                "2383": "26",
+                "2384": "管理学院",
+                "2385": "人力资源管理",
+                "2386": "周文成",
+                "2387": "2026.9.3-2027.1",
+                "2388": "慕课堂码：XCBX4W QQ群 1108043692",
+                "2389": ""
+              }
+            }
+          ]
+        },
+        {
+          "table_id": 53,
+          "name": "Sheet1",
+          "document": "附件1：2026-2027学年第一学期我校开设的在线开放课程（慕课）和校内课程对照表.xlsx",
+          "periods": [
+            "2026-2027"
+          ],
+          "columns": [
+            {
+              "field_id": 204,
+              "name": "序号",
+              "type": "number",
+              "unit": ""
+            },
+            {
+              "field_id": 205,
+              "name": "学院",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 206,
+              "name": "慕课名称",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 207,
+              "name": "可替代的校内课程 / 课程代码",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 208,
+              "name": "可替代的校内课程 / 课程名称",
+              "type": "text",
+              "unit": ""
+            },
+            {
+              "field_id": 209,
+              "name": "补充说明",
+              "type": "text",
+              "unit": ""
+            }
+          ],
+          "row_count": 254,
+          "examples_only": true,
+          "examples": [
+            {
+              "row_id": 5955,
+              "cells": {
+                "204": "9",
+                "205": "管理学院",
+                "206": "战略管理",
+                "207": "B01030K5C",
+                "208": "企业战略管理",
+                "209": ""
+              }
+            },
+            {
+              "row_id": 5956,
+              "cells": {
+                "204": "9",
+                "205": "管理学院",
+                "206": "战略管理",
+                "207": "B0104062S",
+                "208": "企业战略管理",
+                "209": ""
+              }
+            },
+            {
+              "row_id": 5957,
+              "cells": {
+                "204": "9",
+                "205": "管理学院",
+                "206": "战略管理",
+                "207": "MOOC00009",
+                "208": "战略管理（任选课）",
+                "209": ""
+              }
+            }
+          ]
+        }
+      ],
+      "facts": [],
+      "example": {
+        "table_id": 381,
+        "steps": [
+          {
+            "id": "a",
+            "op": "sum",
+            "field_id": 2383,
+            "filters": [
+              {
+                "field_id": 2384,
+                "op": "in",
+                "value": [
+                  "管理学院",
+                  "管理学院",
+                  "管理学院"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "b",
+            "op": "lookup",
+            "field_id": 2383,
+            "scope": "total"
+          },
+          {
+            "id": "c",
+            "op": "ratio",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          }
+        ],
+        "output": "c"
+      }
+    }
+  ],
+  "executor_probes": {
+    "C06_correct_eq": {
+      "ok": true,
+      "value": "10",
+      "unit": "项",
+      "error": "",
+      "repairable": false
+    },
+    "C07_correct_in": {
+      "ok": false,
+      "value": "None",
+      "unit": "",
+      "error": "筛选对象重复，无法唯一确定匹配数量：光纤通信",
+      "repairable": false
+    },
+    "C07_equivalent_eq_add": {
+      "ok": true,
+      "value": "6",
+      "unit": "项",
+      "error": "",
+      "repairable": false
+    },
+    "C08_eq_count_ratio": {
+      "ok": true,
+      "value": "2.362204724409448818897637795",
+      "unit": "%",
+      "error": "",
+      "repairable": false
+    },
+    "C01_literal_hours": {
+      "ok": false,
+      "error": "常数或单位没有问题原文支持"
+    }
+  }
+}
