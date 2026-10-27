@@ -317,7 +317,9 @@ def render_calculation(result):
     value = result.value
     if value.as_tuple().exponent < -6:
         value = value.quantize(Decimal('0.000001'),rounding=ROUND_HALF_UP)
-    return f'结果为{number(value)}{result.unit}。算式：{result.expression}。'
+    bounds = {d.get('comparison') for d in result.details if d.get('comparison') in {'gte','gt','lte','lt'}}
+    qualifier = ('按下限标准计算，' if bounds<={'gte','gt'} else '按上限标准计算，' if bounds<={'lte','lt'} else '按所引界限计算，') if bounds else ''
+    return f'{qualifier}结果为{number(value)}{result.unit}。算式：{result.expression}。'
 
 
 def eligible(requirement, selected):

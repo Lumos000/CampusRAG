@@ -9,11 +9,28 @@ from campus_rag.tools.numbers import convert_unit
 from campus_rag.types import CalculationResult, Evidence, FilterSpec, OperandSpec, QueryPlan
 from campus_rag.tools.temporal import matches_period, question_periods
 from campus_rag.ingest.navigation import navigation_table_ids
-from campus_rag.database.normalization import compact, quantity, VERSION
+from campus_rag.database.normalization import compact, quantity, VERSION, header_unit, field_label, year_header
 
 
 class PlanError(ValueError):
     """Only schema/plan mistakes are repairable; missing evidence is not."""
+
+
+class QuestionConstraintError(PlanError):
+    """An executable structure does not match explicit question constraints."""
+
+
+def _field_question_score(column,question,values=()):
+    name = compact(field_label(column.get('original_name',column.get('name',''))))
+    name = re.sub(r'\([^)]*\)','',name)
+    stem = re.sub(r'(?:名称|名字|类别|类型)$','',name)
+    query = compact(question)
+    adjacent = len(stem)>1 and any(re.search(re.escape(stem)+r'(?:名称)?(?:为|等于|是)?[“"‘\']?'+re.escape(compact(v)),query) for v in values)
+    return (100 if adjacent else 0)+(len(name)+10 if len(name)>1 and name in query else 0)+(len(stem) if len(stem)>1 and stem in query else 0)
+
+
+def _legal_fields(columns):
+    return '；合法字段：'+','.join(str(fid)+':'+c['original_name']+'('+_field_role(c)+','+(c['unit'] or '未标单位')+')' for fid,c in columns.items())
 
 
 def _object_key(value):
@@ -35,7 +52,7 @@ def _object_mentioned(value, question):
 
 
 def _field_role(column, values=()):
-    name = compact(column.get('original_name',column.get('name','')))
+    name = compact(field_label(column.get('original_name',column.get('name',''))))
     dtype = column.get('data_type',column.get('type',''))
     if re.search(r'序号|编号|代码|学号|工号|^id$',name):
         return 'identifier'
@@ -130,7 +147,7 @@ class StructuredQueryEngine:
                 raise ValueError('证据不足，未生成有效计算步骤')
             if plan.table_id is not None:
                 if plan.table_id not in table_ids or plan.table_id in self.navigation_tables:
-                    raise PlanError('table_id不在实际候选Schema内')
+                    raise PlanError('table_id不在实际候选Schema内；合法table_id：'+','.join(map(str,table_ids)))
                 table, columns, rows = self._step_table(plan.table_id,plan.time_range)
                 self._check_competing_tables(table,columns,rows,table_ids,plan.time_range,question)
             else:
@@ -145,6 +162,10 @@ class StructuredQueryEngine:
                     value,unit,expression = self._step_arithmetic(op,operands)
                     value_record = {'value':value,'unit':unit,'expression':expression,
                                     'details':[d for v in operands for d in v['details']]}
+                    if op in {'add','sum','subtract','average'} and all(v.get('per_unit')==operands[0].get('per_unit') for v in operands) and operands[0].get('per_unit'):
+                        value_record['per_unit'] = operands[0]['per_unit']
+                    if op=='multiply' and any(v.get('per_unit') for v in operands):
+                        value_record['expanded_period'] = True
                 elif 'literal' in step:
                     if op!='lookup' or set(step)!={'id','op','literal','unit'}:
                         raise PlanError(sid+': 问题常数只能使用lookup和literal、unit')
@@ -153,8 +174,12 @@ class StructuredQueryEngine:
                     if op!='lookup' or set(step)-{'id','op','fact_id'} or step['fact_id'] not in facts:
                         raise PlanError(sid+': fact_id不在已核验正文事实中')
                     fact = facts[step['fact_id']]
+                    self._check_fact_scope(fact,question)
                     value_record = {'value':Decimal(fact['value']),'unit':fact['unit'],
                                     'expression':fact['value'],'details':[fact]}
+                    period = re.fullmatch(r'每(小时|分钟|天|周|月|年|学期|学年)',fact.get('scope',{}).get('period',''))
+                    if period and '/' not in fact['unit']:
+                        value_record['per_unit'] = period[1]
                 else:
                     if table is None:
                         raise PlanError(sid+': 缺少真实table_id')
@@ -170,6 +195,8 @@ class StructuredQueryEngine:
                         scope = step.get('scope','detail')
                         selected = [r for r in selected if r['is_total']==(scope=='total')]
                     selected = self._step_filter(selected,columns,step.get('filters',[]),question)
+                    if any(r.get('year_unknown') for r in selected):
+                        raise ValueError(sid+': 匹配记录年份缺失，无法确认统计范围')
                     if not selected:
                         raise ValueError(sid+': 筛选后没有完整匹配记录，证据不足')
                     if 'expected_count' in step and len(selected)!=step['expected_count']:
@@ -182,7 +209,7 @@ class StructuredQueryEngine:
                         continue
                     field = step.get('field_id')
                     if (op!='count' or field is not None) and field not in columns:
-                        raise PlanError(sid+': field_id不在所选表格Schema内')
+                        raise PlanError(sid+': field_id不在所选表格Schema内'+_legal_fields(columns))
                     if op in {'sum','average'} and _field_role(columns[field]) in {'identifier','time'}:
                         raise PlanError(sid+': 标识或时间字段不可求和或平均，请选择度量字段或使用count统计记录')
                     details = []
@@ -228,14 +255,17 @@ class StructuredQueryEngine:
                         needed.add(step['rows'])
             if needed!={step['id'] for step in plan.steps}:
                 raise PlanError('存在未参与最终结果的步骤')
-            self._check_question_operation(plan,question,result)
+            try:
+                self._check_question_operation(plan,question,result)
+            except PlanError as exc:
+                raise QuestionConstraintError('问题约束：'+str(exc)) from exc
             # Include every executed source, including intermediate computations.
             used = [d for entry in trace for d in entry.get('details',[])]
             if table is not None:
                 scope_details = result['details']
                 final = plan.steps[-1]
                 if final['op']=='ratio' and isinstance(final['inputs'][0],str) and any(
-                    s['id']==final['inputs'][0] and s['op'] in {'sum','add','average'} for s in plan.steps):
+                    s['id']==final['inputs'][0] and s['op'] in {'sum','add','average','count'} for s in plan.steps):
                     scope_details = values[final['inputs'][0]]['details']
                 self._check_requested_objects(rows,columns,question,scope_details)
             unique = {(d['table_id'],d['row_id'],d.get('cell_id')):d for d in used if 'table_id' in d}
@@ -268,10 +298,23 @@ class StructuredQueryEngine:
             cells = {c['column_id']:dict(c) for c in self.connection.execute('SELECT * FROM table_cells WHERE row_id=?',(row['id'],))}
             if len(cells)!=len(columns):
                 raise ValueError('表格存在缺失单元格，需要离线复核')
+            for fid,cell in cells.items():
+                if compact(cell['raw_value'])!=cell['normalized_value']:
+                    raise ValueError('单元格原始值与规范化值不一致，需要离线复核')
+                if columns[fid]['data_type']=='number':
+                    expected,unit = quantity(cell['raw_value'],header_unit(columns[fid]['original_name']) or table['unit'])
+                    stored = Decimal(cell['numeric_value']) if cell['numeric_value'] is not None else None
+                    if expected!=stored or (expected is not None and unit!=cell['unit']):
+                        raise ValueError('数值缺失或单位规范化与原始数据不一致，需要离线复核')
+            actual_periods = {p for fid,cell in cells.items() if year_header(columns[fid]['original_name'])
+                for p in question_periods(cell['raw_value'])}
+            if actual_periods!=set(meta['periods']):
+                raise ValueError('年份规范化与原始数据不一致，需要离线复核')
             # A year column imposes an additional row-level restriction.
             if periods and meta['periods'] and not any(p in meta['periods'] for p in periods):
                 continue
-            rows.append({**dict(row),**meta,'cells':cells})
+            rows.append({**dict(row),**meta,'cells':cells,
+                'year_unknown':bool(periods and any(year_header(c['original_name']) for c in columns.values()) and not actual_periods)})
         return dict(table),columns,rows
 
     def _check_competing_tables(self,table,columns,rows,table_ids,periods,question):
@@ -289,28 +332,50 @@ class StructuredQueryEngine:
 
     @staticmethod
     def _check_requested_objects(rows,columns,question,details):
-        if not re.search(r'和|与|、|及',question):
-            return
+        candidates = []
         for fid,col in columns.items():
-            if col['data_type']!='text':
+            if col['data_type']!='text' or _field_role(col) in {'identifier','time'}:
                 continue
-            labels = [r['cells'][fid]['normalized_value'] for r in rows if not r['is_total']]
-            if len(labels)!=len(set(labels)):
-                continue
-            required = set()
-            for row in rows:
-                text = row['cells'][fid]['normalized_value']
-                core = _object_key(text)
-                if not row['is_total'] and len(core)>=2 and (text in compact(question) or core in compact(question)):
-                    required.add(row['id'])
-            actual = {d['row_id'] for d in details if 'row_id' in d}
-            missing = required-actual
-            if len(required)>1 and missing:
-                labels = [r['cells'][fid]['raw_value'] for r in rows if r['id'] in missing]
-                raise PlanError('计划遗漏问题明确列举的筛选对象：'+'、'.join(labels))
-            detail_ids = {r['id'] for r in rows if not r['is_total']}
-            if len(required)>1 and (actual & detail_ids)-required:
-                raise PlanError('计划包含问题列举范围之外的明细对象')
+            labels = {r['cells'][fid]['normalized_value'] for r in rows if not r['is_total']
+                and _object_mentioned(r['cells'][fid]['normalized_value'],question)}
+            if labels:
+                required = {r['id'] for r in rows if not r['is_total'] and r['cells'][fid]['normalized_value'] in labels}
+                candidates.append((len(labels),_field_question_score(col,question,labels),fid,required,labels))
+        if not candidates:
+            return
+        # More complete object coverage and explicit field names disambiguate
+        # repeated categories from another column containing a similar label.
+        best = max((c[0],c[1]) for c in candidates)
+        choices = [c for c in candidates if c[:2]==best]
+        if len({tuple(sorted(c[3])) for c in choices})>1:
+            raise QuestionConstraintError('问题约束：对象可绑定多个字段，统计范围不明确'+_legal_fields(columns))
+        _,_,fid,required,labels = choices[0]
+        actual = {d['row_id'] for d in details if 'row_id' in d}
+        if required-actual:
+            raise QuestionConstraintError('问题约束：计划未覆盖列举对象的全部匹配记录：'+'、'.join(sorted(labels)))
+        detail_ids = {r['id'] for r in rows if not r['is_total']}
+        if (actual & detail_ids)-required:
+            raise QuestionConstraintError('问题约束：包含列举对象范围之外的记录，应核对筛选字段'+_legal_fields(columns))
+
+    @staticmethod
+    def _check_fact_scope(fact,question):
+        scope = fact.get('scope',{})
+        pattern = r'第[一二三四五六七八九十百\d]+条'
+        excluded = set(re.findall(pattern,' '.join(re.findall(r'(?:不考虑|不含|排除)[^，。；]*',question))))
+        required = set(re.findall(pattern,question))-excluded
+        if scope.get('clause') in excluded or (required and scope.get('clause') not in required):
+            raise QuestionConstraintError('问题约束：fact_id条款与问题指定范围不符，应选择'+ '、'.join(sorted(required)))
+        comparison = fact.get('comparison','eq')
+        upper = bool(re.search(r'上限|最高|最多|至多|不超过',question))
+        lower = bool(re.search(r'下限|最低|至少|不少于|不低于|门槛',question))
+        if upper and not lower and comparison in {'gte','gt'}:
+            raise QuestionConstraintError('问题约束：问题要求上限，不能选择下限fact_id')
+        if lower and not upper and comparison in {'lte','lt'}:
+            raise QuestionConstraintError('问题约束：问题要求下限，不能选择上限fact_id')
+        if comparison!='eq' and not re.search(r'上限|下限|最高|最低|至少|至多|不少于|不超过|不低于|门槛|标准|要求|界限',question):
+            raise ValueError('证据只提供界限或标准，缺少实际发生值，不能据此确定实际结果')
+        if re.search(r'示例|例如|假设|举例',scope.get('context','')) and re.search(r'我|本人|个人',question) and not re.search(r'示例|例如|假设|举例|仅按|只按|只作',question):
+            raise ValueError('公共资料中的示例不能代替个人实际计算条件')
 
     @staticmethod
     def _check_question_operation(plan,question,result):
@@ -343,24 +408,27 @@ class StructuredQueryEngine:
         for spec in filters:
             fid,op = spec['field_id'],spec['op']
             if fid not in columns:
-                raise PlanError('筛选field_id不在所选表格中')
+                raise PlanError('筛选field_id不在所选表格中'+_legal_fields(columns))
             targets = spec['value'] if op=='in' else [spec['value']]
             matches = set()
             for target in targets:
                 text = compact(target)
                 if op in {'eq','in','contains'}:
-                    core = _object_key(text)
-                    if text not in compact(question) and (not core or core not in compact(question)) and text not in {'合计','总计','小计'}:
+                    if not _object_mentioned(text,question) and text not in {'合计','总计','小计'}:
                         raise PlanError('筛选对象未在问题中出现：'+str(target))
+                    if op=='contains' and not re.search(r'包含|含有',question):
+                        raise QuestionConstraintError('问题约束：不能把明确对象擅自扩大为contains模糊匹配')
+                    alternatives = [cid for cid,c in columns.items() if c['data_type']=='text' and
+                        any(text==r['cells'][cid]['normalized_value'] for r in rows)]
+                    if alternatives and _field_question_score(columns[fid],question,[text])<max(_field_question_score(columns[cid],question,[text]) for cid in alternatives):
+                        raise QuestionConstraintError('问题约束：筛选字段与问题的对象类型不符'+_legal_fields(columns))
                     found = [r for r in selected if (text in r['cells'][fid]['normalized_value'] if op=='contains' else text==r['cells'][fid]['normalized_value'])]
                     if not found:
                         raise PlanError('筛选对象未匹配真实记录：'+str(target))
-                    # "in" enumerates specific objects, each must map to one record.
-                    if op=='in' and len(found)!=1:
-                        raise ValueError('筛选对象重复，无法唯一确定匹配数量：'+str(target))
+                    # A category may match many rows. Only lookup must be unique.
                 else:
                     try:
-                        matched = re.search(r'(?<!\d)'+re.escape(str(target))+r'\s*(万元|亿元|元|万人|千人|人|平方米|㎡|台|本|项|个|年|天|小时|%)?',question)
+                        matched = re.search(r'(?<![\d.])'+re.escape(str(target))+r'(?![\d.])\s*(万元|亿元|元|万人|千人|人|平方米|㎡|台|本|项|个|年|天|小时|%)?',question)
                         raw_threshold = matched.group() if matched else str(target)
                         threshold,threshold_unit = quantity(raw_threshold,columns[fid]['unit'])
                         if threshold is None:
@@ -371,8 +439,12 @@ class StructuredQueryEngine:
                         raise PlanError('数值筛选条件不是有效数字') from exc
                     if not threshold.is_finite():
                         raise PlanError('数值筛选条件非有限数值')
-                    if not re.search(r'(?<!\d)'+re.escape(str(target))+r'(?!\d)',question):
+                    if not re.search(r'(?<![\d.])'+re.escape(str(target))+r'(?![\d.])',question):
                         raise PlanError('筛选阈值未在问题中出现')
+                    relations = {'大于等于':'gte','不少于':'gte','至少':'gte','小于等于':'lte','不超过':'lte','至多':'lte','大于':'gt','超过':'gt','小于':'lt','低于':'lt'}
+                    relation = re.search('('+'|'.join(relations)+r')\s*'+re.escape(str(target))+r'(?![\d.])',question)
+                    if relation is None or relations[relation[1]]!=op:
+                        raise QuestionConstraintError('问题约束：筛选比较关系与原问题不符，不得改变上下界')
                     found = []
                     for row in selected:
                         cell = row['cells'][fid]
@@ -431,6 +503,11 @@ class StructuredQueryEngine:
         if op in {'add','sum','subtract','average','ratio'} and len(set(units))!=1:
             raise ValueError('操作数单位不一致')
         if op in {'add','sum','subtract','average'}:
+            if len({x.get('per_unit') for x in operands})>1 and not (
+                    op=='subtract' and len(operands)==2 and
+                    sum(bool(x.get('per_unit')) for x in operands)==1 and
+                    any(x.get('expanded_period') for x in operands)):
+                raise QuestionConstraintError('问题约束：不同周期数或周期范围不能直接加减，需先用问题给定周期数计算实际用量')
             value = numbers[0]-numbers[1] if op=='subtract' else sum(numbers,Decimal(0))
             unit = units[0]
             if op=='average':
@@ -444,6 +521,15 @@ class StructuredQueryEngine:
                 value,unit = value*100,'%'
         else:
             value,unit = Decimal(1),''
+            periodic = [x for x in operands if x.get('per_unit')]
+            if periodic:
+                if len(operands)!=2 or len(periodic)!=1:
+                    raise ValueError('周期用量仅支持乘以明确的周期数')
+                rate = periodic[0]
+                duration = operands[1] if operands[0] is rate else operands[0]
+                if duration['unit']!=rate['per_unit']:
+                    raise ValueError('周期单位不一致，不能猜测换算')
+                return rate['value']*duration['value'],rate['unit'],' × '.join('('+x['expression']+')' for x in operands)
             for n,u in zip(numbers,units):
                 value *= n
                 if u in {'','ratio'}:

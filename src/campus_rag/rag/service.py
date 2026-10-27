@@ -142,7 +142,10 @@ class RAGService:
                 return self._refuse(question,'计划校验失败：'+error)
             calculation = self.structured.execute_steps(plan,allowed_ids,question,facts)
             diagnostic.update(execution_ok=calculation.ok,repairable=calculation.repairable,
-                execution=asdict(calculation),failure_stage=None if calculation.ok else 'execution_validation')
+                execution_completed=len(calculation.steps)==len(plan.steps),
+                question_constraints_ok=True if calculation.ok else False if calculation.error.startswith('问题约束：') else None,
+                execution=asdict(calculation),failure_stage=None if calculation.ok else
+                'question_validation' if calculation.error.startswith('问题约束：') else 'execution_validation')
             if calculation.ok:
                 return AnswerResult(question,render_calculation(calculation),build_references(calculation.evidence),
                     calculation.evidence,calculation,{'verified':True,'used_template':True,

@@ -17,6 +17,16 @@ def compact(value):
     return re.sub(r'\s+', '', str(value)).replace('（','(').replace('）',')').replace('％','%').lower()
 
 
+def field_label(header):
+    """Use the leaf of a flattened multi-level header, not its table title."""
+    return re.split(r'\s+/\s+',str(header))[-1]
+
+
+def year_header(header):
+    label = re.sub(r'\([^)]*\)','',compact(field_label(header)))
+    return bool(re.search(r'(?:年份|年度|学年)$',label))
+
+
 def header_unit(header):
     text = compact(header)
     match = re.search(r'\(([^()]+)\)', text)
@@ -58,7 +68,7 @@ def normalize_table(connection, table_id):
         values = [c[0] for c in connection.execute('SELECT raw_value FROM table_cells WHERE row_id=? ORDER BY column_id',(row['id'],))]
         labels = [compact(v) for v in values]
         total = any(re.fullmatch(r'合计|总计|小计|总额|总数|总面积',v) for v in labels)
-        year_columns = {c['id'] for c in columns if re.search(r'年份|年度|学年',compact(c['original_name']))}
+        year_columns = {c['id'] for c in columns if year_header(c['original_name'])}
         year_values = [c['raw_value'] for c in connection.execute('SELECT column_id,raw_value FROM table_cells WHERE row_id=?',(row['id'],)) if c['column_id'] in year_columns]
         periods = list(dict.fromkeys(p for v in year_values for p in question_periods(v)))
         row_metadata[str(row['id'])] = {'is_total':total,'periods':periods}
@@ -68,7 +78,7 @@ def normalize_table(connection, table_id):
         parsed = [quantity(c['raw_value'],default) for c in cells]
         nonempty = sum(bool(c['raw_value'].strip()) for c in cells)
         numeric = sum(v is not None for v,_ in parsed)
-        is_year = bool(re.fullmatch(r'.*(?:年份|年度|学年|立项年度)',compact(col['original_name'])))
+        is_year = year_header(col['original_name'])
         dtype = 'year' if is_year else 'number' if numeric and numeric >= max(1,nonempty/2) else 'text'
         units = {u for v,u in parsed if v is not None and u}
         unit = next(iter(units)) if len(units)==1 else default if not units else ''

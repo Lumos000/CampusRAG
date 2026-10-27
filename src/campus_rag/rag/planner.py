@@ -42,6 +42,12 @@ add,subtract,multiply,divide,ratio的inputs引用前一步id；ratio是百分比
 完整JSON（table_id、steps；系统固定取最后一步，output可省略）："""
 
 
+def text_plan_context(operation,payload):
+    tables, facts = payload.get('tables',[]),payload.get('facts',[])
+    return bool(facts and (not tables or (operation not in {'count','ratio'} and not any(
+        c.get('role')=='measure' and c['unit'] for t in tables for c in t['columns']))))
+
+
 def operation_hint(question):
     if re.search(r'占|百分比',question):
         return 'ratio'
@@ -77,7 +83,7 @@ def step_example(operation,context='',question=''):
     tables, facts = payload.get('tables',[]), payload.get('facts',[])
     measures = lambda t:[c for c in t['columns'] if c.get('role')=='measure' and c['unit']]
     # Text-only evidence, or a table with no measure suitable for arithmetic.
-    if facts and (not tables or (operation not in {'count','ratio'} and not any(measures(t) for t in tables))):
+    if text_plan_context(operation,payload):
         desired = re.search(r'多少\s*(元|小时|人|个|年)',question)
         candidates = [f for f in facts if f['unit'].startswith(desired[1])] if desired else facts
         candidates = candidates or facts
@@ -96,6 +102,18 @@ def step_example(operation,context='',question=''):
         candidates = sorted(candidates,key=subject_score,reverse=True)
         a = {'id':'a','op':'lookup','fact_id':candidates[0]['fact_id']}
         steps = [a]
+        period = re.search(r'(?:连续|累计|为期|共计)(\d+|[一二两三四五六七八九十]+)(周|月|天|学期)',question)
+        recurring = next((f for f in candidates if period and f.get('scope',{}).get('period')=='每'+period[2]),None)
+        cap = next((f for f in candidates if recurring and f['unit']==recurring['unit'] and
+            f.get('scope',{}).get('period') and f['scope']['period']!=recurring['scope']['period']),None)
+        if operation=='subtract' and recurring and cap:
+            from campus_rag.tools.numbers import chinese_integer
+            value = period[1] if period[1].isdigit() else str(chinese_integer(period[1]))
+            return _example_json(None,[{'id':'rate','op':'lookup','fact_id':recurring['fact_id']},
+                {'id':'periods','op':'lookup','literal':value,'unit':period[2]},
+                {'id':'used','op':'multiply','inputs':['rate','periods']},
+                {'id':'cap','op':'lookup','fact_id':cap['fact_id']},
+                {'id':'result','op':'subtract','inputs':['cap','used']}])
         if operation=='multiply' and '/' in candidates[0]['unit']:
             denominator = candidates[0]['unit'].rsplit('/',1)[1]
             constant = re.search(r'(\d+(?:\.\d+)?|[一二两三四五六七八九十]+)\s*'+re.escape(denominator),question)
@@ -138,6 +156,10 @@ def step_example(operation,context='',question=''):
     if operation=='ratio':
         a['op'] = 'count' if count else 'sum'
         b = {'id':'b','op':'count'} if count else {'id':'b','op':'sum','field_id':columns[0]['field_id']}
+        if count and chosen:
+            # Counting complete rows uses a real bound field for provenance;
+            # its values are never summed and no example-row denominator is used.
+            a['field_id'] = b['field_id'] = chosen['field_id']
         if not count and table.get('total_row_count')==1:
             b.update(op='lookup',scope='total')
         steps += [b,{'id':'c','op':'ratio','inputs':['a','b']}]
@@ -163,12 +185,19 @@ class QueryPlanner:
             '输入id必须先定义，不能引用自身；问题明确给定的常数可以写literal。\n错误：'+error+
             '\n上次完整计划：'+json.dumps(previous,ensure_ascii=False))
         hint = operation_hint(question)
+        payload = json.loads(context) if context else {}
+        text_only = text_plan_context(hint,payload)
+        if text_only:
+            context = json.dumps({'facts':payload['facts']},ensure_ascii=False)
         self.last_prompt = STEP_PROMPT.format(question=question,context=context,repair=repair,
             hint=hint,example=step_example(hint,context,question))
         raw = self.generator.generate(self.last_prompt,
             thinking=False,temperature=0.0,max_new_tokens=1024)
         self.last_raw = raw
-        return parse_plan(raw,require_final=True)
+        plan = parse_plan(raw,require_final=True)
+        if text_only and (plan.table_id is not None or any(not any(k in s for k in ('fact_id','literal','inputs')) for s in plan.steps)):
+            raise ValueError('正文计划只能使用提供的fact_id和问题常数，没有可绑定的表格Schema')
+        return plan
 
     def plan(self, question: str, context: str = '') -> QueryPlan:
         prompt = PLAN_PROMPT.format(question=question,context=context,example=json.dumps(EXAMPLE,ensure_ascii=False))

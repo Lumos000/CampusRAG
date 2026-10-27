@@ -103,6 +103,93 @@ def test_duration_measure_is_distinct_from_calendar_time():
     assert _field_role({'original_name':'年度预算（元）','data_type':'number','unit':'元'})=='measure'
 
 
+def test_repeated_categories_require_full_scope_but_lookup_is_unique(table_db):
+    repo,_,_,_=table_db
+    doc=repo.add_document(SourceDocument('项目清单','https://example.edu/items',sha256='items'))
+    table=ParsedTable('项目清单',['类别','项目','金额（元）'],[
+        ['研究类','甲项目','7'],['研究类','乙项目','11'],['服务类','丙项目','13'],['其他类','丁项目','19']])
+    tid=repo.add_table(doc,table,[[normalize_cell(v) for v in row] for row in table.rows])
+    category,item,amount=[r['id'] for r in repo.connection.execute('SELECT id FROM table_columns WHERE table_id=? ORDER BY column_index',(tid,))]
+    engine=StructuredQueryEngine(repo.connection)
+    select={'field_id':category,'op':'in','value':['研究类','服务类']}
+    p=plan(tid,[{'id':'a','op':'sum','field_id':amount,'filters':[select]}],year='')
+    result=engine.execute_steps(p,[tid],'研究类和服务类金额合计多少元？')
+    assert result.ok and result.value==31 and len(result.details)==3
+    p.steps[0]['filters'][0]['value']=['研究类']
+    result=engine.execute_steps(p,[tid],'研究类和服务类金额合计多少元？')
+    assert not result.ok and result.repairable and '全部匹配' in result.error
+    p.steps[0].update(op='lookup')
+    result=engine.execute_steps(p,[tid],'研究类的金额是多少元？')
+    assert not result.ok and 'lookup匹配多个' in result.error
+    p=plan(tid,[{'id':'a','op':'count','filters':[select]}, {'id':'b','op':'count'},
+        {'id':'c','op':'ratio','inputs':['a','b']}],year='')
+    result=engine.execute_steps(p,[tid],'研究类和服务类的记录占全部记录百分比多少？')
+    assert result.ok and result.value==75
+
+
+def test_multilevel_title_does_not_make_entity_column_a_year(table_db):
+    repo,_,_,_=table_db
+    doc=repo.add_document(SourceDocument('2028-2029学年课程安排','https://example.edu/classes',sha256='classes'))
+    table=ParsedTable('课程安排',['2028-2029学年 / 课程名称','2028-2029学年 / 年份','人数（人）'],
+        [['写作','2028','6'],['设计','','9']])
+    tid=repo.add_table(doc,table,[[normalize_cell(v) for v in row] for row in table.rows])
+    engine=StructuredQueryEngine(repo.connection)
+    cols=engine.schema_context([tid],[])[0]['columns']
+    assert cols[0]['role']=='entity' and cols[1]['role']=='time'
+    result=engine.execute_steps(plan(tid,[{'id':'a','op':'sum','field_id':cols[2]['field_id']}],year='2028'),[tid],'2028年人数合计多少？')
+    assert not result.ok and '年份缺失' in result.error
+
+
+def test_explicit_object_type_disambiguates_same_label_in_two_fields(table_db):
+    repo,_,_,_=table_db
+    doc=repo.add_document(SourceDocument('项目映射','https://example.edu/mapping',sha256='mapping'))
+    table=ParsedTable('项目映射',['主项目名称','对应项目 / 子项目名称'],[
+        ['通信','网络'],['通信','传输'],['设计','通信']])
+    tid=repo.add_table(doc,table,[[normalize_cell(v) for v in row] for row in table.rows])
+    parent,child=[r['id'] for r in repo.connection.execute('SELECT id FROM table_columns WHERE table_id=? ORDER BY column_index',(tid,))]
+    engine=StructuredQueryEngine(repo.connection)
+    q='主项目“通信”对应的子项目记录共有几个？'
+    p=plan(tid,[{'id':'a','op':'count','filters':[{'field_id':parent,'op':'eq','value':'通信'}]}],year='')
+    result=engine.execute_steps(p,[tid],q)
+    assert result.ok and result.value==2
+    p.steps[0]['filters'][0]['field_id']=child
+    result=engine.execute_steps(p,[tid],q)
+    assert not result.ok and result.repairable and '对象类型' in result.error
+
+
+def test_raw_normalized_mismatch_and_schema_feedback(table_db):
+    repo,tid,name,area=table_db
+    engine=StructuredQueryEngine(repo.connection)
+    result=engine.execute_steps(plan(tid,[{'id':'a','op':'sum','field_id':999999}]),[tid],'面积合计多少？')
+    assert not result.ok and result.repairable and f'{area}:面积' in result.error
+    repo.connection.execute('UPDATE table_cells SET numeric_value=? WHERE column_id=?',('999',area))
+    result=engine.execute_steps(plan(tid,[{'id':'a','op':'sum','field_id':area}]),[tid],'面积合计多少？')
+    assert not result.ok and not result.repairable and '原始数据' in result.error
+
+
+def test_text_cycles_are_expanded_before_comparison(table_db):
+    repo,_,_,_=table_db
+    facts=NumericEngine.text_facts([Evidence('hours','学生每周不超过6小时，每月不超过30小时。',1,1,'工时','https://example.edu/hours')])
+    q='连续三周每周按上限工作，与每月上限相比还剩多少小时？'
+    p=parse_plan(step_example('subtract',json.dumps({'facts':[{k:v for k,v in f.items() if k!='evidence'} for f in facts.values()]}),q))
+    assert len(p.steps)==5
+    result=StructuredQueryEngine(repo.connection).execute_steps(p,[],q,facts)
+    assert result.ok and result.value==12 and result.unit=='小时'
+    assert result.steps[1]['source']['quote']=='三周'
+
+
+def test_facts_cannot_cross_requested_clause_or_become_actual_values(table_db):
+    repo,_,_,_=table_db
+    facts=NumericEngine.text_facts([Evidence('rule','第二条 岗位每小时最低为19元。第五条 岗位每小时最低为23元。',1,1,'标准','https://example.edu/rule')])
+    engine=StructuredQueryEngine(repo.connection)
+    p=parse_plan(json.dumps({'steps':[{'id':'a','op':'lookup','fact_id':'f2'}]}))
+    result=engine.execute_steps(p,[],'按第二条最低标准，不考虑第五条，每小时多少元？',facts)
+    assert not result.ok and result.repairable and '条款' in result.error
+    p.steps[0]['fact_id']='f1'
+    result=engine.execute_steps(p,[],'我实际每小时获得多少元？',facts)
+    assert not result.ok and not result.repairable and '实际发生值' in result.error
+
+
 @pytest.mark.parametrize('quantity',['9小时','9 小时'])
 def test_question_constant_lookup_uses_verified_question_span(table_db,quantity):
     repo,_,_,_ = table_db
