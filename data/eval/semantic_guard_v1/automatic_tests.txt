@@ -1,0 +1,13 @@
+...........................................................F............ [ 41%]
+........................................................................ [ 83%]
+............................                                             [100%]
+================================== FAILURES ===================================
+___________ test_ratio_denominator_must_cover_requested_whole_table ___________
+tests\test_reliability.py:104: in test_ratio_denominator_must_cover_requested_whole_table
+    assert not bad.ok and '��ĸ' in bad.error
+E   AssertionError: assert (not False and '��ĸ' in '����Լ��������Լ�������δ��������ָ��������ɸѡ��Χ')
+E    +  where False = CalculationResult(ok=False, value=None, unit='', expression='', details=[], error='����Լ��������Լ�������δ��������ָ��������ɸѡ��Χ', eviden...le': '��Ŀͳ��', 'source_url': 'https://example.edu/projects', 'department': '', 'published_at': None}]}], repairable=True).ok
+E    +  and   '����Լ��������Լ�������δ��������ָ��������ɸѡ��Χ' = CalculationResult(ok=False, value=None, unit='', expression='', details=[], error='����Լ��������Լ�������δ��������ָ��������ɸѡ��Χ', eviden...le': '��Ŀͳ��', 'source_url': 'https://example.edu/projects', 'department': '', 'published_at': None}]}], repairable=True).error
+=========================== short test summary info ===========================
+FAILED tests/test_reliability.py::test_ratio_denominator_must_cover_requested_whole_table
+1 failed, 171 passed in 19.71s

@@ -1,0 +1,113 @@
+[
+  {
+    "text": "技术组标准为37元/人。",
+    "facts": [
+      {
+        "subject": "技术组标准",
+        "value": "37",
+        "unit": "元/人",
+        "quote": "技术组标准为37元/人"
+      }
+    ],
+    "after_facts": [
+      {
+        "subject": "技术组标准",
+        "value": "37",
+        "unit": "元/人",
+        "quote": "技术组标准为37元/人",
+        "span": [
+          0,
+          11
+        ],
+        "raw_value": "37元/人"
+      }
+    ]
+  },
+  {
+    "text": "技术组标准为37元／人。",
+    "facts": [
+      {
+        "subject": "技术组标准",
+        "value": "37",
+        "unit": "元",
+        "quote": "技术组标准为37元"
+      }
+    ],
+    "after_facts": [
+      {
+        "subject": "技术组标准",
+        "value": "37",
+        "unit": "元/人",
+        "quote": "技术组标准为37元／人",
+        "span": [
+          0,
+          11
+        ],
+        "raw_value": "37元／人"
+      }
+    ]
+  },
+  {
+    "text": "技术组：3人，37元/人；研习组：7人，53元/人。",
+    "facts": [
+      {
+        "subject": "技术组",
+        "value": "3",
+        "unit": "人",
+        "quote": "技术组：3人"
+      },
+      {
+        "subject": "研习组",
+        "value": "7",
+        "unit": "人",
+        "quote": "研习组：7人"
+      }
+    ],
+    "after_facts": [
+      {
+        "subject": "技术组",
+        "value": "3",
+        "unit": "人",
+        "quote": "技术组：3人",
+        "span": [
+          0,
+          6
+        ],
+        "raw_value": "3人"
+      },
+      {
+        "subject": "技术组",
+        "value": "37",
+        "unit": "元/人",
+        "quote": "技术组：3人，37元/人",
+        "span": [
+          0,
+          12
+        ],
+        "raw_value": "37元/人"
+      },
+      {
+        "subject": "研习组",
+        "value": "7",
+        "unit": "人",
+        "quote": "研习组：7人",
+        "span": [
+          13,
+          19
+        ],
+        "raw_value": "7人"
+      },
+      {
+        "subject": "研习组",
+        "value": "53",
+        "unit": "元/人",
+        "quote": "研习组：7人，53元/人",
+        "span": [
+          13,
+          25
+        ],
+        "raw_value": "53元/人"
+      }
+    ]
+  }
+]

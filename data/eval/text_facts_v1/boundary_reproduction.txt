@@ -1,0 +1,30 @@
+...................FF..                                                  [100%]
+================================== FAILURES ===================================
+_ test_pair_does_not_turn_post_value_uncertainty_into_a_fixed_rate[\u5de6\u53f3] _
+
+tail = '����'
+
+    @pytest.mark.parametrize('tail',['����','��53Ԫ/��'])
+    def test_pair_does_not_turn_post_value_uncertainty_into_a_fixed_rate(tail):
+        facts=NumericEngine.text_facts([source('�����飺3�ˣ�37Ԫ/��'+tail+'��')])
+>       assert not any(f['unit']=='Ԫ/��' for f in facts.values())
+E       assert not True
+E        +  where True = any(<generator object test_pair_does_not_turn_post_value_uncertainty_into_a_fixed_rate.<locals>.<genexpr> at 0x000001691E08C860>)
+
+tests\test_text_rate_extraction.py:71: AssertionError
+_ test_pair_does_not_turn_post_value_uncertainty_into_a_fixed_rate[\u81f353\u5143/\u4eba] _
+
+tail = '��53Ԫ/��'
+
+    @pytest.mark.parametrize('tail',['����','��53Ԫ/��'])
+    def test_pair_does_not_turn_post_value_uncertainty_into_a_fixed_rate(tail):
+        facts=NumericEngine.text_facts([source('�����飺3�ˣ�37Ԫ/��'+tail+'��')])
+>       assert not any(f['unit']=='Ԫ/��' for f in facts.values())
+E       assert not True
+E        +  where True = any(<generator object test_pair_does_not_turn_post_value_uncertainty_into_a_fixed_rate.<locals>.<genexpr> at 0x000001691DDCCFB0>)
+
+tests\test_text_rate_extraction.py:71: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_text_rate_extraction.py::test_pair_does_not_turn_post_value_uncertainty_into_a_fixed_rate[\u5de6\u53f3]
+FAILED tests/test_text_rate_extraction.py::test_pair_does_not_turn_post_value_uncertainty_into_a_fixed_rate[\u81f353\u5143/\u4eba]
+2 failed, 21 passed in 0.64s

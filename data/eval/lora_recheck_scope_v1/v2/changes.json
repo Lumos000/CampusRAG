@@ -1,0 +1,2673 @@
+[
+  {
+    "id": "C01",
+    "group": "dev36",
+    "question": "按2024年本科学生勤工助学管理办法的最低小时酬金标准，完成12小时工作，最低酬金合计多少元？只作标准乘工时的计算。",
+    "gold": {
+      "id": "C01",
+      "category": "calculation",
+      "question": "按2024年本科学生勤工助学管理办法的最低小时酬金标准，完成12小时工作，最低酬金合计多少元？只作标准乘工时的计算。",
+      "answer": "24×12=288元，是按最低标准计算的下限，不是所有岗位实际报酬。",
+      "expected": "288",
+      "unit": "元",
+      "points": [
+        "288元",
+        "最低标准或下限"
+      ],
+      "sources": [
+        {
+          "doc_id": 253,
+          "quote": "校内勤工助学岗位酬金原则上不低于每小时24元"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 253,
+          "quote": "校内勤工助学岗位酬金原则上不低于每小时24元",
+          "raw_verified": true,
+          "chunk_ids": [
+            "4a583f7c-e230-4543-a2d3-01c71f54c7e6"
+          ]
+        }
+      ]
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：result: 输入步骤right未先定义或引用自身；合法前序id：left。必须保留每个操作数步骤，问题常数也须先lookup，返回完整JSON",
+    "after": "按下限标准计算，结果为288元。算式：(24) × (12)。",
+    "calculation": {
+      "ok": true,
+      "value": "288",
+      "unit": "元",
+      "expression": "(24) × (12)",
+      "details": [
+        {
+          "fact_id": "f3",
+          "field": "校内勤工助学岗位酬金原则上",
+          "subject": "校内勤工助学岗位酬金原则上",
+          "raw_value": "24元",
+          "value": "24",
+          "unit": "元/小时",
+          "comparison": "gte",
+          "scope": {
+            "clause": "第十八条",
+            "period": "每小时",
+            "context": "第十八条校内勤工助学岗位酬金原则上不低于每小时24元"
+          },
+          "quote": "第十八条\n校内勤工助学岗位酬金原则上不低于每小时24\n元",
+          "span": [
+            397,
+            425
+          ],
+          "doc_id": 253,
+          "source_title": "校学发〔2024〕6号本科学生勤工助学管理办法",
+          "source_section": "工作时间、酬金标准及支付办法",
+          "evidence_id": "4a583f7c-e230-4543-a2d3-01c71f54c7e6",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/3c/92/c078c33945918f4a794899e4f642/a2b5f055-9415-4133-9198-ab49f728d17b.pdf",
+          "evidence": {
+            "evidence_id": "4a583f7c-e230-4543-a2d3-01c71f54c7e6",
+            "text": "— 4 —\n安排学生参加勤工助学。\n第十四条\n参加勤工助学的学生有获得劳动报酬的权利，报\n酬、安全等权益收到侵害时，可以向中心投诉，并有权用法律保\n护自己的合法权益。\n第十五条\n学生认真履行岗位职责，自觉接受中心与用人单\n位的教育、培训和管理，遵守国家法律法规，遵守学校及用人单\n位的各项规章制度，不得影响学校教学、科研、生产和生活的正\n常秩序及校园管理。对不接受岗前教育和培训的学生，取消其勤\n工助学资格。\n第十六条\n学生私自在校内外兼职的行为，不在本办法管理\n之列。学生不得参与传销等各种非法经营活动。\n第五章\n工作时间、酬金标准及支付办法\n第十七条\n勤工助学岗位既要满足学生需求，又要保证学生\n不因参加勤工助学而影响学习。学生参加勤工助学的时间原则上\n每周不超过8 小时，每月不超过40 小时。校内固定岗位和临时\n岗位均按小时计酬。寒暑假勤工助学时间可根据用人单位的具体\n情况适当延长。\n第十八条\n校内勤工助学岗位酬金原则上不低于每小时24\n元。\n第十九条\n校内各勤工助学岗位酬金由用人单位每月5 日",
+            "score": 0.9783007502555847,
+            "doc_id": 253,
+            "title": "校学发〔2024〕6号本科学生勤工助学管理办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/3c/92/c078c33945918f4a794899e4f642/a2b5f055-9415-4133-9198-ab49f728d17b.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2024-04-07",
+            "chunk_id": "4a583f7c-e230-4543-a2d3-01c71f54c7e6",
+            "table_id": null,
+            "row_ids": []
+          }
+        },
+        {
+          "fact_id": "f3",
+          "field": "校内勤工助学岗位酬金原则上",
+          "subject": "校内勤工助学岗位酬金原则上",
+          "raw_value": "24元",
+          "value": "24",
+          "unit": "元/小时",
+          "comparison": "gte",
+          "scope": {
+            "clause": "第十八条",
+            "period": "每小时",
+            "context": "第十八条校内勤工助学岗位酬金原则上不低于每小时24元"
+          },
+          "quote": "第十八条\n校内勤工助学岗位酬金原则上不低于每小时24\n元",
+          "span": [
+            397,
+            425
+          ],
+          "doc_id": 253,
+          "source_title": "校学发〔2024〕6号本科学生勤工助学管理办法",
+          "source_section": "工作时间、酬金标准及支付办法",
+          "evidence_id": "4a583f7c-e230-4543-a2d3-01c71f54c7e6",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/3c/92/c078c33945918f4a794899e4f642/a2b5f055-9415-4133-9198-ab49f728d17b.pdf",
+          "evidence": {
+            "evidence_id": "4a583f7c-e230-4543-a2d3-01c71f54c7e6",
+            "text": "— 4 —\n安排学生参加勤工助学。\n第十四条\n参加勤工助学的学生有获得劳动报酬的权利，报\n酬、安全等权益收到侵害时，可以向中心投诉，并有权用法律保\n护自己的合法权益。\n第十五条\n学生认真履行岗位职责，自觉接受中心与用人单\n位的教育、培训和管理，遵守国家法律法规，遵守学校及用人单\n位的各项规章制度，不得影响学校教学、科研、生产和生活的正\n常秩序及校园管理。对不接受岗前教育和培训的学生，取消其勤\n工助学资格。\n第十六条\n学生私自在校内外兼职的行为，不在本办法管理\n之列。学生不得参与传销等各种非法经营活动。\n第五章\n工作时间、酬金标准及支付办法\n第十七条\n勤工助学岗位既要满足学生需求，又要保证学生\n不因参加勤工助学而影响学习。学生参加勤工助学的时间原则上\n每周不超过8 小时，每月不超过40 小时。校内固定岗位和临时\n岗位均按小时计酬。寒暑假勤工助学时间可根据用人单位的具体\n情况适当延长。\n第十八条\n校内勤工助学岗位酬金原则上不低于每小时24\n元。\n第十九条\n校内各勤工助学岗位酬金由用人单位每月5 日",
+            "score": 0.9783007502555847,
+            "doc_id": 253,
+            "title": "校学发〔2024〕6号本科学生勤工助学管理办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/3c/92/c078c33945918f4a794899e4f642/a2b5f055-9415-4133-9198-ab49f728d17b.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2024-04-07",
+            "chunk_id": "4a583f7c-e230-4543-a2d3-01c71f54c7e6",
+            "table_id": null,
+            "row_ids": []
+          }
+        }
+      ],
+      "error": "",
+      "evidence": [
+        {
+          "evidence_id": "4a583f7c-e230-4543-a2d3-01c71f54c7e6",
+          "text": "— 4 —\n安排学生参加勤工助学。\n第十四条\n参加勤工助学的学生有获得劳动报酬的权利，报\n酬、安全等权益收到侵害时，可以向中心投诉，并有权用法律保\n护自己的合法权益。\n第十五条\n学生认真履行岗位职责，自觉接受中心与用人单\n位的教育、培训和管理，遵守国家法律法规，遵守学校及用人单\n位的各项规章制度，不得影响学校教学、科研、生产和生活的正\n常秩序及校园管理。对不接受岗前教育和培训的学生，取消其勤\n工助学资格。\n第十六条\n学生私自在校内外兼职的行为，不在本办法管理\n之列。学生不得参与传销等各种非法经营活动。\n第五章\n工作时间、酬金标准及支付办法\n第十七条\n勤工助学岗位既要满足学生需求，又要保证学生\n不因参加勤工助学而影响学习。学生参加勤工助学的时间原则上\n每周不超过8 小时，每月不超过40 小时。校内固定岗位和临时\n岗位均按小时计酬。寒暑假勤工助学时间可根据用人单位的具体\n情况适当延长。\n第十八条\n校内勤工助学岗位酬金原则上不低于每小时24\n元。\n第十九条\n校内各勤工助学岗位酬金由用人单位每月5 日",
+          "score": 0.9783007502555847,
+          "doc_id": 253,
+          "title": "校学发〔2024〕6号本科学生勤工助学管理办法",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/3c/92/c078c33945918f4a794899e4f642/a2b5f055-9415-4133-9198-ab49f728d17b.pdf",
+          "department": "学生工作部（处）",
+          "published_at": "2024-04-07",
+          "chunk_id": "4a583f7c-e230-4543-a2d3-01c71f54c7e6",
+          "table_id": null,
+          "row_ids": []
+        }
+      ],
+      "steps": [
+        {
+          "id": "hours",
+          "op": "lookup",
+          "operands": [],
+          "value": "24",
+          "unit": "元/小时",
+          "expression": "24",
+          "details": [
+            {
+              "fact_id": "f3",
+              "field": "校内勤工助学岗位酬金原则上",
+              "subject": "校内勤工助学岗位酬金原则上",
+              "raw_value": "24元",
+              "value": "24",
+              "unit": "元/小时",
+              "comparison": "gte",
+              "scope": {
+                "clause": "第十八条",
+                "period": "每小时",
+                "context": "第十八条校内勤工助学岗位酬金原则上不低于每小时24元"
+              },
+              "quote": "第十八条\n校内勤工助学岗位酬金原则上不低于每小时24\n元",
+              "span": [
+                397,
+                425
+              ],
+              "doc_id": 253,
+              "source_title": "校学发〔2024〕6号本科学生勤工助学管理办法",
+              "source_section": "工作时间、酬金标准及支付办法",
+              "evidence_id": "4a583f7c-e230-4543-a2d3-01c71f54c7e6",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/3c/92/c078c33945918f4a794899e4f642/a2b5f055-9415-4133-9198-ab49f728d17b.pdf",
+              "evidence": {
+                "evidence_id": "4a583f7c-e230-4543-a2d3-01c71f54c7e6",
+                "text": "— 4 —\n安排学生参加勤工助学。\n第十四条\n参加勤工助学的学生有获得劳动报酬的权利，报\n酬、安全等权益收到侵害时，可以向中心投诉，并有权用法律保\n护自己的合法权益。\n第十五条\n学生认真履行岗位职责，自觉接受中心与用人单\n位的教育、培训和管理，遵守国家法律法规，遵守学校及用人单\n位的各项规章制度，不得影响学校教学、科研、生产和生活的正\n常秩序及校园管理。对不接受岗前教育和培训的学生，取消其勤\n工助学资格。\n第十六条\n学生私自在校内外兼职的行为，不在本办法管理\n之列。学生不得参与传销等各种非法经营活动。\n第五章\n工作时间、酬金标准及支付办法\n第十七条\n勤工助学岗位既要满足学生需求，又要保证学生\n不因参加勤工助学而影响学习。学生参加勤工助学的时间原则上\n每周不超过8 小时，每月不超过40 小时。校内固定岗位和临时\n岗位均按小时计酬。寒暑假勤工助学时间可根据用人单位的具体\n情况适当延长。\n第十八条\n校内勤工助学岗位酬金原则上不低于每小时24\n元。\n第十九条\n校内各勤工助学岗位酬金由用人单位每月5 日",
+                "score": 0.9783007502555847,
+                "doc_id": 253,
+                "title": "校学发〔2024〕6号本科学生勤工助学管理办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/3c/92/c078c33945918f4a794899e4f642/a2b5f055-9415-4133-9198-ab49f728d17b.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-04-07",
+                "chunk_id": "4a583f7c-e230-4543-a2d3-01c71f54c7e6",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        },
+        {
+          "id": "rate",
+          "op": "lookup",
+          "operands": [],
+          "value": "12",
+          "unit": "小时",
+          "expression": "12",
+          "details": [],
+          "source": {
+            "kind": "question",
+            "quote": "12小时",
+            "span": [
+              30,
+              34
+            ]
+          }
+        },
+        {
+          "id": "result",
+          "op": "multiply",
+          "operands": [
+            {
+              "value": "24",
+              "unit": "元/小时"
+            },
+            {
+              "value": "12",
+              "unit": "小时",
+              "source": {
+                "kind": "question",
+                "quote": "12小时",
+                "span": [
+                  30,
+                  34
+                ]
+              }
+            }
+          ],
+          "value": "288",
+          "unit": "元",
+          "expression": "(24) × (12)",
+          "details": [
+            {
+              "fact_id": "f3",
+              "field": "校内勤工助学岗位酬金原则上",
+              "subject": "校内勤工助学岗位酬金原则上",
+              "raw_value": "24元",
+              "value": "24",
+              "unit": "元/小时",
+              "comparison": "gte",
+              "scope": {
+                "clause": "第十八条",
+                "period": "每小时",
+                "context": "第十八条校内勤工助学岗位酬金原则上不低于每小时24元"
+              },
+              "quote": "第十八条\n校内勤工助学岗位酬金原则上不低于每小时24\n元",
+              "span": [
+                397,
+                425
+              ],
+              "doc_id": 253,
+              "source_title": "校学发〔2024〕6号本科学生勤工助学管理办法",
+              "source_section": "工作时间、酬金标准及支付办法",
+              "evidence_id": "4a583f7c-e230-4543-a2d3-01c71f54c7e6",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/3c/92/c078c33945918f4a794899e4f642/a2b5f055-9415-4133-9198-ab49f728d17b.pdf",
+              "evidence": {
+                "evidence_id": "4a583f7c-e230-4543-a2d3-01c71f54c7e6",
+                "text": "— 4 —\n安排学生参加勤工助学。\n第十四条\n参加勤工助学的学生有获得劳动报酬的权利，报\n酬、安全等权益收到侵害时，可以向中心投诉，并有权用法律保\n护自己的合法权益。\n第十五条\n学生认真履行岗位职责，自觉接受中心与用人单\n位的教育、培训和管理，遵守国家法律法规，遵守学校及用人单\n位的各项规章制度，不得影响学校教学、科研、生产和生活的正\n常秩序及校园管理。对不接受岗前教育和培训的学生，取消其勤\n工助学资格。\n第十六条\n学生私自在校内外兼职的行为，不在本办法管理\n之列。学生不得参与传销等各种非法经营活动。\n第五章\n工作时间、酬金标准及支付办法\n第十七条\n勤工助学岗位既要满足学生需求，又要保证学生\n不因参加勤工助学而影响学习。学生参加勤工助学的时间原则上\n每周不超过8 小时，每月不超过40 小时。校内固定岗位和临时\n岗位均按小时计酬。寒暑假勤工助学时间可根据用人单位的具体\n情况适当延长。\n第十八条\n校内勤工助学岗位酬金原则上不低于每小时24\n元。\n第十九条\n校内各勤工助学岗位酬金由用人单位每月5 日",
+                "score": 0.9783007502555847,
+                "doc_id": 253,
+                "title": "校学发〔2024〕6号本科学生勤工助学管理办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/3c/92/c078c33945918f4a794899e4f642/a2b5f055-9415-4133-9198-ab49f728d17b.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-04-07",
+                "chunk_id": "4a583f7c-e230-4543-a2d3-01c71f54c7e6",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "repairable": false
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2024"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "hours",
+          "op": "lookup",
+          "fact_id": "f3"
+        },
+        {
+          "id": "rate",
+          "op": "lookup",
+          "literal": "12",
+          "unit": "小时"
+        },
+        {
+          "id": "result",
+          "op": "multiply",
+          "inputs": [
+            "hours",
+            "rate"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "references": [
+      "校学发〔2024〕6号本科学生勤工助学管理办法｜学生工作部（处）｜2024-04-07｜https://xsc.njupt.edu.cn/_upload/article/files/3c/92/c078c33945918f4a794899e4f642/a2b5f055-9415-4133-9198-ab49f728d17b.pdf"
+    ]
+  },
+  {
+    "id": "C03",
+    "group": "dev36",
+    "question": "按2025版生源地贷款指南，全日制研究生每年贷款额度上限比全日制本专科学生高多少元？",
+    "gold": {
+      "id": "C03",
+      "category": "calculation",
+      "question": "按2025版生源地贷款指南，全日制研究生每年贷款额度上限比全日制本专科学生高多少元？",
+      "answer": "25000−20000=5000元。",
+      "expected": "5000",
+      "unit": "元",
+      "points": [
+        "研究生25000、本专科20000",
+        "差额5000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 257,
+          "quote": "每人每年申请贷款额度不超过20000元"
+        },
+        {
+          "doc_id": 257,
+          "quote": "每人每年申请贷款额度不超过25000元"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 257,
+          "quote": "每人每年申请贷款额度不超过20000元",
+          "raw_verified": true,
+          "chunk_ids": [
+            "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd"
+          ]
+        },
+        {
+          "doc_id": 257,
+          "quote": "每人每年申请贷款额度不超过25000元",
+          "raw_verified": true,
+          "chunk_ids": [
+            "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd"
+          ]
+        }
+      ]
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：问题约束：差额方向与问题不符：请核对被比较对象顺序和周期，不能直接相减不同周期的上限",
+    "after": "按上限标准计算，结果为5000元。算式：(25000) - (20000)。",
+    "calculation": {
+      "ok": true,
+      "value": "5000",
+      "unit": "元",
+      "expression": "(25000) - (20000)",
+      "details": [
+        {
+          "fact_id": "f3",
+          "field": "全日制研究生（含硕士研究生、博士研究生）每人每年申请贷款额度",
+          "subject": "全日制研究生（含硕士研究生、博士研究生）",
+          "raw_value": "25000元",
+          "value": "25000",
+          "unit": "元",
+          "comparison": "lte",
+          "scope": {
+            "clause": "",
+            "period": "每人每年",
+            "context": "全日制研究生（含硕士研究生、博士研究生）每人每年申请贷款额度不超过25000元,不低于1000元"
+          },
+          "quote": "全日制研究生（含硕士\n研究生、博士研究生）每人每年申请贷款额度不超过25000元",
+          "span": [
+            107,
+            147
+          ],
+          "doc_id": 257,
+          "source_title": "生源地国家助学贷款申请指南（2025）",
+          "source_section": "",
+          "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+          "evidence": {
+            "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+            "text": "未进行预申请，但确因家庭经济困难需要申请助学贷款的学生，\n需按照实际情况填写《家庭经济困难学生认定表》。全日制普通本专科学生（含预科、高职、第二学士学位）每人每年\n申请贷款额度不超过20000元，不低于1000元；全日制研究生（含硕士\n研究生、博士研究生）每人每年申请贷款额度不超过25000元，不低于\n1000元。学生申请的国家助学贷款优先用于支付在校期间学费和住宿\n费，超出部分用于弥补日常生活费。贷款额度及用途是什么？02\n执行中国人民银行授权全国银行\n间同业拆借中心发布的同期五年期以\n上贷款市场报价利率减7 0 个基点（即\nLPR5Y-0.7%）。利率如何确定？04\n最长贷款期限：剩余学制加15年、最长不超过22年。贷款期限有多久？",
+            "score": 0.955425500869751,
+            "doc_id": 257,
+            "title": "生源地国家助学贷款申请指南（2025）",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2025-05-08",
+            "chunk_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+            "table_id": null,
+            "row_ids": []
+          }
+        },
+        {
+          "fact_id": "f1",
+          "field": "全日制普通本专科学生（含预科、高职、第二学士学位）每人每年申请贷款额度",
+          "subject": "全日制普通本专科学生（含预科、高职、第二学士学位）",
+          "raw_value": "20000元",
+          "value": "20000",
+          "unit": "元",
+          "comparison": "lte",
+          "scope": {
+            "clause": "",
+            "period": "每人每年",
+            "context": "全日制普通本专科学生（含预科、高职、第二学士学位）每人每年申请贷款额度不超过20000元,不低于1000元"
+          },
+          "quote": "全日制普通本专科学生（含预科、高职、第二学士学位）每人每年\n申请贷款额度不超过20000元",
+          "span": [
+            52,
+            97
+          ],
+          "doc_id": 257,
+          "source_title": "生源地国家助学贷款申请指南（2025）",
+          "source_section": "",
+          "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+          "evidence": {
+            "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+            "text": "未进行预申请，但确因家庭经济困难需要申请助学贷款的学生，\n需按照实际情况填写《家庭经济困难学生认定表》。全日制普通本专科学生（含预科、高职、第二学士学位）每人每年\n申请贷款额度不超过20000元，不低于1000元；全日制研究生（含硕士\n研究生、博士研究生）每人每年申请贷款额度不超过25000元，不低于\n1000元。学生申请的国家助学贷款优先用于支付在校期间学费和住宿\n费，超出部分用于弥补日常生活费。贷款额度及用途是什么？02\n执行中国人民银行授权全国银行\n间同业拆借中心发布的同期五年期以\n上贷款市场报价利率减7 0 个基点（即\nLPR5Y-0.7%）。利率如何确定？04\n最长贷款期限：剩余学制加15年、最长不超过22年。贷款期限有多久？",
+            "score": 0.955425500869751,
+            "doc_id": 257,
+            "title": "生源地国家助学贷款申请指南（2025）",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2025-05-08",
+            "chunk_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+            "table_id": null,
+            "row_ids": []
+          }
+        },
+        {
+          "fact_id": "f3",
+          "field": "全日制研究生（含硕士研究生、博士研究生）每人每年申请贷款额度",
+          "subject": "全日制研究生（含硕士研究生、博士研究生）",
+          "raw_value": "25000元",
+          "value": "25000",
+          "unit": "元",
+          "comparison": "lte",
+          "scope": {
+            "clause": "",
+            "period": "每人每年",
+            "context": "全日制研究生（含硕士研究生、博士研究生）每人每年申请贷款额度不超过25000元,不低于1000元"
+          },
+          "quote": "全日制研究生（含硕士\n研究生、博士研究生）每人每年申请贷款额度不超过25000元",
+          "span": [
+            107,
+            147
+          ],
+          "doc_id": 257,
+          "source_title": "生源地国家助学贷款申请指南（2025）",
+          "source_section": "",
+          "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+          "evidence": {
+            "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+            "text": "未进行预申请，但确因家庭经济困难需要申请助学贷款的学生，\n需按照实际情况填写《家庭经济困难学生认定表》。全日制普通本专科学生（含预科、高职、第二学士学位）每人每年\n申请贷款额度不超过20000元，不低于1000元；全日制研究生（含硕士\n研究生、博士研究生）每人每年申请贷款额度不超过25000元，不低于\n1000元。学生申请的国家助学贷款优先用于支付在校期间学费和住宿\n费，超出部分用于弥补日常生活费。贷款额度及用途是什么？02\n执行中国人民银行授权全国银行\n间同业拆借中心发布的同期五年期以\n上贷款市场报价利率减7 0 个基点（即\nLPR5Y-0.7%）。利率如何确定？04\n最长贷款期限：剩余学制加15年、最长不超过22年。贷款期限有多久？",
+            "score": 0.955425500869751,
+            "doc_id": 257,
+            "title": "生源地国家助学贷款申请指南（2025）",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2025-05-08",
+            "chunk_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+            "table_id": null,
+            "row_ids": []
+          }
+        },
+        {
+          "fact_id": "f1",
+          "field": "全日制普通本专科学生（含预科、高职、第二学士学位）每人每年申请贷款额度",
+          "subject": "全日制普通本专科学生（含预科、高职、第二学士学位）",
+          "raw_value": "20000元",
+          "value": "20000",
+          "unit": "元",
+          "comparison": "lte",
+          "scope": {
+            "clause": "",
+            "period": "每人每年",
+            "context": "全日制普通本专科学生（含预科、高职、第二学士学位）每人每年申请贷款额度不超过20000元,不低于1000元"
+          },
+          "quote": "全日制普通本专科学生（含预科、高职、第二学士学位）每人每年\n申请贷款额度不超过20000元",
+          "span": [
+            52,
+            97
+          ],
+          "doc_id": 257,
+          "source_title": "生源地国家助学贷款申请指南（2025）",
+          "source_section": "",
+          "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+          "evidence": {
+            "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+            "text": "未进行预申请，但确因家庭经济困难需要申请助学贷款的学生，\n需按照实际情况填写《家庭经济困难学生认定表》。全日制普通本专科学生（含预科、高职、第二学士学位）每人每年\n申请贷款额度不超过20000元，不低于1000元；全日制研究生（含硕士\n研究生、博士研究生）每人每年申请贷款额度不超过25000元，不低于\n1000元。学生申请的国家助学贷款优先用于支付在校期间学费和住宿\n费，超出部分用于弥补日常生活费。贷款额度及用途是什么？02\n执行中国人民银行授权全国银行\n间同业拆借中心发布的同期五年期以\n上贷款市场报价利率减7 0 个基点（即\nLPR5Y-0.7%）。利率如何确定？04\n最长贷款期限：剩余学制加15年、最长不超过22年。贷款期限有多久？",
+            "score": 0.955425500869751,
+            "doc_id": 257,
+            "title": "生源地国家助学贷款申请指南（2025）",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2025-05-08",
+            "chunk_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+            "table_id": null,
+            "row_ids": []
+          }
+        }
+      ],
+      "error": "",
+      "evidence": [
+        {
+          "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+          "text": "未进行预申请，但确因家庭经济困难需要申请助学贷款的学生，\n需按照实际情况填写《家庭经济困难学生认定表》。全日制普通本专科学生（含预科、高职、第二学士学位）每人每年\n申请贷款额度不超过20000元，不低于1000元；全日制研究生（含硕士\n研究生、博士研究生）每人每年申请贷款额度不超过25000元，不低于\n1000元。学生申请的国家助学贷款优先用于支付在校期间学费和住宿\n费，超出部分用于弥补日常生活费。贷款额度及用途是什么？02\n执行中国人民银行授权全国银行\n间同业拆借中心发布的同期五年期以\n上贷款市场报价利率减7 0 个基点（即\nLPR5Y-0.7%）。利率如何确定？04\n最长贷款期限：剩余学制加15年、最长不超过22年。贷款期限有多久？",
+          "score": 0.955425500869751,
+          "doc_id": 257,
+          "title": "生源地国家助学贷款申请指南（2025）",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+          "department": "学生工作部（处）",
+          "published_at": "2025-05-08",
+          "chunk_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+          "table_id": null,
+          "row_ids": []
+        }
+      ],
+      "steps": [
+        {
+          "id": "numerator",
+          "op": "lookup",
+          "operands": [],
+          "value": "25000",
+          "unit": "元",
+          "expression": "25000",
+          "details": [
+            {
+              "fact_id": "f3",
+              "field": "全日制研究生（含硕士研究生、博士研究生）每人每年申请贷款额度",
+              "subject": "全日制研究生（含硕士研究生、博士研究生）",
+              "raw_value": "25000元",
+              "value": "25000",
+              "unit": "元",
+              "comparison": "lte",
+              "scope": {
+                "clause": "",
+                "period": "每人每年",
+                "context": "全日制研究生（含硕士研究生、博士研究生）每人每年申请贷款额度不超过25000元,不低于1000元"
+              },
+              "quote": "全日制研究生（含硕士\n研究生、博士研究生）每人每年申请贷款额度不超过25000元",
+              "span": [
+                107,
+                147
+              ],
+              "doc_id": 257,
+              "source_title": "生源地国家助学贷款申请指南（2025）",
+              "source_section": "",
+              "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+              "evidence": {
+                "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+                "text": "未进行预申请，但确因家庭经济困难需要申请助学贷款的学生，\n需按照实际情况填写《家庭经济困难学生认定表》。全日制普通本专科学生（含预科、高职、第二学士学位）每人每年\n申请贷款额度不超过20000元，不低于1000元；全日制研究生（含硕士\n研究生、博士研究生）每人每年申请贷款额度不超过25000元，不低于\n1000元。学生申请的国家助学贷款优先用于支付在校期间学费和住宿\n费，超出部分用于弥补日常生活费。贷款额度及用途是什么？02\n执行中国人民银行授权全国银行\n间同业拆借中心发布的同期五年期以\n上贷款市场报价利率减7 0 个基点（即\nLPR5Y-0.7%）。利率如何确定？04\n最长贷款期限：剩余学制加15年、最长不超过22年。贷款期限有多久？",
+                "score": 0.955425500869751,
+                "doc_id": 257,
+                "title": "生源地国家助学贷款申请指南（2025）",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2025-05-08",
+                "chunk_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        },
+        {
+          "id": "denominator",
+          "op": "lookup",
+          "operands": [],
+          "value": "20000",
+          "unit": "元",
+          "expression": "20000",
+          "details": [
+            {
+              "fact_id": "f1",
+              "field": "全日制普通本专科学生（含预科、高职、第二学士学位）每人每年申请贷款额度",
+              "subject": "全日制普通本专科学生（含预科、高职、第二学士学位）",
+              "raw_value": "20000元",
+              "value": "20000",
+              "unit": "元",
+              "comparison": "lte",
+              "scope": {
+                "clause": "",
+                "period": "每人每年",
+                "context": "全日制普通本专科学生（含预科、高职、第二学士学位）每人每年申请贷款额度不超过20000元,不低于1000元"
+              },
+              "quote": "全日制普通本专科学生（含预科、高职、第二学士学位）每人每年\n申请贷款额度不超过20000元",
+              "span": [
+                52,
+                97
+              ],
+              "doc_id": 257,
+              "source_title": "生源地国家助学贷款申请指南（2025）",
+              "source_section": "",
+              "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+              "evidence": {
+                "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+                "text": "未进行预申请，但确因家庭经济困难需要申请助学贷款的学生，\n需按照实际情况填写《家庭经济困难学生认定表》。全日制普通本专科学生（含预科、高职、第二学士学位）每人每年\n申请贷款额度不超过20000元，不低于1000元；全日制研究生（含硕士\n研究生、博士研究生）每人每年申请贷款额度不超过25000元，不低于\n1000元。学生申请的国家助学贷款优先用于支付在校期间学费和住宿\n费，超出部分用于弥补日常生活费。贷款额度及用途是什么？02\n执行中国人民银行授权全国银行\n间同业拆借中心发布的同期五年期以\n上贷款市场报价利率减7 0 个基点（即\nLPR5Y-0.7%）。利率如何确定？04\n最长贷款期限：剩余学制加15年、最长不超过22年。贷款期限有多久？",
+                "score": 0.955425500869751,
+                "doc_id": 257,
+                "title": "生源地国家助学贷款申请指南（2025）",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2025-05-08",
+                "chunk_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "operands": [
+            {
+              "value": "25000",
+              "unit": "元"
+            },
+            {
+              "value": "20000",
+              "unit": "元"
+            }
+          ],
+          "value": "5000",
+          "unit": "元",
+          "expression": "(25000) - (20000)",
+          "details": [
+            {
+              "fact_id": "f3",
+              "field": "全日制研究生（含硕士研究生、博士研究生）每人每年申请贷款额度",
+              "subject": "全日制研究生（含硕士研究生、博士研究生）",
+              "raw_value": "25000元",
+              "value": "25000",
+              "unit": "元",
+              "comparison": "lte",
+              "scope": {
+                "clause": "",
+                "period": "每人每年",
+                "context": "全日制研究生（含硕士研究生、博士研究生）每人每年申请贷款额度不超过25000元,不低于1000元"
+              },
+              "quote": "全日制研究生（含硕士\n研究生、博士研究生）每人每年申请贷款额度不超过25000元",
+              "span": [
+                107,
+                147
+              ],
+              "doc_id": 257,
+              "source_title": "生源地国家助学贷款申请指南（2025）",
+              "source_section": "",
+              "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+              "evidence": {
+                "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+                "text": "未进行预申请，但确因家庭经济困难需要申请助学贷款的学生，\n需按照实际情况填写《家庭经济困难学生认定表》。全日制普通本专科学生（含预科、高职、第二学士学位）每人每年\n申请贷款额度不超过20000元，不低于1000元；全日制研究生（含硕士\n研究生、博士研究生）每人每年申请贷款额度不超过25000元，不低于\n1000元。学生申请的国家助学贷款优先用于支付在校期间学费和住宿\n费，超出部分用于弥补日常生活费。贷款额度及用途是什么？02\n执行中国人民银行授权全国银行\n间同业拆借中心发布的同期五年期以\n上贷款市场报价利率减7 0 个基点（即\nLPR5Y-0.7%）。利率如何确定？04\n最长贷款期限：剩余学制加15年、最长不超过22年。贷款期限有多久？",
+                "score": 0.955425500869751,
+                "doc_id": 257,
+                "title": "生源地国家助学贷款申请指南（2025）",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2025-05-08",
+                "chunk_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+                "table_id": null,
+                "row_ids": []
+              }
+            },
+            {
+              "fact_id": "f1",
+              "field": "全日制普通本专科学生（含预科、高职、第二学士学位）每人每年申请贷款额度",
+              "subject": "全日制普通本专科学生（含预科、高职、第二学士学位）",
+              "raw_value": "20000元",
+              "value": "20000",
+              "unit": "元",
+              "comparison": "lte",
+              "scope": {
+                "clause": "",
+                "period": "每人每年",
+                "context": "全日制普通本专科学生（含预科、高职、第二学士学位）每人每年申请贷款额度不超过20000元,不低于1000元"
+              },
+              "quote": "全日制普通本专科学生（含预科、高职、第二学士学位）每人每年\n申请贷款额度不超过20000元",
+              "span": [
+                52,
+                97
+              ],
+              "doc_id": 257,
+              "source_title": "生源地国家助学贷款申请指南（2025）",
+              "source_section": "",
+              "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+              "evidence": {
+                "evidence_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+                "text": "未进行预申请，但确因家庭经济困难需要申请助学贷款的学生，\n需按照实际情况填写《家庭经济困难学生认定表》。全日制普通本专科学生（含预科、高职、第二学士学位）每人每年\n申请贷款额度不超过20000元，不低于1000元；全日制研究生（含硕士\n研究生、博士研究生）每人每年申请贷款额度不超过25000元，不低于\n1000元。学生申请的国家助学贷款优先用于支付在校期间学费和住宿\n费，超出部分用于弥补日常生活费。贷款额度及用途是什么？02\n执行中国人民银行授权全国银行\n间同业拆借中心发布的同期五年期以\n上贷款市场报价利率减7 0 个基点（即\nLPR5Y-0.7%）。利率如何确定？04\n最长贷款期限：剩余学制加15年、最长不超过22年。贷款期限有多久？",
+                "score": 0.955425500869751,
+                "doc_id": 257,
+                "title": "生源地国家助学贷款申请指南（2025）",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2025-05-08",
+                "chunk_id": "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "repairable": false
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2025"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "numerator",
+          "op": "lookup",
+          "fact_id": "f3"
+        },
+        {
+          "id": "denominator",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "numerator",
+            "denominator"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "references": [
+      "生源地国家助学贷款申请指南（2025）｜学生工作部（处）｜2025-05-08｜https://xsc.njupt.edu.cn/_upload/article/files/61/22/207eb37449cc90fcec9363eb3409/0c2b4fde-b11b-4b3d-9d62-aceb26db05de.pdf"
+    ]
+  },
+  {
+    "id": "C08",
+    "group": "dev36",
+    "question": "2026-2027学年第一学期慕课对照表中，“光纤通信”和“战略管理”的对应记录之和，占整张表全部对应记录的百分比是多少？按展开后的数据行计数，不含两行表头，不去重。",
+    "gold": {
+      "id": "C08",
+      "category": "calculation",
+      "question": "2026-2027学年第一学期慕课对照表中，“光纤通信”和“战略管理”的对应记录之和，占整张表全部对应记录的百分比是多少？按展开后的数据行计数，不含两行表头，不去重。",
+      "answer": "(3+3)/254×100%≈2.362205%。",
+      "expected": "2.3622047244094488",
+      "tolerance": "0.000001",
+      "unit": "%",
+      "points": [
+        "分子6、分母254",
+        "约2.362205%"
+      ],
+      "sources": [
+        {
+          "doc_id": 129,
+          "table_id": 53,
+          "row_ids": [
+            5950,
+            5951,
+            5952,
+            5955,
+            5956,
+            5957
+          ],
+          "requires_full_table": true
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 129,
+          "table_id": 53,
+          "row_ids": [
+            5950,
+            5951,
+            5952,
+            5955,
+            5956,
+            5957
+          ],
+          "requires_full_table": true,
+          "raw_verified": true,
+          "raw_excel_rows": [
+            18,
+            19,
+            20,
+            23,
+            24,
+            25
+          ],
+          "raw_selected_values": [
+            [
+              "6",
+              "通信与信息工程学院",
+              "光纤通信",
+              "B0204103S",
+              "光纤通信与数字传输",
+              "学分认定仅支持课程重修"
+            ],
+            [
+              "6",
+              "通信与信息工程学院",
+              "光纤通信",
+              "TX617409C",
+              "光纤通信技术",
+              "学分认定仅支持课程重修"
+            ],
+            [
+              "6",
+              "通信与信息工程学院",
+              "光纤通信",
+              "B04060K1C",
+              "光纤通信技术",
+              "学分认定仅支持课程重修"
+            ],
+            [
+              "9",
+              "管理学院",
+              "战略管理",
+              "B01030K5C",
+              "企业战略管理",
+              ""
+            ],
+            [
+              "9",
+              "管理学院",
+              "战略管理",
+              "B0104062S",
+              "企业战略管理",
+              ""
+            ],
+            [
+              "9",
+              "管理学院",
+              "战略管理",
+              "MOOC00009",
+              "战略管理（任选课）",
+              ""
+            ]
+          ],
+          "full_table_rows": 254,
+          "chunk_ids": [
+            "1f19c0ea-72f8-48bf-b262-ca149cfc9ba5",
+            "481ec755-acb5-4bc1-aec9-9ab0467c721a",
+            "cf871f3e-40fd-4ed0-b285-598c54e1c9bf",
+            "ecd5f479-62b7-4a22-8011-d89c814db6f3",
+            "4a9dd4e3-1de1-4d9e-9ae2-521168383fdf",
+            "a31fe9f5-f7ee-4c59-9c0b-d446f91d1265",
+            "68afaed5-5897-43c7-af3a-a90a32739c13",
+            "8b2280c5-8dba-4c30-b823-57d6d011f98e",
+            "2061266a-1f8c-4cd9-8e25-6cf705524fa6",
+            "d72bd24a-963a-46fb-a7c0-b782ce79a95a",
+            "98bf2ffa-f30f-4ccb-afaa-69a0bbfcac84",
+            "468605bc-11d2-4cb3-b6c0-31e0ee75b72e",
+            "c4e48743-b309-4852-9a6a-cb9c1167a72a",
+            "46c7ff0d-2515-4e25-b980-05ed7cca0baa",
+            "9f23fe69-72c6-47e0-b11c-ca56f92e92ca",
+            "8291c2ba-4e4e-403f-8825-ada12493f8bc",
+            "76cf6e0b-d503-4c7d-a440-4610def40707",
+            "2927b19b-e226-403d-b3ba-9d69b8b520d8",
+            "265a2f01-1e6f-48de-a83f-4594e44ab39f",
+            "029e0df0-6731-4150-a483-a3d618b6d2fc",
+            "97f176b3-b02d-4c5e-8867-b022931743f1",
+            "8b03c6c1-6674-4f8a-9eb1-f9fba1544926",
+            "b5c3ce48-510c-4393-ae67-595eb7cf7c0e",
+            "b7d69635-57af-4830-b425-0eed68c54fe5",
+            "83c910a4-02f4-470e-8be7-f778c3117c5a",
+            "2983645a-99a3-4a3a-9b35-b0bbe94677b5",
+            "77f8c57b-c094-4afe-bd86-e8a105ead901",
+            "622583c0-dc1c-484e-9c0b-b8fd18846edf",
+            "214c3648-a970-470b-b05e-350a078d4849",
+            "fcbb6181-235d-4509-9425-b05beae68c6f",
+            "22ddaa10-84f4-49cf-9dc7-9a96f0f9d877",
+            "a517c3f8-a135-4588-8270-03b20a2e44c4",
+            "d785ab7b-9866-4df2-913d-cc1e10f89d93",
+            "2bdb47e1-1e2d-4b01-8391-9dd128fdd95d",
+            "95034bda-044b-4ec2-b160-cc29bb8e09ea",
+            "78992712-dc4e-4f73-86b5-97531613e481",
+            "f2e0167e-1ac6-4c6f-ad22-4cc74e886474",
+            "ac2fff65-b5be-42a0-ba6a-51d67f755bcf",
+            "b840c5dd-4c59-48f2-9d18-e76fc0d83722",
+            "d81dd16d-ad3c-4dfe-a15f-9fefec37ebcc",
+            "4a4e5964-a19d-496d-a8fa-fd306ae7e160",
+            "a29eb09a-aa8e-45d6-8a58-30ed065fd3d2",
+            "02e3e74c-5e1b-4d3a-80a6-04530b87d036",
+            "4cdd40de-b76d-4497-91d8-273ecac7db56",
+            "8a27d37d-31e0-4d59-9204-84c8e719bd79",
+            "6a016610-fd55-4da2-8e1d-0565b3acd254",
+            "aae672b5-8c0b-4d2f-9138-c90f22a78ccf",
+            "0c42db89-2a9b-42b9-8e28-f576c0b1b0d9",
+            "e892a1a5-1203-4640-8cfc-52ff3592bfaf",
+            "e35224a2-1061-44c6-82b5-f8f0a9168eef",
+            "fc724b51-3b58-42c0-ab86-3749b1f9bbda",
+            "21d26429-a8ee-4fd8-9801-e554323ca435",
+            "348b1308-13ff-49e1-878b-545d4d157248"
+          ]
+        }
+      ]
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：result: 输入步骤right未先定义或引用自身；合法前序id：left。必须保留每个操作数步骤，问题常数也须先lookup，返回完整JSON",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：Expecting ',' delimiter: line 1 column 132 (char 131)",
+    "calculation": null,
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2026-2027"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": true,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [],
+      "output": ""
+    },
+    "references": []
+  },
+  {
+    "id": "V2C01",
+    "group": "exposed_v2",
+    "question": "按《本科学生奖学金评定办法》，综合一等奖与二等奖的奖励金额相差多少元？",
+    "gold": {
+      "id": "V2C01",
+      "category": "calculation",
+      "question": "按《本科学生奖学金评定办法》，综合一等奖与二等奖的奖励金额相差多少元？",
+      "answer": "300元",
+      "points": [
+        "300元"
+      ],
+      "expected": "300",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 248,
+          "quote": "一等奖学金10003二等奖学金70010"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 248,
+          "quote": "一等奖学金10003二等奖学金70010",
+          "chunk_ids": [
+            "b4abf303-4533-4a1a-b465-9fdc7184e79e"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    "before": "结果为300元。算式：(1000) - (700)。",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：left: 参与计算的记录存在缺失或非确定数值",
+    "calculation": {
+      "ok": false,
+      "value": null,
+      "unit": "",
+      "expression": "",
+      "details": [],
+      "error": "left: 参与计算的记录存在缺失或非确定数值",
+      "evidence": [],
+      "steps": [],
+      "repairable": false
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": true,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": 429,
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "field_id": 2698,
+          "filters": [
+            {
+              "field_id": 2698,
+              "op": "eq",
+              "value": "一等奖学金"
+            }
+          ]
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "field_id": 2699,
+          "filters": [
+            {
+              "field_id": 2698,
+              "op": "eq",
+              "value": "二等奖学金"
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "references": []
+  },
+  {
+    "id": "V2C02",
+    "group": "exposed_v2",
+    "question": "按《本科学生奖学金评定办法》，综合一、二、三等奖各发一份，奖励金额合计多少元？",
+    "gold": {
+      "id": "V2C02",
+      "category": "calculation",
+      "question": "按《本科学生奖学金评定办法》，综合一、二、三等奖各发一份，奖励金额合计多少元？",
+      "answer": "2100元",
+      "points": [
+        "2100元"
+      ],
+      "expected": "2100",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 248,
+          "quote": "一等奖学金10003二等奖学金70010三等奖学金40015"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 248,
+          "quote": "一等奖学金10003二等奖学金70010三等奖学金40015",
+          "chunk_ids": [
+            "b4abf303-4533-4a1a-b465-9fdc7184e79e"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    "before": "结果为2100元。算式：1000 + 700 + 400。",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：result: 缺少inputs",
+    "calculation": {
+      "ok": false,
+      "value": null,
+      "unit": "",
+      "expression": "",
+      "details": [],
+      "error": "result: 缺少inputs",
+      "evidence": [],
+      "steps": [],
+      "repairable": true
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": true,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": 429,
+      "steps": [
+        {
+          "id": "result",
+          "op": "add",
+          "field_id": 2699,
+          "filters": [
+            {
+              "field_id": 2698,
+              "op": "in",
+              "value": [
+                "一等奖学金",
+                "二等奖学金",
+                "三等奖学金"
+              ]
+            }
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "references": []
+  },
+  {
+    "id": "V2C03",
+    "group": "exposed_v2",
+    "question": "按《本科学生奖学金评定办法》，综合三等奖金额占一等奖金额的百分比是多少？",
+    "gold": {
+      "id": "V2C03",
+      "category": "calculation",
+      "question": "按《本科学生奖学金评定办法》，综合三等奖金额占一等奖金额的百分比是多少？",
+      "answer": "40%",
+      "points": [
+        "40%"
+      ],
+      "expected": "40",
+      "unit": "%",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 248,
+          "quote": "一等奖学金10003二等奖学金70010三等奖学金40015"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 248,
+          "quote": "一等奖学金10003二等奖学金70010三等奖学金40015",
+          "chunk_ids": [
+            "b4abf303-4533-4a1a-b465-9fdc7184e79e"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    "before": "结果为40%。算式：(400) / (1000) × 100%。",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：left: 参与计算的记录存在缺失或非确定数值",
+    "calculation": {
+      "ok": false,
+      "value": null,
+      "unit": "",
+      "expression": "",
+      "details": [],
+      "error": "left: 参与计算的记录存在缺失或非确定数值",
+      "evidence": [],
+      "steps": [],
+      "repairable": false
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": true,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": 429,
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "field_id": 2698,
+          "filters": [
+            {
+              "field_id": 2698,
+              "op": "eq",
+              "value": "三等奖学金"
+            }
+          ]
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "field_id": 2699,
+          "filters": [
+            {
+              "field_id": 2698,
+              "op": "eq",
+              "value": "一等奖学金"
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "op": "ratio",
+          "inputs": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "references": []
+  },
+  {
+    "id": "V2C06",
+    "group": "exposed_v2",
+    "question": "按2025年甘霖励志奖学金志愿服务类每学年120小时的要求，已完成85小时，还差多少小时？",
+    "gold": {
+      "id": "V2C06",
+      "category": "calculation",
+      "question": "按2025年甘霖励志奖学金志愿服务类每学年120小时的要求，已完成85小时，还差多少小时？",
+      "answer": "35小时",
+      "points": [
+        "35小时"
+      ],
+      "expected": "35",
+      "unit": "小时",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 259,
+          "quote": "每学年能够完成120小时的志愿服务时长"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 259,
+          "quote": "每学年能够完成120小时的志愿服务时长",
+          "chunk_ids": [
+            "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：result: 输入步骤right未先定义或引用自身；合法前序id：left。必须保留每个操作数步骤，问题常数也须先lookup，返回完整JSON",
+    "after": "结果为35小时。算式：(120) - (85)。",
+    "calculation": {
+      "ok": true,
+      "value": "35",
+      "unit": "小时",
+      "expression": "(120) - (85)",
+      "details": [
+        {
+          "fact_id": "f1",
+          "field": "每学年",
+          "subject": "志愿服务类",
+          "raw_value": "120小时",
+          "value": "120",
+          "unit": "小时",
+          "comparison": "eq",
+          "scope": {
+            "clause": "",
+            "period": "每学年",
+            "context": "志愿服务类。坚持参加志愿服务活动,在重大活动中积极报名,每学年能够完成120小时的志愿服务时长,在校内外各级各类志愿活动过程中表现良好"
+          },
+          "quote": "志愿服务类。坚持参加志愿服务活动，在重大活动中积极\n报名，每学年能够完成120 小时",
+          "span": [
+            201,
+            243
+          ],
+          "doc_id": 259,
+          "source_title": "校学发〔2025〕12号南京邮电大学“甘霖励志奖学金”评选办法",
+          "source_section": "",
+          "evidence_id": "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/8b/02/564d3df247e0978ebfeb6e91f977/abd249cf-3755-4320-9974-2306fd0594c1.pdf",
+          "evidence": {
+            "evidence_id": "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e",
+            "text": "— 2 —\n1.社会工作类。积极参加学校、学院、班级的各类集体活动，\n热心为同学服务，工作踏实，办事认真，积极主动，实事求是，\n勇于创新，以身作则，表现良好。2.精神文明类。爱党爱国，品德优良，见义勇为，乐于助人，\n在校园精神文明建设、维护校内外治安、社会稳定、民族团结以\n及抗灾救灾等方面表现良好。3.学业学习类。学习态度端正，学习进步明显，在学风建设\n活动中表现良好，能够在同学中发挥积极作用。4.志愿服务类。坚持参加志愿服务活动，在重大活动中积极\n报名，每学年能够完成120 小时的志愿服务时长，在校内外各级\n各类志愿活动过程中表现良好。5.文体艺术类。积极参加早操等体育锻炼活动，积极参加校\n内外各级各类文艺比赛、体育竞赛，传承中华优秀传统文化，全\n面提升综合素养，在德育铸魂、美育润心、体育强身建设中成效\n显著。6.创新创业类。努力拼搏，积极进取，有一定的创新能力和\n协作精神，秉持创新精神，强化协作意识，积极参加校内外各级\n各类创新创业活动和竞赛，并取得一定成效。",
+            "score": 0.8874077796936035,
+            "doc_id": 259,
+            "title": "校学发〔2025〕12号南京邮电大学“甘霖励志奖学金”评选办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/8b/02/564d3df247e0978ebfeb6e91f977/abd249cf-3755-4320-9974-2306fd0594c1.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2025-03-18",
+            "chunk_id": "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e",
+            "table_id": null,
+            "row_ids": []
+          }
+        },
+        {
+          "fact_id": "f1",
+          "field": "每学年",
+          "subject": "志愿服务类",
+          "raw_value": "120小时",
+          "value": "120",
+          "unit": "小时",
+          "comparison": "eq",
+          "scope": {
+            "clause": "",
+            "period": "每学年",
+            "context": "志愿服务类。坚持参加志愿服务活动,在重大活动中积极报名,每学年能够完成120小时的志愿服务时长,在校内外各级各类志愿活动过程中表现良好"
+          },
+          "quote": "志愿服务类。坚持参加志愿服务活动，在重大活动中积极\n报名，每学年能够完成120 小时",
+          "span": [
+            201,
+            243
+          ],
+          "doc_id": 259,
+          "source_title": "校学发〔2025〕12号南京邮电大学“甘霖励志奖学金”评选办法",
+          "source_section": "",
+          "evidence_id": "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/8b/02/564d3df247e0978ebfeb6e91f977/abd249cf-3755-4320-9974-2306fd0594c1.pdf",
+          "evidence": {
+            "evidence_id": "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e",
+            "text": "— 2 —\n1.社会工作类。积极参加学校、学院、班级的各类集体活动，\n热心为同学服务，工作踏实，办事认真，积极主动，实事求是，\n勇于创新，以身作则，表现良好。2.精神文明类。爱党爱国，品德优良，见义勇为，乐于助人，\n在校园精神文明建设、维护校内外治安、社会稳定、民族团结以\n及抗灾救灾等方面表现良好。3.学业学习类。学习态度端正，学习进步明显，在学风建设\n活动中表现良好，能够在同学中发挥积极作用。4.志愿服务类。坚持参加志愿服务活动，在重大活动中积极\n报名，每学年能够完成120 小时的志愿服务时长，在校内外各级\n各类志愿活动过程中表现良好。5.文体艺术类。积极参加早操等体育锻炼活动，积极参加校\n内外各级各类文艺比赛、体育竞赛，传承中华优秀传统文化，全\n面提升综合素养，在德育铸魂、美育润心、体育强身建设中成效\n显著。6.创新创业类。努力拼搏，积极进取，有一定的创新能力和\n协作精神，秉持创新精神，强化协作意识，积极参加校内外各级\n各类创新创业活动和竞赛，并取得一定成效。",
+            "score": 0.8874077796936035,
+            "doc_id": 259,
+            "title": "校学发〔2025〕12号南京邮电大学“甘霖励志奖学金”评选办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/8b/02/564d3df247e0978ebfeb6e91f977/abd249cf-3755-4320-9974-2306fd0594c1.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2025-03-18",
+            "chunk_id": "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e",
+            "table_id": null,
+            "row_ids": []
+          }
+        }
+      ],
+      "error": "",
+      "evidence": [
+        {
+          "evidence_id": "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e",
+          "text": "— 2 —\n1.社会工作类。积极参加学校、学院、班级的各类集体活动，\n热心为同学服务，工作踏实，办事认真，积极主动，实事求是，\n勇于创新，以身作则，表现良好。2.精神文明类。爱党爱国，品德优良，见义勇为，乐于助人，\n在校园精神文明建设、维护校内外治安、社会稳定、民族团结以\n及抗灾救灾等方面表现良好。3.学业学习类。学习态度端正，学习进步明显，在学风建设\n活动中表现良好，能够在同学中发挥积极作用。4.志愿服务类。坚持参加志愿服务活动，在重大活动中积极\n报名，每学年能够完成120 小时的志愿服务时长，在校内外各级\n各类志愿活动过程中表现良好。5.文体艺术类。积极参加早操等体育锻炼活动，积极参加校\n内外各级各类文艺比赛、体育竞赛，传承中华优秀传统文化，全\n面提升综合素养，在德育铸魂、美育润心、体育强身建设中成效\n显著。6.创新创业类。努力拼搏，积极进取，有一定的创新能力和\n协作精神，秉持创新精神，强化协作意识，积极参加校内外各级\n各类创新创业活动和竞赛，并取得一定成效。",
+          "score": 0.8874077796936035,
+          "doc_id": 259,
+          "title": "校学发〔2025〕12号南京邮电大学“甘霖励志奖学金”评选办法",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/8b/02/564d3df247e0978ebfeb6e91f977/abd249cf-3755-4320-9974-2306fd0594c1.pdf",
+          "department": "学生工作部（处）",
+          "published_at": "2025-03-18",
+          "chunk_id": "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e",
+          "table_id": null,
+          "row_ids": []
+        }
+      ],
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "operands": [],
+          "value": "120",
+          "unit": "小时",
+          "expression": "120",
+          "details": [
+            {
+              "fact_id": "f1",
+              "field": "每学年",
+              "subject": "志愿服务类",
+              "raw_value": "120小时",
+              "value": "120",
+              "unit": "小时",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "每学年",
+                "context": "志愿服务类。坚持参加志愿服务活动,在重大活动中积极报名,每学年能够完成120小时的志愿服务时长,在校内外各级各类志愿活动过程中表现良好"
+              },
+              "quote": "志愿服务类。坚持参加志愿服务活动，在重大活动中积极\n报名，每学年能够完成120 小时",
+              "span": [
+                201,
+                243
+              ],
+              "doc_id": 259,
+              "source_title": "校学发〔2025〕12号南京邮电大学“甘霖励志奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/8b/02/564d3df247e0978ebfeb6e91f977/abd249cf-3755-4320-9974-2306fd0594c1.pdf",
+              "evidence": {
+                "evidence_id": "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e",
+                "text": "— 2 —\n1.社会工作类。积极参加学校、学院、班级的各类集体活动，\n热心为同学服务，工作踏实，办事认真，积极主动，实事求是，\n勇于创新，以身作则，表现良好。2.精神文明类。爱党爱国，品德优良，见义勇为，乐于助人，\n在校园精神文明建设、维护校内外治安、社会稳定、民族团结以\n及抗灾救灾等方面表现良好。3.学业学习类。学习态度端正，学习进步明显，在学风建设\n活动中表现良好，能够在同学中发挥积极作用。4.志愿服务类。坚持参加志愿服务活动，在重大活动中积极\n报名，每学年能够完成120 小时的志愿服务时长，在校内外各级\n各类志愿活动过程中表现良好。5.文体艺术类。积极参加早操等体育锻炼活动，积极参加校\n内外各级各类文艺比赛、体育竞赛，传承中华优秀传统文化，全\n面提升综合素养，在德育铸魂、美育润心、体育强身建设中成效\n显著。6.创新创业类。努力拼搏，积极进取，有一定的创新能力和\n协作精神，秉持创新精神，强化协作意识，积极参加校内外各级\n各类创新创业活动和竞赛，并取得一定成效。",
+                "score": 0.8874077796936035,
+                "doc_id": 259,
+                "title": "校学发〔2025〕12号南京邮电大学“甘霖励志奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/8b/02/564d3df247e0978ebfeb6e91f977/abd249cf-3755-4320-9974-2306fd0594c1.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2025-03-18",
+                "chunk_id": "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "operands": [],
+          "value": "85",
+          "unit": "小时",
+          "expression": "85",
+          "details": [],
+          "source": {
+            "kind": "question",
+            "quote": "85小时",
+            "span": [
+              33,
+              37
+            ]
+          }
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "operands": [
+            {
+              "value": "120",
+              "unit": "小时"
+            },
+            {
+              "value": "85",
+              "unit": "小时",
+              "source": {
+                "kind": "question",
+                "quote": "85小时",
+                "span": [
+                  33,
+                  37
+                ]
+              }
+            }
+          ],
+          "value": "35",
+          "unit": "小时",
+          "expression": "(120) - (85)",
+          "details": [
+            {
+              "fact_id": "f1",
+              "field": "每学年",
+              "subject": "志愿服务类",
+              "raw_value": "120小时",
+              "value": "120",
+              "unit": "小时",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "每学年",
+                "context": "志愿服务类。坚持参加志愿服务活动,在重大活动中积极报名,每学年能够完成120小时的志愿服务时长,在校内外各级各类志愿活动过程中表现良好"
+              },
+              "quote": "志愿服务类。坚持参加志愿服务活动，在重大活动中积极\n报名，每学年能够完成120 小时",
+              "span": [
+                201,
+                243
+              ],
+              "doc_id": 259,
+              "source_title": "校学发〔2025〕12号南京邮电大学“甘霖励志奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/8b/02/564d3df247e0978ebfeb6e91f977/abd249cf-3755-4320-9974-2306fd0594c1.pdf",
+              "evidence": {
+                "evidence_id": "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e",
+                "text": "— 2 —\n1.社会工作类。积极参加学校、学院、班级的各类集体活动，\n热心为同学服务，工作踏实，办事认真，积极主动，实事求是，\n勇于创新，以身作则，表现良好。2.精神文明类。爱党爱国，品德优良，见义勇为，乐于助人，\n在校园精神文明建设、维护校内外治安、社会稳定、民族团结以\n及抗灾救灾等方面表现良好。3.学业学习类。学习态度端正，学习进步明显，在学风建设\n活动中表现良好，能够在同学中发挥积极作用。4.志愿服务类。坚持参加志愿服务活动，在重大活动中积极\n报名，每学年能够完成120 小时的志愿服务时长，在校内外各级\n各类志愿活动过程中表现良好。5.文体艺术类。积极参加早操等体育锻炼活动，积极参加校\n内外各级各类文艺比赛、体育竞赛，传承中华优秀传统文化，全\n面提升综合素养，在德育铸魂、美育润心、体育强身建设中成效\n显著。6.创新创业类。努力拼搏，积极进取，有一定的创新能力和\n协作精神，秉持创新精神，强化协作意识，积极参加校内外各级\n各类创新创业活动和竞赛，并取得一定成效。",
+                "score": 0.8874077796936035,
+                "doc_id": 259,
+                "title": "校学发〔2025〕12号南京邮电大学“甘霖励志奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/8b/02/564d3df247e0978ebfeb6e91f977/abd249cf-3755-4320-9974-2306fd0594c1.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2025-03-18",
+                "chunk_id": "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "repairable": false
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2025"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "literal": "85",
+          "unit": "小时"
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "references": [
+      "校学发〔2025〕12号南京邮电大学“甘霖励志奖学金”评选办法｜学生工作部（处）｜2025-03-18｜https://xsc.njupt.edu.cn/_upload/article/files/8b/02/564d3df247e0978ebfeb6e91f977/abd249cf-3755-4320-9974-2306fd0594c1.pdf"
+    ]
+  },
+  {
+    "id": "V2C07",
+    "group": "exposed_v2",
+    "question": "按《学生修读辅修专业管理办法》，辅修课程共4学期。如果已完成1学期，还剩多少学期？",
+    "gold": {
+      "id": "V2C07",
+      "category": "calculation",
+      "question": "按《学生修读辅修专业管理办法》，辅修课程共4学期。如果已完成1学期，还剩多少学期？",
+      "answer": "3学期",
+      "points": [
+        "3学期"
+      ],
+      "expected": "3",
+      "unit": "学期",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 261,
+          "quote": "共4学期"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 261,
+          "quote": "共4学期",
+          "chunk_ids": [
+            "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：result: 输入步骤right未先定义或引用自身；合法前序id：left。必须保留每个操作数步骤，问题常数也须先lookup，返回完整JSON",
+    "after": "结果为3学期。算式：(4) - (1)。",
+    "calculation": {
+      "ok": true,
+      "value": "3",
+      "unit": "学期",
+      "expression": "(4) - (1)",
+      "details": [
+        {
+          "fact_id": "f3",
+          "field": "辅修专业课程安排一般从第三至第六学期",
+          "subject": "辅修专业课程安排一般从第三至第六学期",
+          "raw_value": "4学期",
+          "value": "4",
+          "unit": "学期",
+          "comparison": "eq",
+          "scope": {
+            "clause": "第十二条",
+            "period": "",
+            "context": "第十二条辅修专业课程安排一般从第三至第六学期共4学期"
+          },
+          "quote": "第十二条\n辅修专业课程安排一般从第三至第六学期共4 学期",
+          "span": [
+            0,
+            28
+          ],
+          "doc_id": 261,
+          "source_title": "学生修读辅修专业管理办法",
+          "source_section": "",
+          "evidence_id": "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+          "evidence": {
+            "evidence_id": "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6",
+            "text": "第十二条\n辅修专业课程安排一般从第三至第六学期共4 学期。第十三条\n辅修专业实行学分制。成绩与学分记入“学生成绩表”，不计算平均学分绩点。第十四条\n当学期修读的辅修课程不及格，可以免费参加一次该课程的“补考”。“补考”\n一般安排在下学期开学前进行。课程考核补考后仍不及格或旷考的学生可报名重修。第十五条\n辅修专业课程的教材由开办学院负责提供征订计划，报教务处教学研究科订\n购并组织学生购买。第十六条\n辅修专业开办学院为辅修课程教学班配备兼职班主任，负责班级的日常管理\n工作。学籍管理\n第十七条\n已批准的学生须在初次开课学期3 周内完成缴费、注册、领取听课证等手续。辅修专业开办学院于第3 周将注册学生名单报教务处教务管理科。第十八条\n辅修专业课程由教务处统一预置，学生不必申报。课程一般安排在晚上或双\n休日，学生凭听课证听课。第十九条\n修读辅修专业的学生须参加辅修专业的一切教学活动，不能参加者须事先经\n过批准。",
+            "score": 0.9901617765426636,
+            "doc_id": 261,
+            "title": "学生修读辅修专业管理办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2024-03-01",
+            "chunk_id": "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6",
+            "table_id": null,
+            "row_ids": []
+          }
+        },
+        {
+          "fact_id": "f3",
+          "field": "辅修专业课程安排一般从第三至第六学期",
+          "subject": "辅修专业课程安排一般从第三至第六学期",
+          "raw_value": "4学期",
+          "value": "4",
+          "unit": "学期",
+          "comparison": "eq",
+          "scope": {
+            "clause": "第十二条",
+            "period": "",
+            "context": "第十二条辅修专业课程安排一般从第三至第六学期共4学期"
+          },
+          "quote": "第十二条\n辅修专业课程安排一般从第三至第六学期共4 学期",
+          "span": [
+            0,
+            28
+          ],
+          "doc_id": 261,
+          "source_title": "学生修读辅修专业管理办法",
+          "source_section": "",
+          "evidence_id": "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+          "evidence": {
+            "evidence_id": "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6",
+            "text": "第十二条\n辅修专业课程安排一般从第三至第六学期共4 学期。第十三条\n辅修专业实行学分制。成绩与学分记入“学生成绩表”，不计算平均学分绩点。第十四条\n当学期修读的辅修课程不及格，可以免费参加一次该课程的“补考”。“补考”\n一般安排在下学期开学前进行。课程考核补考后仍不及格或旷考的学生可报名重修。第十五条\n辅修专业课程的教材由开办学院负责提供征订计划，报教务处教学研究科订\n购并组织学生购买。第十六条\n辅修专业开办学院为辅修课程教学班配备兼职班主任，负责班级的日常管理\n工作。学籍管理\n第十七条\n已批准的学生须在初次开课学期3 周内完成缴费、注册、领取听课证等手续。辅修专业开办学院于第3 周将注册学生名单报教务处教务管理科。第十八条\n辅修专业课程由教务处统一预置，学生不必申报。课程一般安排在晚上或双\n休日，学生凭听课证听课。第十九条\n修读辅修专业的学生须参加辅修专业的一切教学活动，不能参加者须事先经\n过批准。",
+            "score": 0.9901617765426636,
+            "doc_id": 261,
+            "title": "学生修读辅修专业管理办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2024-03-01",
+            "chunk_id": "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6",
+            "table_id": null,
+            "row_ids": []
+          }
+        }
+      ],
+      "error": "",
+      "evidence": [
+        {
+          "evidence_id": "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6",
+          "text": "第十二条\n辅修专业课程安排一般从第三至第六学期共4 学期。第十三条\n辅修专业实行学分制。成绩与学分记入“学生成绩表”，不计算平均学分绩点。第十四条\n当学期修读的辅修课程不及格，可以免费参加一次该课程的“补考”。“补考”\n一般安排在下学期开学前进行。课程考核补考后仍不及格或旷考的学生可报名重修。第十五条\n辅修专业课程的教材由开办学院负责提供征订计划，报教务处教学研究科订\n购并组织学生购买。第十六条\n辅修专业开办学院为辅修课程教学班配备兼职班主任，负责班级的日常管理\n工作。学籍管理\n第十七条\n已批准的学生须在初次开课学期3 周内完成缴费、注册、领取听课证等手续。辅修专业开办学院于第3 周将注册学生名单报教务处教务管理科。第十八条\n辅修专业课程由教务处统一预置，学生不必申报。课程一般安排在晚上或双\n休日，学生凭听课证听课。第十九条\n修读辅修专业的学生须参加辅修专业的一切教学活动，不能参加者须事先经\n过批准。",
+          "score": 0.9901617765426636,
+          "doc_id": 261,
+          "title": "学生修读辅修专业管理办法",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+          "department": "学生工作部（处）",
+          "published_at": "2024-03-01",
+          "chunk_id": "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6",
+          "table_id": null,
+          "row_ids": []
+        }
+      ],
+      "steps": [
+        {
+          "id": "numerator",
+          "op": "lookup",
+          "operands": [],
+          "value": "4",
+          "unit": "学期",
+          "expression": "4",
+          "details": [
+            {
+              "fact_id": "f3",
+              "field": "辅修专业课程安排一般从第三至第六学期",
+              "subject": "辅修专业课程安排一般从第三至第六学期",
+              "raw_value": "4学期",
+              "value": "4",
+              "unit": "学期",
+              "comparison": "eq",
+              "scope": {
+                "clause": "第十二条",
+                "period": "",
+                "context": "第十二条辅修专业课程安排一般从第三至第六学期共4学期"
+              },
+              "quote": "第十二条\n辅修专业课程安排一般从第三至第六学期共4 学期",
+              "span": [
+                0,
+                28
+              ],
+              "doc_id": 261,
+              "source_title": "学生修读辅修专业管理办法",
+              "source_section": "",
+              "evidence_id": "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+              "evidence": {
+                "evidence_id": "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6",
+                "text": "第十二条\n辅修专业课程安排一般从第三至第六学期共4 学期。第十三条\n辅修专业实行学分制。成绩与学分记入“学生成绩表”，不计算平均学分绩点。第十四条\n当学期修读的辅修课程不及格，可以免费参加一次该课程的“补考”。“补考”\n一般安排在下学期开学前进行。课程考核补考后仍不及格或旷考的学生可报名重修。第十五条\n辅修专业课程的教材由开办学院负责提供征订计划，报教务处教学研究科订\n购并组织学生购买。第十六条\n辅修专业开办学院为辅修课程教学班配备兼职班主任，负责班级的日常管理\n工作。学籍管理\n第十七条\n已批准的学生须在初次开课学期3 周内完成缴费、注册、领取听课证等手续。辅修专业开办学院于第3 周将注册学生名单报教务处教务管理科。第十八条\n辅修专业课程由教务处统一预置，学生不必申报。课程一般安排在晚上或双\n休日，学生凭听课证听课。第十九条\n修读辅修专业的学生须参加辅修专业的一切教学活动，不能参加者须事先经\n过批准。",
+                "score": 0.9901617765426636,
+                "doc_id": 261,
+                "title": "学生修读辅修专业管理办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-03-01",
+                "chunk_id": "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        },
+        {
+          "id": "denominator",
+          "op": "lookup",
+          "operands": [],
+          "value": "1",
+          "unit": "学期",
+          "expression": "1",
+          "details": [],
+          "source": {
+            "kind": "question",
+            "quote": "1学期",
+            "span": [
+              30,
+              33
+            ]
+          }
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "operands": [
+            {
+              "value": "4",
+              "unit": "学期"
+            },
+            {
+              "value": "1",
+              "unit": "学期",
+              "source": {
+                "kind": "question",
+                "quote": "1学期",
+                "span": [
+                  30,
+                  33
+                ]
+              }
+            }
+          ],
+          "value": "3",
+          "unit": "学期",
+          "expression": "(4) - (1)",
+          "details": [
+            {
+              "fact_id": "f3",
+              "field": "辅修专业课程安排一般从第三至第六学期",
+              "subject": "辅修专业课程安排一般从第三至第六学期",
+              "raw_value": "4学期",
+              "value": "4",
+              "unit": "学期",
+              "comparison": "eq",
+              "scope": {
+                "clause": "第十二条",
+                "period": "",
+                "context": "第十二条辅修专业课程安排一般从第三至第六学期共4学期"
+              },
+              "quote": "第十二条\n辅修专业课程安排一般从第三至第六学期共4 学期",
+              "span": [
+                0,
+                28
+              ],
+              "doc_id": 261,
+              "source_title": "学生修读辅修专业管理办法",
+              "source_section": "",
+              "evidence_id": "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+              "evidence": {
+                "evidence_id": "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6",
+                "text": "第十二条\n辅修专业课程安排一般从第三至第六学期共4 学期。第十三条\n辅修专业实行学分制。成绩与学分记入“学生成绩表”，不计算平均学分绩点。第十四条\n当学期修读的辅修课程不及格，可以免费参加一次该课程的“补考”。“补考”\n一般安排在下学期开学前进行。课程考核补考后仍不及格或旷考的学生可报名重修。第十五条\n辅修专业课程的教材由开办学院负责提供征订计划，报教务处教学研究科订\n购并组织学生购买。第十六条\n辅修专业开办学院为辅修课程教学班配备兼职班主任，负责班级的日常管理\n工作。学籍管理\n第十七条\n已批准的学生须在初次开课学期3 周内完成缴费、注册、领取听课证等手续。辅修专业开办学院于第3 周将注册学生名单报教务处教务管理科。第十八条\n辅修专业课程由教务处统一预置，学生不必申报。课程一般安排在晚上或双\n休日，学生凭听课证听课。第十九条\n修读辅修专业的学生须参加辅修专业的一切教学活动，不能参加者须事先经\n过批准。",
+                "score": 0.9901617765426636,
+                "doc_id": 261,
+                "title": "学生修读辅修专业管理办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-03-01",
+                "chunk_id": "6612dcb5-7f9c-426c-8fc9-6402dd55a8c6",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "repairable": false
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "numerator",
+          "op": "lookup",
+          "fact_id": "f3"
+        },
+        {
+          "id": "denominator",
+          "op": "lookup",
+          "literal": "1",
+          "unit": "学期"
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "numerator",
+            "denominator"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "references": [
+      "学生修读辅修专业管理办法｜学生工作部（处）｜2024-03-01｜https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf"
+    ]
+  },
+  {
+    "id": "V2C08",
+    "group": "exposed_v2",
+    "question": "按《学生修读辅修专业管理办法》，一般设置8至10门主干课程，上限比下限多多少门？",
+    "gold": {
+      "id": "V2C08",
+      "category": "calculation",
+      "question": "按《学生修读辅修专业管理办法》，一般设置8至10门主干课程，上限比下限多多少门？",
+      "answer": "2门",
+      "points": [
+        "2门"
+      ],
+      "expected": "2",
+      "unit": "门",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 261,
+          "quote": "一般设置8-10门该专业的主要课程"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 261,
+          "quote": "一般设置8-10门该专业的主要课程",
+          "chunk_ids": [
+            "7d5644a7-3023-499e-a982-bb4f03f3938e"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：result: 输入步骤right未先定义或引用自身；合法前序id：left。必须保留每个操作数步骤，问题常数也须先lookup，返回完整JSON",
+    "after": "按所引界限计算，结果为2门。算式：(10) - (8)。",
+    "calculation": {
+      "ok": true,
+      "value": "2",
+      "unit": "门",
+      "expression": "(10) - (8)",
+      "details": [
+        {
+          "fact_id": "f2",
+          "field": "一般",
+          "subject": "一般",
+          "raw_value": "8-10门",
+          "value": "10",
+          "unit": "门",
+          "comparison": "lte",
+          "scope": {
+            "clause": "第三条",
+            "period": "",
+            "context": "一般设置8-10门该专业的主要课程,总计20学分左右"
+          },
+          "quote": "一般设置8-10 门",
+          "span": [
+            243,
+            253
+          ],
+          "doc_id": 261,
+          "source_title": "学生修读辅修专业管理办法",
+          "source_section": "学生修读辅修专业管理办法",
+          "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+          "evidence": {
+            "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+            "text": "学生修读辅修专业管理办法\n总\n则\n第一条\n为适应社会发展需求，培养复合型人才，充分发挥学生的学习主动性和积极性，\n鼓励学有余力的学生学到更多的知识，拓宽知识面，提高就业竞争力，学校实行主辅修制，\n学生可以在学习主修专业的同时，修读辅修专业。为规范学生修读辅修专业的管理，特制定\n本办法。培养目标\n第二条\n根据学生自愿的原则，在较好地完成主修专业课程学习的基础上，培养掌握主\n修专业与辅修专业基本知识技能的复合型人才。专业设置\n第三条\n辅修专业是指不同于学生主修专业所属学科的跨学科专业。一般设置8-10 门\n该专业的主要课程，总计20 学分左右。第四条\n根据学校的办学资源，由学院申报新开设辅修专业。各学院在每学年第二学期\n第12 周前将下一学年度新开设辅修专业开设计划和已开设辅修专业课程设置计划向教务处\n申报。教务处审批后于第14 周公布全校辅修专业计划，于第16 周公布各学院名额分配计划。",
+            "score": 0.9991323351860046,
+            "doc_id": 261,
+            "title": "学生修读辅修专业管理办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2024-03-01",
+            "chunk_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+            "table_id": null,
+            "row_ids": []
+          }
+        },
+        {
+          "fact_id": "f1",
+          "field": "一般",
+          "subject": "一般",
+          "raw_value": "8-10门",
+          "value": "8",
+          "unit": "门",
+          "comparison": "gte",
+          "scope": {
+            "clause": "第三条",
+            "period": "",
+            "context": "一般设置8-10门该专业的主要课程,总计20学分左右"
+          },
+          "quote": "一般设置8-10 门",
+          "span": [
+            243,
+            253
+          ],
+          "doc_id": 261,
+          "source_title": "学生修读辅修专业管理办法",
+          "source_section": "学生修读辅修专业管理办法",
+          "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+          "evidence": {
+            "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+            "text": "学生修读辅修专业管理办法\n总\n则\n第一条\n为适应社会发展需求，培养复合型人才，充分发挥学生的学习主动性和积极性，\n鼓励学有余力的学生学到更多的知识，拓宽知识面，提高就业竞争力，学校实行主辅修制，\n学生可以在学习主修专业的同时，修读辅修专业。为规范学生修读辅修专业的管理，特制定\n本办法。培养目标\n第二条\n根据学生自愿的原则，在较好地完成主修专业课程学习的基础上，培养掌握主\n修专业与辅修专业基本知识技能的复合型人才。专业设置\n第三条\n辅修专业是指不同于学生主修专业所属学科的跨学科专业。一般设置8-10 门\n该专业的主要课程，总计20 学分左右。第四条\n根据学校的办学资源，由学院申报新开设辅修专业。各学院在每学年第二学期\n第12 周前将下一学年度新开设辅修专业开设计划和已开设辅修专业课程设置计划向教务处\n申报。教务处审批后于第14 周公布全校辅修专业计划，于第16 周公布各学院名额分配计划。",
+            "score": 0.9991323351860046,
+            "doc_id": 261,
+            "title": "学生修读辅修专业管理办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2024-03-01",
+            "chunk_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+            "table_id": null,
+            "row_ids": []
+          }
+        },
+        {
+          "fact_id": "f2",
+          "field": "一般",
+          "subject": "一般",
+          "raw_value": "8-10门",
+          "value": "10",
+          "unit": "门",
+          "comparison": "lte",
+          "scope": {
+            "clause": "第三条",
+            "period": "",
+            "context": "一般设置8-10门该专业的主要课程,总计20学分左右"
+          },
+          "quote": "一般设置8-10 门",
+          "span": [
+            243,
+            253
+          ],
+          "doc_id": 261,
+          "source_title": "学生修读辅修专业管理办法",
+          "source_section": "学生修读辅修专业管理办法",
+          "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+          "evidence": {
+            "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+            "text": "学生修读辅修专业管理办法\n总\n则\n第一条\n为适应社会发展需求，培养复合型人才，充分发挥学生的学习主动性和积极性，\n鼓励学有余力的学生学到更多的知识，拓宽知识面，提高就业竞争力，学校实行主辅修制，\n学生可以在学习主修专业的同时，修读辅修专业。为规范学生修读辅修专业的管理，特制定\n本办法。培养目标\n第二条\n根据学生自愿的原则，在较好地完成主修专业课程学习的基础上，培养掌握主\n修专业与辅修专业基本知识技能的复合型人才。专业设置\n第三条\n辅修专业是指不同于学生主修专业所属学科的跨学科专业。一般设置8-10 门\n该专业的主要课程，总计20 学分左右。第四条\n根据学校的办学资源，由学院申报新开设辅修专业。各学院在每学年第二学期\n第12 周前将下一学年度新开设辅修专业开设计划和已开设辅修专业课程设置计划向教务处\n申报。教务处审批后于第14 周公布全校辅修专业计划，于第16 周公布各学院名额分配计划。",
+            "score": 0.9991323351860046,
+            "doc_id": 261,
+            "title": "学生修读辅修专业管理办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2024-03-01",
+            "chunk_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+            "table_id": null,
+            "row_ids": []
+          }
+        },
+        {
+          "fact_id": "f1",
+          "field": "一般",
+          "subject": "一般",
+          "raw_value": "8-10门",
+          "value": "8",
+          "unit": "门",
+          "comparison": "gte",
+          "scope": {
+            "clause": "第三条",
+            "period": "",
+            "context": "一般设置8-10门该专业的主要课程,总计20学分左右"
+          },
+          "quote": "一般设置8-10 门",
+          "span": [
+            243,
+            253
+          ],
+          "doc_id": 261,
+          "source_title": "学生修读辅修专业管理办法",
+          "source_section": "学生修读辅修专业管理办法",
+          "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+          "evidence": {
+            "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+            "text": "学生修读辅修专业管理办法\n总\n则\n第一条\n为适应社会发展需求，培养复合型人才，充分发挥学生的学习主动性和积极性，\n鼓励学有余力的学生学到更多的知识，拓宽知识面，提高就业竞争力，学校实行主辅修制，\n学生可以在学习主修专业的同时，修读辅修专业。为规范学生修读辅修专业的管理，特制定\n本办法。培养目标\n第二条\n根据学生自愿的原则，在较好地完成主修专业课程学习的基础上，培养掌握主\n修专业与辅修专业基本知识技能的复合型人才。专业设置\n第三条\n辅修专业是指不同于学生主修专业所属学科的跨学科专业。一般设置8-10 门\n该专业的主要课程，总计20 学分左右。第四条\n根据学校的办学资源，由学院申报新开设辅修专业。各学院在每学年第二学期\n第12 周前将下一学年度新开设辅修专业开设计划和已开设辅修专业课程设置计划向教务处\n申报。教务处审批后于第14 周公布全校辅修专业计划，于第16 周公布各学院名额分配计划。",
+            "score": 0.9991323351860046,
+            "doc_id": 261,
+            "title": "学生修读辅修专业管理办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2024-03-01",
+            "chunk_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+            "table_id": null,
+            "row_ids": []
+          }
+        }
+      ],
+      "error": "",
+      "evidence": [
+        {
+          "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+          "text": "学生修读辅修专业管理办法\n总\n则\n第一条\n为适应社会发展需求，培养复合型人才，充分发挥学生的学习主动性和积极性，\n鼓励学有余力的学生学到更多的知识，拓宽知识面，提高就业竞争力，学校实行主辅修制，\n学生可以在学习主修专业的同时，修读辅修专业。为规范学生修读辅修专业的管理，特制定\n本办法。培养目标\n第二条\n根据学生自愿的原则，在较好地完成主修专业课程学习的基础上，培养掌握主\n修专业与辅修专业基本知识技能的复合型人才。专业设置\n第三条\n辅修专业是指不同于学生主修专业所属学科的跨学科专业。一般设置8-10 门\n该专业的主要课程，总计20 学分左右。第四条\n根据学校的办学资源，由学院申报新开设辅修专业。各学院在每学年第二学期\n第12 周前将下一学年度新开设辅修专业开设计划和已开设辅修专业课程设置计划向教务处\n申报。教务处审批后于第14 周公布全校辅修专业计划，于第16 周公布各学院名额分配计划。",
+          "score": 0.9991323351860046,
+          "doc_id": 261,
+          "title": "学生修读辅修专业管理办法",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+          "department": "学生工作部（处）",
+          "published_at": "2024-03-01",
+          "chunk_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+          "table_id": null,
+          "row_ids": []
+        }
+      ],
+      "steps": [
+        {
+          "id": "upper",
+          "op": "lookup",
+          "operands": [],
+          "value": "10",
+          "unit": "门",
+          "expression": "10",
+          "details": [
+            {
+              "fact_id": "f2",
+              "field": "一般",
+              "subject": "一般",
+              "raw_value": "8-10门",
+              "value": "10",
+              "unit": "门",
+              "comparison": "lte",
+              "scope": {
+                "clause": "第三条",
+                "period": "",
+                "context": "一般设置8-10门该专业的主要课程,总计20学分左右"
+              },
+              "quote": "一般设置8-10 门",
+              "span": [
+                243,
+                253
+              ],
+              "doc_id": 261,
+              "source_title": "学生修读辅修专业管理办法",
+              "source_section": "学生修读辅修专业管理办法",
+              "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+              "evidence": {
+                "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+                "text": "学生修读辅修专业管理办法\n总\n则\n第一条\n为适应社会发展需求，培养复合型人才，充分发挥学生的学习主动性和积极性，\n鼓励学有余力的学生学到更多的知识，拓宽知识面，提高就业竞争力，学校实行主辅修制，\n学生可以在学习主修专业的同时，修读辅修专业。为规范学生修读辅修专业的管理，特制定\n本办法。培养目标\n第二条\n根据学生自愿的原则，在较好地完成主修专业课程学习的基础上，培养掌握主\n修专业与辅修专业基本知识技能的复合型人才。专业设置\n第三条\n辅修专业是指不同于学生主修专业所属学科的跨学科专业。一般设置8-10 门\n该专业的主要课程，总计20 学分左右。第四条\n根据学校的办学资源，由学院申报新开设辅修专业。各学院在每学年第二学期\n第12 周前将下一学年度新开设辅修专业开设计划和已开设辅修专业课程设置计划向教务处\n申报。教务处审批后于第14 周公布全校辅修专业计划，于第16 周公布各学院名额分配计划。",
+                "score": 0.9991323351860046,
+                "doc_id": 261,
+                "title": "学生修读辅修专业管理办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-03-01",
+                "chunk_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        },
+        {
+          "id": "lower",
+          "op": "lookup",
+          "operands": [],
+          "value": "8",
+          "unit": "门",
+          "expression": "8",
+          "details": [
+            {
+              "fact_id": "f1",
+              "field": "一般",
+              "subject": "一般",
+              "raw_value": "8-10门",
+              "value": "8",
+              "unit": "门",
+              "comparison": "gte",
+              "scope": {
+                "clause": "第三条",
+                "period": "",
+                "context": "一般设置8-10门该专业的主要课程,总计20学分左右"
+              },
+              "quote": "一般设置8-10 门",
+              "span": [
+                243,
+                253
+              ],
+              "doc_id": 261,
+              "source_title": "学生修读辅修专业管理办法",
+              "source_section": "学生修读辅修专业管理办法",
+              "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+              "evidence": {
+                "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+                "text": "学生修读辅修专业管理办法\n总\n则\n第一条\n为适应社会发展需求，培养复合型人才，充分发挥学生的学习主动性和积极性，\n鼓励学有余力的学生学到更多的知识，拓宽知识面，提高就业竞争力，学校实行主辅修制，\n学生可以在学习主修专业的同时，修读辅修专业。为规范学生修读辅修专业的管理，特制定\n本办法。培养目标\n第二条\n根据学生自愿的原则，在较好地完成主修专业课程学习的基础上，培养掌握主\n修专业与辅修专业基本知识技能的复合型人才。专业设置\n第三条\n辅修专业是指不同于学生主修专业所属学科的跨学科专业。一般设置8-10 门\n该专业的主要课程，总计20 学分左右。第四条\n根据学校的办学资源，由学院申报新开设辅修专业。各学院在每学年第二学期\n第12 周前将下一学年度新开设辅修专业开设计划和已开设辅修专业课程设置计划向教务处\n申报。教务处审批后于第14 周公布全校辅修专业计划，于第16 周公布各学院名额分配计划。",
+                "score": 0.9991323351860046,
+                "doc_id": 261,
+                "title": "学生修读辅修专业管理办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-03-01",
+                "chunk_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "operands": [
+            {
+              "value": "10",
+              "unit": "门"
+            },
+            {
+              "value": "8",
+              "unit": "门"
+            }
+          ],
+          "value": "2",
+          "unit": "门",
+          "expression": "(10) - (8)",
+          "details": [
+            {
+              "fact_id": "f2",
+              "field": "一般",
+              "subject": "一般",
+              "raw_value": "8-10门",
+              "value": "10",
+              "unit": "门",
+              "comparison": "lte",
+              "scope": {
+                "clause": "第三条",
+                "period": "",
+                "context": "一般设置8-10门该专业的主要课程,总计20学分左右"
+              },
+              "quote": "一般设置8-10 门",
+              "span": [
+                243,
+                253
+              ],
+              "doc_id": 261,
+              "source_title": "学生修读辅修专业管理办法",
+              "source_section": "学生修读辅修专业管理办法",
+              "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+              "evidence": {
+                "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+                "text": "学生修读辅修专业管理办法\n总\n则\n第一条\n为适应社会发展需求，培养复合型人才，充分发挥学生的学习主动性和积极性，\n鼓励学有余力的学生学到更多的知识，拓宽知识面，提高就业竞争力，学校实行主辅修制，\n学生可以在学习主修专业的同时，修读辅修专业。为规范学生修读辅修专业的管理，特制定\n本办法。培养目标\n第二条\n根据学生自愿的原则，在较好地完成主修专业课程学习的基础上，培养掌握主\n修专业与辅修专业基本知识技能的复合型人才。专业设置\n第三条\n辅修专业是指不同于学生主修专业所属学科的跨学科专业。一般设置8-10 门\n该专业的主要课程，总计20 学分左右。第四条\n根据学校的办学资源，由学院申报新开设辅修专业。各学院在每学年第二学期\n第12 周前将下一学年度新开设辅修专业开设计划和已开设辅修专业课程设置计划向教务处\n申报。教务处审批后于第14 周公布全校辅修专业计划，于第16 周公布各学院名额分配计划。",
+                "score": 0.9991323351860046,
+                "doc_id": 261,
+                "title": "学生修读辅修专业管理办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-03-01",
+                "chunk_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+                "table_id": null,
+                "row_ids": []
+              }
+            },
+            {
+              "fact_id": "f1",
+              "field": "一般",
+              "subject": "一般",
+              "raw_value": "8-10门",
+              "value": "8",
+              "unit": "门",
+              "comparison": "gte",
+              "scope": {
+                "clause": "第三条",
+                "period": "",
+                "context": "一般设置8-10门该专业的主要课程,总计20学分左右"
+              },
+              "quote": "一般设置8-10 门",
+              "span": [
+                243,
+                253
+              ],
+              "doc_id": 261,
+              "source_title": "学生修读辅修专业管理办法",
+              "source_section": "学生修读辅修专业管理办法",
+              "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+              "evidence": {
+                "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+                "text": "学生修读辅修专业管理办法\n总\n则\n第一条\n为适应社会发展需求，培养复合型人才，充分发挥学生的学习主动性和积极性，\n鼓励学有余力的学生学到更多的知识，拓宽知识面，提高就业竞争力，学校实行主辅修制，\n学生可以在学习主修专业的同时，修读辅修专业。为规范学生修读辅修专业的管理，特制定\n本办法。培养目标\n第二条\n根据学生自愿的原则，在较好地完成主修专业课程学习的基础上，培养掌握主\n修专业与辅修专业基本知识技能的复合型人才。专业设置\n第三条\n辅修专业是指不同于学生主修专业所属学科的跨学科专业。一般设置8-10 门\n该专业的主要课程，总计20 学分左右。第四条\n根据学校的办学资源，由学院申报新开设辅修专业。各学院在每学年第二学期\n第12 周前将下一学年度新开设辅修专业开设计划和已开设辅修专业课程设置计划向教务处\n申报。教务处审批后于第14 周公布全校辅修专业计划，于第16 周公布各学院名额分配计划。",
+                "score": 0.9991323351860046,
+                "doc_id": 261,
+                "title": "学生修读辅修专业管理办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-03-01",
+                "chunk_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "repairable": false
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "upper",
+          "op": "lookup",
+          "fact_id": "f2"
+        },
+        {
+          "id": "lower",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "upper",
+            "lower"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "references": [
+      "学生修读辅修专业管理办法｜学生工作部（处）｜2024-03-01｜https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf"
+    ]
+  },
+  {
+    "id": "L3N01",
+    "group": "old_campus",
+    "question": "按“共进电子奖学金”评选办法，研究生每人的奖学金标准比本科生高多少元？",
+    "gold": {
+      "id": "L3N01",
+      "category": "calculation",
+      "question": "按“共进电子奖学金”评选办法，研究生每人的奖学金标准比本科生高多少元？",
+      "points": [
+        "4000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 247,
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人；本科生：6 名，每学年奖学金标准为8000 元/人。"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 247,
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人；本科生：6 名，每学年奖学金标准为8000 元/人。",
+          "chunk_ids": [
+            "93d06975-8309-40b5-9691-bf21f117b7b4"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "4000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "4000元"
+    },
+    "before": "结果为4000元/人。算式：(12000) - (8000)。",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：操作数单位不一致",
+    "calculation": {
+      "ok": false,
+      "value": null,
+      "unit": "",
+      "expression": "",
+      "details": [],
+      "error": "操作数单位不一致",
+      "evidence": [],
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "operands": [],
+          "value": "4",
+          "unit": "人",
+          "expression": "4",
+          "details": [
+            {
+              "fact_id": "f1",
+              "field": "研究生",
+              "subject": "研究生",
+              "raw_value": "4名",
+              "value": "4",
+              "unit": "人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "",
+                "context": "研究生：4名,每学年奖学金标准为12000元/人"
+              },
+              "quote": "研究生：4 名",
+              "span": [
+                269,
+                276
+              ],
+              "doc_id": 247,
+              "source_title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+              "evidence": {
+                "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "text": "— 2 —\n劳全面发展，品学兼优，遵守国家法令和学校各项规章制度，身\n体健康，体测成绩达到良好及以上，并符合下列条件之一：\n1.具有中华人民共和国国籍；\n2.学年综合素质测评成绩优秀；\n3.创新能力突出，在省、部级以上竞赛中名列前茅；\n4.科研能力强，取得一定的科研成果；\n5.凡本学年中有下列情况之一者，均无资格申请奖学金：\n（1）必修课和限选课成绩有不及格现象者（含补考和因个\n人原因缓考者）；\n（2）有抄袭剽窃、弄虚作假等学术不端行为经查证属实者。\n三、奖励名额及标准\n“共进电子奖学金”每年奖励学生10 名，奖项设置方案如\n下：\n研究生：4 名，每学年奖学金标准为12000 元/人；\n本科生：6 名，每学年奖学金标准为8000 元/人。\n四、评审程序\n（一）由学生本人提出书面申请并填写《南京邮电大学“共\n进电子奖学金”申请表”》，并附成绩单或成果证明；所在学院审\n核并公示推荐人选后，确定推荐候选人名单；经学生工作处审核",
+                "score": 0.9929065704345703,
+                "doc_id": 247,
+                "title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "operands": [],
+          "value": "12000",
+          "unit": "元/人",
+          "expression": "12000",
+          "details": [
+            {
+              "fact_id": "f2",
+              "field": "研究生人均标准",
+              "subject": "研究生",
+              "raw_value": "12000 元/人",
+              "value": "12000",
+              "unit": "元/人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "每学年",
+                "context": "研究生：4名,每学年奖学金标准为12000元/人"
+              },
+              "quote": "研究生：4 名，每学年奖学金标准为12000 元/人",
+              "span": [
+                269,
+                295
+              ],
+              "doc_id": 247,
+              "source_title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+              "evidence": {
+                "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "text": "— 2 —\n劳全面发展，品学兼优，遵守国家法令和学校各项规章制度，身\n体健康，体测成绩达到良好及以上，并符合下列条件之一：\n1.具有中华人民共和国国籍；\n2.学年综合素质测评成绩优秀；\n3.创新能力突出，在省、部级以上竞赛中名列前茅；\n4.科研能力强，取得一定的科研成果；\n5.凡本学年中有下列情况之一者，均无资格申请奖学金：\n（1）必修课和限选课成绩有不及格现象者（含补考和因个\n人原因缓考者）；\n（2）有抄袭剽窃、弄虚作假等学术不端行为经查证属实者。\n三、奖励名额及标准\n“共进电子奖学金”每年奖励学生10 名，奖项设置方案如\n下：\n研究生：4 名，每学年奖学金标准为12000 元/人；\n本科生：6 名，每学年奖学金标准为8000 元/人。\n四、评审程序\n（一）由学生本人提出书面申请并填写《南京邮电大学“共\n进电子奖学金”申请表”》，并附成绩单或成果证明；所在学院审\n核并公示推荐人选后，确定推荐候选人名单；经学生工作处审核",
+                "score": 0.9929065704345703,
+                "doc_id": 247,
+                "title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "repairable": false
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "fact_id": "f2"
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "references": []
+  },
+  {
+    "id": "L3N02",
+    "group": "old_campus",
+    "question": "按“共进电子奖学金”办法规定的研究生和本科生名额、每人标准，两类奖金合计多少元？",
+    "gold": {
+      "id": "L3N02",
+      "category": "calculation",
+      "question": "按“共进电子奖学金”办法规定的研究生和本科生名额、每人标准，两类奖金合计多少元？",
+      "points": [
+        "96000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 247,
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人；本科生：6 名，每学年奖学金标准为8000 元/人。"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 247,
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人；本科生：6 名，每学年奖学金标准为8000 元/人。",
+          "chunk_ids": [
+            "93d06975-8309-40b5-9691-bf21f117b7b4"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "96000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "96000元"
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：a: 参与计算的记录存在缺失或非确定数值",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：b: 缺少inputs",
+    "calculation": {
+      "ok": false,
+      "value": null,
+      "unit": "",
+      "expression": "",
+      "details": [],
+      "error": "b: 缺少inputs",
+      "evidence": [],
+      "steps": [],
+      "repairable": true
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": true,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": 414,
+      "steps": [
+        {
+          "id": "b",
+          "op": "add",
+          "field_id": 2699
+        }
+      ],
+      "output": "b"
+    },
+    "references": []
+  },
+  {
+    "id": "L3N05",
+    "group": "old_campus",
+    "question": "按“华为奖学金”办法所列两类名额及每人标准，奖学金预算合计多少元？",
+    "gold": {
+      "id": "L3N05",
+      "category": "calculation",
+      "question": "按“华为奖学金”办法所列两类名额及每人标准，奖学金预算合计多少元？",
+      "points": [
+        "87000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人",
+          "chunk_ids": [
+            "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "87000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "87000元"
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：a: 参与计算的记录存在缺失或非确定数值",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：Expecting property name enclosed in double quotes: line 1 column 120 (char 119)",
+    "calculation": null,
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": true,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [],
+      "output": ""
+    },
+    "references": []
+  },
+  {
+    "id": "L3N06",
+    "group": "old_campus",
+    "question": "按“烽火通信奖学金”办法列出的19人名额和每人标准，奖金合计多少元？",
+    "gold": {
+      "id": "L3N06",
+      "category": "calculation",
+      "question": "按“烽火通信奖学金”办法列出的19人名额和每人标准，奖金合计多少元？",
+      "points": [
+        "95000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 262,
+          "quote": "本科生、硕士研究生：19 人，5000 元/人"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 262,
+          "quote": "本科生、硕士研究生：19 人，5000 元/人",
+          "chunk_ids": [
+            "993ebd12-f654-4501-898d-8c5134c41d8c"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "95000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "95000元"
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：a: 参与计算的记录存在缺失或非确定数值",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：result: inputs只能引用前序步骤或问题明确给定的常数",
+    "calculation": null,
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": true,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [],
+      "output": ""
+    },
+    "references": []
+  }
+]

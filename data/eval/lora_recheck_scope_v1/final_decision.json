@@ -1,0 +1,269 @@
+{
+  "runtime": "base Qwen plus accepted fact_scope and unit fixes only; source experiments reverted",
+  "training_performed": false,
+  "sealed_tests_opened": false,
+  "default_adapter": null,
+  "base": {
+    "dev36": {
+      "overall": {
+        "correct": 33,
+        "total": 36,
+        "accuracy": 0.9166666666666666
+      },
+      "numeric": {
+        "correct": 5,
+        "total": 8,
+        "accuracy": 0.625
+      },
+      "citations": {
+        "relevant": 29,
+        "total": 29
+      },
+      "literal_numeric_match_count": 5,
+      "regressions": [],
+      "gains": [],
+      "new_wrong_answers": []
+    },
+    "exposed_v2": {
+      "overall": {
+        "correct": 13,
+        "total": 16,
+        "accuracy": 0.8125
+      },
+      "numeric": {
+        "correct": 5,
+        "total": 8,
+        "accuracy": 0.625
+      },
+      "citations": {
+        "relevant": 11,
+        "total": 11
+      },
+      "literal_numeric_match_count": 5,
+      "regressions": [],
+      "gains": [],
+      "new_wrong_answers": []
+    },
+    "old_campus": {
+      "overall": {
+        "correct": 6,
+        "total": 10,
+        "accuracy": 0.6
+      },
+      "numeric": {
+        "correct": 2,
+        "total": 6,
+        "accuracy": 0.3333333333333333
+      },
+      "citations": {
+        "relevant": 5,
+        "total": 5
+      },
+      "literal_numeric_match_count": 1,
+      "regressions": [],
+      "gains": [
+        "L3N01"
+      ],
+      "new_wrong_answers": []
+    },
+    "numeric_regression": {
+      "correct": 12,
+      "total": 12,
+      "accuracy": 1.0
+    },
+    "taskbook": {
+      "correct": 4,
+      "total": 4,
+      "accuracy": 1.0
+    },
+    "no_known_correct_regressions": true,
+    "holdout_opened": false,
+    "adapter_enabled": false
+  },
+  "v2": {
+    "dev36": {
+      "overall": {
+        "correct": 35,
+        "total": 36,
+        "accuracy": 0.9722222222222222
+      },
+      "numeric": {
+        "correct": 7,
+        "total": 8,
+        "accuracy": 0.875
+      },
+      "citations": {
+        "relevant": 31,
+        "total": 31
+      },
+      "literal_numeric_match_count": 7,
+      "regressions": [],
+      "gains": [
+        "C01",
+        "C03"
+      ],
+      "new_wrong_answers": []
+    },
+    "exposed_v2": {
+      "overall": {
+        "correct": 13,
+        "total": 16,
+        "accuracy": 0.8125
+      },
+      "numeric": {
+        "correct": 5,
+        "total": 8,
+        "accuracy": 0.625
+      },
+      "citations": {
+        "relevant": 11,
+        "total": 11
+      },
+      "literal_numeric_match_count": 5,
+      "regressions": [
+        "V2C01",
+        "V2C02",
+        "V2C03"
+      ],
+      "gains": [
+        "V2C06",
+        "V2C07",
+        "V2C08"
+      ],
+      "new_wrong_answers": []
+    },
+    "old_campus": {
+      "overall": {
+        "correct": 5,
+        "total": 10,
+        "accuracy": 0.5
+      },
+      "numeric": {
+        "correct": 1,
+        "total": 6,
+        "accuracy": 0.16666666666666666
+      },
+      "citations": {
+        "relevant": 4,
+        "total": 4
+      },
+      "literal_numeric_match_count": 1,
+      "regressions": [
+        "L3N01"
+      ],
+      "gains": [],
+      "new_wrong_answers": []
+    },
+    "numeric_regression": {
+      "correct": 8,
+      "total": 12,
+      "accuracy": 0.6666666666666666
+    },
+    "taskbook": {
+      "correct": 3,
+      "total": 4,
+      "accuracy": 0.75
+    },
+    "no_known_correct_regressions": false,
+    "holdout_opened": false,
+    "adapter_enabled": false
+  },
+  "v3": {
+    "dev36": {
+      "overall": {
+        "correct": 34,
+        "total": 36,
+        "accuracy": 0.9444444444444444
+      },
+      "numeric": {
+        "correct": 6,
+        "total": 8,
+        "accuracy": 0.75
+      },
+      "citations": {
+        "relevant": 30,
+        "total": 30
+      },
+      "literal_numeric_match_count": 6,
+      "regressions": [
+        "C06"
+      ],
+      "gains": [
+        "C03",
+        "C08"
+      ],
+      "new_wrong_answers": []
+    },
+    "exposed_v2": {
+      "overall": {
+        "correct": 16,
+        "total": 16,
+        "accuracy": 1.0
+      },
+      "numeric": {
+        "correct": 8,
+        "total": 8,
+        "accuracy": 1.0
+      },
+      "citations": {
+        "relevant": 14,
+        "total": 14
+      },
+      "literal_numeric_match_count": 8,
+      "regressions": [],
+      "gains": [
+        "V2C06",
+        "V2C07",
+        "V2C08"
+      ],
+      "new_wrong_answers": []
+    },
+    "old_campus": {
+      "overall": {
+        "correct": 5,
+        "total": 10,
+        "accuracy": 0.5
+      },
+      "numeric": {
+        "correct": 1,
+        "total": 6,
+        "accuracy": 0.16666666666666666
+      },
+      "citations": {
+        "relevant": 4,
+        "total": 4
+      },
+      "literal_numeric_match_count": 1,
+      "regressions": [
+        "L3N01"
+      ],
+      "gains": [],
+      "new_wrong_answers": []
+    },
+    "numeric_regression": {
+      "correct": 12,
+      "total": 12,
+      "accuracy": 1.0
+    },
+    "taskbook": {
+      "correct": 4,
+      "total": 4,
+      "accuracy": 1.0
+    },
+    "no_known_correct_regressions": false,
+    "holdout_opened": false,
+    "adapter_enabled": false
+  },
+  "automatic_tests_before_final_guard": 213,
+  "final_automatic_tests": 215,
+  "final_scope_guard": "data/eval/fact_scope_guard_v1/recorded_path_equivalence.json",
+  "final_guard_model_generation_repeated": false,
+  "final_source_hashes": {
+    "src/campus_rag/rag/numeric.py": "d8fe18765ddccd440dfaea2fee1a411ceab352f73315d4bf02cc63c24c8b84d9",
+    "src/campus_rag/database/query.py": "85e4359e3bf52cda8445650016f3de532bb4f888e3720d468a1263d7df3b68d8",
+    "src/campus_rag/rag/service.py": "eb281e6b7ae01d8e4a3fbd76ee127d22b6ac4de4320437680ca58b5549da7dac",
+    "src/campus_rag/rag/planner.py": "5a427f45409deac373cc6073859b8dc6d9e9b47484f04d6875c39752f1e084c2",
+    "tests/test_fact_scope_binding.py": "91db397ae5f1d614c7f7653a7e9e4c202bd6f23bf70e01a5e0aabcfdd5d1eddb",
+    "tests/test_rate_difference_units.py": "afb1a9911820b31ea7b3319e8decf17f02d0367a330eddf05a532e1042f37972"
+  }
+}

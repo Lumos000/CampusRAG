@@ -1,0 +1,52 @@
+FFFFFFF                                                                  [100%]
+================================== FAILURES ===================================
+_______________ test_requested_policy_cannot_mix_another_policy _______________
+tests\test_source_and_ratio_semantics.py:40: in test_requested_policy_cannot_mix_another_policy
+    assert not wrong.ok and wrong.repairable
+E   AssertionError: assert (not True)
+E    +  where True = CalculationResult(ok=True, value=Decimal('60'), unit='��', expression='(17) + (43)', details=[{'fact_id': 'f1', 'field'.../example.edu/river', department='', published_at=None, chunk_id=None, table_id=None, row_ids=[])}]}], repairable=False).ok
+_________________ test_explicit_two_policies_may_be_combined __________________
+tests\test_source_and_ratio_semantics.py:48: in test_explicit_two_policies_may_be_combined
+    assert not execute_facts(query,facts,q,[17,29]).ok
+E   AssertionError: assert not True
+E    +  where True = CalculationResult(ok=True, value=Decimal('46'), unit='��', expression='(17) + (29)', details=[{'fact_id': 'f1', 'field'...//example.edu/pine', department='', published_at=None, chunk_id=None, table_id=None, row_ids=[])}]}], repairable=False).ok
+E    +    where CalculationResult(ok=True, value=Decimal('46'), unit='��', expression='(17) + (29)', details=[{'fact_id': 'f1', 'field'...//example.edu/pine', department='', published_at=None, chunk_id=None, table_id=None, row_ids=[])}]}], repairable=False) = execute_facts(<campus_rag.database.query.StructuredQueryEngine object at 0x00000127D0283590>, {'f1': {'fact_id': 'f1', 'field': '����������', 'subject': '����������', 'raw_value': '17��', ...}, 'f2': {'fact_id': 'f2', 'fiel...������', 'raw_value': '29��', ...}, 'f3': {'fact_id': 'f3', 'field': '�о�������', 'subject': '�о�������', 'raw_value': '43��', ...}}, '�������������͡�Ϫ�����������ݰ취��ȡ�о����������ϼƶ����ˣ�', [17, 29])
+____________ test_policy_sections_in_one_handbook_remain_distinct _____________
+tests\test_source_and_ratio_semantics.py:56: in test_policy_sections_in_one_handbook_remain_distinct
+    assert not execute_facts(query,facts,'�������������취�������������о�������֮���Ƕ����ˣ�',[17,43]).ok
+E   AssertionError: assert not True
+E    +  where True = CalculationResult(ok=True, value=Decimal('60'), unit='��', expression='(17) + (43)', details=[{'fact_id': 'f1', 'field'...//example.edu/book', department='', published_at=None, chunk_id=None, table_id=None, row_ids=[])}]}], repairable=False).ok
+E    +    where CalculationResult(ok=True, value=Decimal('60'), unit='��', expression='(17) + (43)', details=[{'fact_id': 'f1', 'field'...//example.edu/book', department='', published_at=None, chunk_id=None, table_id=None, row_ids=[])}]}], repairable=False) = execute_facts(<campus_rag.database.query.StructuredQueryEngine object at 0x00000127D0328850>, {'f1': {'fact_id': 'f1', 'field': '�����������취������������', 'subject': '�����������취������������', 'raw_value': '17��', ...}, 'f2': {'fact_id': 'f2', 'field': '��Ϫ�������취���о�������', 'subject': '��Ϫ�������취���о�������', 'raw_value': '43��', ...}}, '�������������취�������������о�������֮���Ƕ����ˣ�', [17, 43])
+____ test_named_table_ratio_keeps_direction_even_above_one_hundred[19-47] _____
+tests\test_source_and_ratio_semantics.py:74: in test_named_table_ratio_keeps_direction_even_above_one_hundred
+    assert not run(True).ok
+E   AssertionError: assert not True
+E    +  where True = CalculationResult(ok=True, value=Decimal('247.3684210526315789473684211'), unit='%', expression='(47) / (19) �� 100%', ...e': '�ϳɾ����嵥', 'source_url': 'https://example.edu/budget', 'department': '', 'published_at': None}]}], repairable=False).ok
+E    +    where CalculationResult(ok=True, value=Decimal('247.3684210526315789473684211'), unit='%', expression='(47) / (19) �� 100%', ...e': '�ϳɾ����嵥', 'source_url': 'https://example.edu/budget', 'department': '', 'published_at': None}]}], repairable=False) = <function test_named_table_ratio_keeps_direction_even_above_one_hundred.<locals>.run at 0x00000127A9F0E3E0>(True)
+____ test_named_table_ratio_keeps_direction_even_above_one_hundred[47-19] _____
+tests\test_source_and_ratio_semantics.py:74: in test_named_table_ratio_keeps_direction_even_above_one_hundred
+    assert not run(True).ok
+E   AssertionError: assert not True
+E    +  where True = CalculationResult(ok=True, value=Decimal('40.42553191489361702127659574'), unit='%', expression='(19) / (47) �� 100%', ...e': '�ϳɾ����嵥', 'source_url': 'https://example.edu/budget', 'department': '', 'published_at': None}]}], repairable=False).ok
+E    +    where CalculationResult(ok=True, value=Decimal('40.42553191489361702127659574'), unit='%', expression='(19) / (47) �� 100%', ...e': '�ϳɾ����嵥', 'source_url': 'https://example.edu/budget', 'department': '', 'published_at': None}]}], repairable=False) = <function test_named_table_ratio_keeps_direction_even_above_one_hundred.<locals>.run at 0x00000127D02E2A20>(True)
+____ test_named_table_ratio_keeps_direction_even_above_one_hundred[19-19] _____
+tests\test_source_and_ratio_semantics.py:74: in test_named_table_ratio_keeps_direction_even_above_one_hundred
+    assert not run(True).ok
+E   AssertionError: assert not True
+E    +  where True = CalculationResult(ok=True, value=Decimal('100'), unit='%', expression='(19) / (19) �� 100%', details=[{'table_id': 1, '...e': '�ϳɾ����嵥', 'source_url': 'https://example.edu/budget', 'department': '', 'published_at': None}]}], repairable=False).ok
+E    +    where CalculationResult(ok=True, value=Decimal('100'), unit='%', expression='(19) / (19) �� 100%', details=[{'table_id': 1, '...e': '�ϳɾ����嵥', 'source_url': 'https://example.edu/budget', 'department': '', 'published_at': None}]}], repairable=False) = <function test_named_table_ratio_keeps_direction_even_above_one_hundred.<locals>.run at 0x00000127D02E2840>(True)
+________________ test_named_text_ratio_keeps_subject_direction ________________
+tests\test_source_and_ratio_semantics.py:82: in test_named_text_ratio_keeps_subject_direction
+    assert not execute_facts(query,facts,q,[47,19],'ratio').ok
+E   AssertionError: assert not True
+E    +  where True = CalculationResult(ok=True, value=Decimal('247.3684210526315789473684211'), unit='%', expression='(47) / (19) �� 100%', .../example.edu/rules', department='', published_at=None, chunk_id=None, table_id=None, row_ids=[])}]}], repairable=False).ok
+E    +    where CalculationResult(ok=True, value=Decimal('247.3684210526315789473684211'), unit='%', expression='(47) / (19) �� 100%', .../example.edu/rules', department='', published_at=None, chunk_id=None, table_id=None, row_ids=[])}]}], repairable=False) = execute_facts(<campus_rag.database.query.StructuredQueryEngine object at 0x00000127A8623BD0>, {'f1': {'fact_id': 'f1', 'field': '��ʯ��ĿԤ��', 'subject': '��ʯ��Ŀ', 'raw_value': '19Ԫ', ...}, 'f2': {'fact_id': 'f2', 'field': '�׺���ĿԤ��', 'subject': '�׺���Ŀ', 'raw_value': '47Ԫ', ...}}, '��ʯ��ĿԤ��ռ�׺���ĿԤ��İٷֱ��Ƕ��٣�', [47, 19], 'ratio')
+=========================== short test summary info ===========================
+FAILED tests/test_source_and_ratio_semantics.py::test_requested_policy_cannot_mix_another_policy
+FAILED tests/test_source_and_ratio_semantics.py::test_explicit_two_policies_may_be_combined
+FAILED tests/test_source_and_ratio_semantics.py::test_policy_sections_in_one_handbook_remain_distinct
+FAILED tests/test_source_and_ratio_semantics.py::test_named_table_ratio_keeps_direction_even_above_one_hundred[19-47]
+FAILED tests/test_source_and_ratio_semantics.py::test_named_table_ratio_keeps_direction_even_above_one_hundred[47-19]
+FAILED tests/test_source_and_ratio_semantics.py::test_named_table_ratio_keeps_direction_even_above_one_hundred[19-19]
+FAILED tests/test_source_and_ratio_semantics.py::test_named_text_ratio_keeps_subject_direction
+7 failed in 2.11s

@@ -5,6 +5,7 @@ No answer constants, model-authored SQL, or executable expressions are accepted.
 from __future__ import annotations
 
 import re
+from bisect import bisect_left
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 
@@ -31,6 +32,16 @@ def _fact_heading(text):
     match = headings[-1]
     field = 'numbered' if match['numbered'] is not None else 'caption'
     return match[field].strip(),match.start(field)
+
+
+def _fact_group(text):
+    """Only explicit, standalone subsection captions define an object group."""
+    groups = list(re.finditer(r'(?m)^[ \t]*[（(][一二三四五六七八九十]+[）)][ \t]*'
+        r'([^\n。；;：:]{2,48})[：:][ \t]*$',text))
+    if not groups:
+        return ''
+    resets = list(re.finditer(r'(?m)^[ \t]*(?:[一二三四五六七八九十]+、|第[一二三四五六七八九十百\d]+条)',text))
+    return compact(groups[-1][1]) if not resets or groups[-1].start()>resets[-1].start() else ''
 
 
 @dataclass
@@ -81,7 +92,7 @@ class NumericEngine:
         """
         from campus_rag.database.normalization import quantity
         facts, seen = {}, set()
-        units = r'万元|亿元|元|万人|千人|人|平方米|㎡|台|本|项|个|门|学年|学期|年|月|周|天|小时|分钟|%|％'
+        units = r'万元|亿元|元|万人|千人|人|名|平方米|㎡|台|本|项|个|门|学年|学期|年|月|周|天|小时|分钟|%|％'
         amount = re.compile(r'(?<![\d.])(?P<number>\d[\d,]*(?:\.\d+)?)(?:[-—–～~至到](?P<upper>\d[\d,]*(?:\.\d+)?))?(?P<unit>'+units+r')?(?P<denominator>/(?:小时|分钟|天|周|月|学年|年|人|次|台|个))?')
         relations = {'不超过':'lte','不高于':'lte','至多':'lte','最多':'lte','上限为':'lte',
             '不低于':'gte','不少于':'gte','至少':'gte','最低为':'gte','下限为':'gte',
@@ -93,12 +104,27 @@ class NumericEngine:
             if item.table_id is not None:
                 continue
             offsets = [i for i,char in enumerate(item.text) if not char.isspace()]
-            text = ''.join(item.text[i] for i in offsets)
+            # One-character normalization keeps the original offset map intact.
+            text = ''.join(item.text[i] for i in offsets).replace('／','/')
+            previous_count = None
             for match in amount.finditer(text):
                 start = max(text.rfind(p,0,match.start()) for p in '。；;！？')+1
                 prefix = text[start:match.start()]
                 # A nearby number alone is not a fact (page numbers, dates, codes).
                 local = re.split('[，,]',prefix)[-1]
+                if match['unit'] in {'人','名'}:
+                    row_label = re.search(r'(?:^|(?<=[\n。；;，,]))[ \t]*'
+                        r'(?P<label>[^\n。；;，,：:\d]{1,40})[：:][ \t]*$',item.text[:offsets[match.start()]])
+                    if row_label:
+                        start = bisect_left(offsets,row_label.start('label'))
+                        prefix = text[start:match.start()]
+                        local = prefix
+                paired = (previous_count if match['unit'] in {'元','万元','亿元'}
+                    and match['denominator']=='/人' and previous_count is not None
+                    and not re.match(r'左右|上下|不等|至|到|[-—–～~]',text[match.end():])
+                    and re.fullmatch(r'[，,](?:每(?:学年|学期|年|月))?'
+                        r'(?:(?:奖学金|补助|补贴|奖励|收费|资助)?(?:标准|金额)(?:为|是|：|:)?)?',
+                        text[previous_count['end']:match.start()]) else None)
                 if match['unit'] in {'年','月'} and (re.match(r'\d+(?:月|日)',text[match.end():])
                         or re.search(r'日期|公示|截止|评选时间',local)):
                     continue
@@ -106,7 +132,7 @@ class NumericEngine:
                 suffix = re.match(r'(及以上|及以下|以上|以下)',text[match.end():])
                 gpa = bool(re.search(r'(?:平均学分)?绩点(?:要求)?(?:为|不低于|不超过|高于|低于)?$',local))
                 gpa = gpa or bool('绩点' in local and re.search(r'(?:但|且)(?:高于|低于|不低于|不高于)$',local))
-                if not relation and not suffix and not re.search(r'(?:额度|金额|标准|预算|期限|时长|人数)$',local):
+                if not paired and not relation and not suffix and not re.search(r'(?:额度|金额|标准|预算|期限|时长|人数)$',local):
                     continue
                 if not match['unit'] and not gpa:
                     continue
@@ -115,7 +141,7 @@ class NumericEngine:
                 comparison = relations[relation[1]] if relation else 'eq'
                 if suffix:
                     comparison = 'gte' if '以上' in suffix[1] else 'lte'
-                label = local[:relation.start()] if relation else local
+                label = previous_count['field']+'人均标准' if paired else local[:relation.start()] if relation else local
                 if not label:
                     # A second bound may share the explicitly stated subject.
                     first = re.search('|'.join(sorted(relations,key=len,reverse=True)),prefix)
@@ -132,9 +158,22 @@ class NumericEngine:
                 clauses = re.findall(r'第[一二三四五六七八九十百\d]+条',text[:match.start()])
                 clause = clauses[-1] if clauses else ''
                 subject = re.split(r'每|(?:平均学分)?绩点|额度|金额|预算|时长',label,maxsplit=1)[0] or label
+                if paired:
+                    subject = paired['subject']
                 end = match.end()+(len(suffix[1]) if suffix else 0)
                 original_start,original_end = offsets[start],offsets[end-1]+1
+                if paired:
+                    original_start = paired['original_start']
                 heading,heading_start = _fact_heading(item.text[:offsets[match.start()]])
+                sections = re.findall(r'(?m)^[ \t]*[《“"]?([^\n《》“"]{2,70}(?:办法|规定|指南|章程|通知))[》”"]?[ \t]*$',
+                    item.text[:offsets[match.start()]])
+                sections = [s for s in sections if not re.match(r'(?:第[一二三四五六七八九十百\d]+条|[（(]?[一二三四五六七八九十]+[、.）)])',s)]
+                if sections:
+                    for caption in ('《'+sections[-1]+'》',sections[-1]):
+                        if subject.startswith(caption):
+                            subject = subject[len(caption):].strip('：:，,')
+                        if label.startswith(caption):
+                            label = label[len(caption):].strip('：:，,')
                 if heading and (subject in {'奖励','金额','补贴','补助','时长','课程','标准','预算'}
                         or re.fullmatch(r'每(?:学年|学期|年|月|周|天)',label)):
                     subject = heading
@@ -142,6 +181,9 @@ class NumericEngine:
                 boundary = re.search('[。；;！？]',text[end:])
                 scope_end = end+boundary.start() if boundary else len(text)
                 scope = {'clause':clause,'period':period,'context':compact(item.text[original_start:offsets[scope_end-1]+1])}
+                group = _fact_group(item.text[:offsets[match.start()]])
+                if group:
+                    scope['group'] = group
                 values = [(match['number'],comparison)]
                 if match['upper']:
                     if Decimal(match['upper'].replace(',',''))<Decimal(match['number'].replace(',','')):
@@ -149,7 +191,7 @@ class NumericEngine:
                     values = [(match['number'],'gte'),(match['upper'],'lte')]
                 for token,comparison in values:
                     raw = token+(match['unit'] or '')
-                    value,unit = quantity(raw) if match['unit'] else (Decimal(token),'绩点')
+                    value,unit = quantity(token+'人' if match['unit']=='名' else raw) if match['unit'] else (Decimal(token),'绩点')
                     if value is None and match['unit'] in {'学年','学期','月','周','分钟','门'}:
                         value,unit = Decimal(token.replace(',','')),match['unit']
                     if value is None:
@@ -161,21 +203,28 @@ class NumericEngine:
                         unit += '/'+per[1]
                     elif unit=='元' and re.search(r'生均|人均',prefix):
                         unit += '/人'
-                    key = (item.doc_id,subject,label,clause,period,comparison,str(value),unit)
+                    if unit=='人' and comparison=='eq' and not match['upper']:
+                        # Only an accepted, adjacent, exact headcount can supply
+                        # the subject of an otherwise unlabeled per-person rate.
+                        previous_count = {'subject':subject,'field':label,
+                            'end':match.end(),'original_start':original_start}
+                    key = (item.doc_id,sections[-1] if sections else '',group,subject,label,clause,period,comparison,str(value),unit)
                     if key in seen:
                         continue
                     seen.add(key)
                     fid = 'f'+str(len(facts)+1)
                     facts[fid] = {'fact_id':fid,'field':label,'subject':subject,
-                        'raw_value':match.group() if match['upper'] else raw,
+                        'raw_value':item.text[offsets[match.start()]:offsets[match.end()-1]+1]
+                            if match['denominator'] else match.group() if match['upper'] else raw,
                         'value':str(value),'unit':unit,'comparison':comparison,'scope':scope,
                         'quote':item.text[original_start:original_end],'span':[original_start,original_end],
-                        'doc_id':item.doc_id,'evidence_id':item.evidence_id,'source_url':item.source_url,'evidence':item}
+                        'doc_id':item.doc_id,'source_title':item.title,'source_section':sections[-1] if sections else '',
+                        'evidence_id':item.evidence_id,'source_url':item.source_url,'evidence':item}
         # Conflicts concern the same subject, clause, period and comparison, not
         # unrelated objects that happen to have the same measure name.
         groups = {}
         for fid,fact in facts.items():
-            key = (fact['doc_id'],fact['subject'],fact['field'],fact['scope']['clause'],
+            key = (fact['doc_id'],fact['source_section'],fact['scope'].get('group',''),fact['subject'],fact['field'],fact['scope']['clause'],
                 fact['scope']['period'],fact['comparison'])
             groups.setdefault(key,[]).append(fid)
         conflicts = {fid for ids in groups.values()

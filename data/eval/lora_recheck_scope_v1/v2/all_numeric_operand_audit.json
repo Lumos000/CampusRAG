@@ -1,0 +1,1773 @@
+[
+  {
+    "id": "C01",
+    "execution_ok": true,
+    "answer": "按下限标准计算，结果为288元。算式：(24) × (12)。",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2024"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "hours",
+          "op": "lookup",
+          "fact_id": "f3"
+        },
+        {
+          "id": "rate",
+          "op": "lookup",
+          "literal": "12",
+          "unit": "小时"
+        },
+        {
+          "id": "result",
+          "op": "multiply",
+          "inputs": [
+            "hours",
+            "rate"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {
+      "hours": [],
+      "rate": [],
+      "result": []
+    },
+    "operands": [
+      {
+        "comparison": "gte",
+        "doc_id": 253,
+        "field": "校内勤工助学岗位酬金原则上",
+        "field_id": null,
+        "numeric_value": null,
+        "row_id": null,
+        "row_label": null,
+        "scope": {
+          "clause": "第十八条",
+          "context": "第十八条校内勤工助学岗位酬金原则上不低于每小时24元",
+          "period": "每小时"
+        },
+        "subject": "校内勤工助学岗位酬金原则上",
+        "table_id": null,
+        "unit": "元/小时",
+        "value": "24"
+      }
+    ]
+  },
+  {
+    "id": "C02",
+    "execution_ok": true,
+    "answer": "按上限标准计算，结果为8小时。算式：(40) - ((8) × (4))。",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2024"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "rate",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "periods",
+          "op": "lookup",
+          "literal": "4",
+          "unit": "周"
+        },
+        {
+          "id": "used",
+          "op": "multiply",
+          "inputs": [
+            "rate",
+            "periods"
+          ]
+        },
+        {
+          "id": "cap",
+          "op": "lookup",
+          "fact_id": "f2"
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "cap",
+            "used"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {
+      "rate": [],
+      "periods": [],
+      "used": [],
+      "cap": [],
+      "result": []
+    },
+    "operands": [
+      {
+        "comparison": "lte",
+        "doc_id": 253,
+        "field": "学生参加勤工助学的时间原则上",
+        "field_id": null,
+        "numeric_value": null,
+        "row_id": null,
+        "row_label": null,
+        "scope": {
+          "clause": "第十七条",
+          "context": "学生参加勤工助学的时间原则上每周不超过8小时,每月不超过40小时",
+          "period": "每周"
+        },
+        "subject": "学生参加勤工助学的时间原则上",
+        "table_id": null,
+        "unit": "小时",
+        "value": "8"
+      },
+      {
+        "comparison": "lte",
+        "doc_id": 253,
+        "field": "学生参加勤工助学的时间原则上",
+        "field_id": null,
+        "numeric_value": null,
+        "row_id": null,
+        "row_label": null,
+        "scope": {
+          "clause": "第十七条",
+          "context": "学生参加勤工助学的时间原则上每周不超过8小时,每月不超过40小时",
+          "period": "每月"
+        },
+        "subject": "学生参加勤工助学的时间原则上",
+        "table_id": null,
+        "unit": "小时",
+        "value": "40"
+      }
+    ]
+  },
+  {
+    "id": "C03",
+    "execution_ok": true,
+    "answer": "按上限标准计算，结果为5000元。算式：(25000) - (20000)。",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2025"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "numerator",
+          "op": "lookup",
+          "fact_id": "f3"
+        },
+        {
+          "id": "denominator",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "numerator",
+            "denominator"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {
+      "numerator": [],
+      "denominator": [],
+      "result": []
+    },
+    "operands": [
+      {
+        "comparison": "lte",
+        "doc_id": 257,
+        "field": "全日制普通本专科学生（含预科、高职、第二学士学位）每人每年申请贷款额度",
+        "field_id": null,
+        "numeric_value": null,
+        "row_id": null,
+        "row_label": null,
+        "scope": {
+          "clause": "",
+          "context": "全日制普通本专科学生（含预科、高职、第二学士学位）每人每年申请贷款额度不超过20000元,不低于1000元",
+          "period": "每人每年"
+        },
+        "subject": "全日制普通本专科学生（含预科、高职、第二学士学位）",
+        "table_id": null,
+        "unit": "元",
+        "value": "20000"
+      },
+      {
+        "comparison": "lte",
+        "doc_id": 257,
+        "field": "全日制研究生（含硕士研究生、博士研究生）每人每年申请贷款额度",
+        "field_id": null,
+        "numeric_value": null,
+        "row_id": null,
+        "row_label": null,
+        "scope": {
+          "clause": "",
+          "context": "全日制研究生（含硕士研究生、博士研究生）每人每年申请贷款额度不超过25000元,不低于1000元",
+          "period": "每人每年"
+        },
+        "subject": "全日制研究生（含硕士研究生、博士研究生）",
+        "table_id": null,
+        "unit": "元",
+        "value": "25000"
+      }
+    ]
+  },
+  {
+    "id": "C04",
+    "execution_ok": true,
+    "answer": "按下限标准计算，结果为0.3绩点。算式：(1.8) - (1.5)。",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2026"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "general",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "high_level",
+          "op": "lookup",
+          "fact_id": "f2"
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "general",
+            "high_level"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {
+      "general": [],
+      "high_level": [],
+      "result": []
+    },
+    "operands": [
+      {
+        "comparison": "gte",
+        "doc_id": 246,
+        "field": "按《南京邮电大学学生学籍管理办法》在校学习期间平均学分绩点",
+        "field_id": null,
+        "numeric_value": null,
+        "row_id": null,
+        "row_label": null,
+        "scope": {
+          "clause": "第二条",
+          "context": "（三）按《南京邮电大学学生学籍管理办法》在校学习期间平均学分绩点为1.8及以上（毕业设计或论文成绩不计入,下同）",
+          "period": ""
+        },
+        "subject": "按《南京邮电大学学生学籍管理办法》在校学习期间",
+        "table_id": null,
+        "unit": "绩点",
+        "value": "1.8"
+      },
+      {
+        "comparison": "gte",
+        "doc_id": 246,
+        "field": "高水平运动员平均学分绩点要求",
+        "field_id": null,
+        "numeric_value": null,
+        "row_id": null,
+        "row_label": null,
+        "scope": {
+          "clause": "第二条",
+          "context": "高水平运动员平均学分绩点要求为1.5及以上",
+          "period": ""
+        },
+        "subject": "高水平运动员",
+        "table_id": null,
+        "unit": "绩点",
+        "value": "1.5"
+      }
+    ]
+  },
+  {
+    "id": "C05",
+    "execution_ok": true,
+    "answer": "结果为3项。算式：count(3条明细)。",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2026-2027"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": true,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": 53,
+      "steps": [
+        {
+          "id": "result",
+          "op": "count",
+          "filters": [
+            {
+              "field_id": 206,
+              "op": "eq",
+              "value": "光纤通信"
+            }
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [
+      5950,
+      5951,
+      5952
+    ],
+    "gold_row_ids": [
+      5950,
+      5951,
+      5952
+    ],
+    "row_sets_match": true,
+    "step_row_ids": {
+      "result": [
+        5950,
+        5951,
+        5952
+      ]
+    },
+    "operands": [
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5950,
+        "row_label": "6",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      },
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5951,
+        "row_label": "6",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      },
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5952,
+        "row_label": "6",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      }
+    ]
+  },
+  {
+    "id": "C06",
+    "execution_ok": true,
+    "answer": "结果为10项。算式：count(10条明细)。",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2026-2027"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": true,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": 53,
+      "steps": [
+        {
+          "id": "result",
+          "op": "count",
+          "filters": [
+            {
+              "field_id": 206,
+              "op": "eq",
+              "value": "模拟电子线路A"
+            }
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [
+      5936,
+      5937,
+      5938,
+      5939,
+      5940,
+      5941,
+      5942,
+      5943,
+      5944,
+      5945
+    ],
+    "gold_row_ids": [
+      5936,
+      5937,
+      5938,
+      5939,
+      5940,
+      5941,
+      5942,
+      5943,
+      5944,
+      5945
+    ],
+    "row_sets_match": true,
+    "step_row_ids": {
+      "result": [
+        5936,
+        5937,
+        5938,
+        5939,
+        5940,
+        5941,
+        5942,
+        5943,
+        5944,
+        5945
+      ]
+    },
+    "operands": [
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5936,
+        "row_label": "2",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      },
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5937,
+        "row_label": "2",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      },
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5938,
+        "row_label": "2",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      },
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5939,
+        "row_label": "2",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      },
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5940,
+        "row_label": "2",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      },
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5941,
+        "row_label": "2",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      },
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5942,
+        "row_label": "2",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      },
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5943,
+        "row_label": "2",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      },
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5944,
+        "row_label": "2",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      },
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5945,
+        "row_label": "2",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      }
+    ]
+  },
+  {
+    "id": "C07",
+    "execution_ok": true,
+    "answer": "结果为6项。算式：count(6条明细)。",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2026-2027"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": true,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": 53,
+      "steps": [
+        {
+          "id": "result",
+          "op": "count",
+          "filters": [
+            {
+              "field_id": 206,
+              "op": "in",
+              "value": [
+                "光纤通信",
+                "战略管理"
+              ]
+            }
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [
+      5950,
+      5951,
+      5952,
+      5955,
+      5956,
+      5957
+    ],
+    "gold_row_ids": [
+      5950,
+      5951,
+      5952,
+      5955,
+      5956,
+      5957
+    ],
+    "row_sets_match": true,
+    "step_row_ids": {
+      "result": [
+        5950,
+        5951,
+        5952,
+        5955,
+        5956,
+        5957
+      ]
+    },
+    "operands": [
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5950,
+        "row_label": "6",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      },
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5951,
+        "row_label": "6",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      },
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5952,
+        "row_label": "6",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      },
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5955,
+        "row_label": "9",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      },
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5956,
+        "row_label": "9",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      },
+      {
+        "comparison": null,
+        "doc_id": 129,
+        "field": "行数",
+        "field_id": null,
+        "numeric_value": "1",
+        "row_id": 5957,
+        "row_label": "9",
+        "scope": null,
+        "subject": null,
+        "table_id": 53,
+        "unit": "项",
+        "value": null
+      }
+    ]
+  },
+  {
+    "id": "C08",
+    "execution_ok": false,
+    "answer": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：Expecting ',' delimiter: line 1 column 132 (char 131)",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2026-2027"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": true,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [],
+      "output": ""
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [
+      5950,
+      5951,
+      5952,
+      5955,
+      5956,
+      5957
+    ],
+    "row_sets_match": false,
+    "step_row_ids": {},
+    "operands": []
+  },
+  {
+    "id": "V2C01",
+    "execution_ok": false,
+    "answer": "现有证据或计算条件不足，无法可靠给出数值：left: 参与计算的记录存在缺失或非确定数值",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": true,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": 429,
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "field_id": 2698,
+          "filters": [
+            {
+              "field_id": 2698,
+              "op": "eq",
+              "value": "一等奖学金"
+            }
+          ]
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "field_id": 2699,
+          "filters": [
+            {
+              "field_id": 2698,
+              "op": "eq",
+              "value": "二等奖学金"
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {},
+    "operands": []
+  },
+  {
+    "id": "V2C02",
+    "execution_ok": false,
+    "answer": "现有证据或计算条件不足，无法可靠给出数值：result: 缺少inputs",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": true,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": 429,
+      "steps": [
+        {
+          "id": "result",
+          "op": "add",
+          "field_id": 2699,
+          "filters": [
+            {
+              "field_id": 2698,
+              "op": "in",
+              "value": [
+                "一等奖学金",
+                "二等奖学金",
+                "三等奖学金"
+              ]
+            }
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {},
+    "operands": []
+  },
+  {
+    "id": "V2C03",
+    "execution_ok": false,
+    "answer": "现有证据或计算条件不足，无法可靠给出数值：left: 参与计算的记录存在缺失或非确定数值",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": true,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": 429,
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "field_id": 2698,
+          "filters": [
+            {
+              "field_id": 2698,
+              "op": "eq",
+              "value": "三等奖学金"
+            }
+          ]
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "field_id": 2699,
+          "filters": [
+            {
+              "field_id": 2698,
+              "op": "eq",
+              "value": "一等奖学金"
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "op": "ratio",
+          "inputs": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {},
+    "operands": []
+  },
+  {
+    "id": "V2C04",
+    "execution_ok": true,
+    "answer": "结果为300元。算式：(200) + (100)。",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "fact_id": "f2"
+        },
+        {
+          "id": "result",
+          "op": "add",
+          "inputs": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {
+      "left": [],
+      "right": [],
+      "result": []
+    },
+    "operands": [
+      {
+        "comparison": "eq",
+        "doc_id": 248,
+        "field": "奖励金额",
+        "field_id": null,
+        "numeric_value": null,
+        "row_id": null,
+        "row_label": null,
+        "scope": {
+          "clause": "",
+          "context": "7.示范宿舍长奖（与综合奖可兼得）被评为“示范宿舍”的宿舍长,奖励金额为100元",
+          "period": ""
+        },
+        "subject": "示范宿舍长奖",
+        "table_id": null,
+        "unit": "元",
+        "value": "100"
+      },
+      {
+        "comparison": "eq",
+        "doc_id": 248,
+        "field": "奖励金额",
+        "field_id": null,
+        "numeric_value": null,
+        "row_id": null,
+        "row_label": null,
+        "scope": {
+          "clause": "",
+          "context": "精神文明奖（与综合奖可兼得）在社会主义精神文明建设中有突出表现（如在校风建设活动中表现突出；能长年累月坚持学雷锋；能见义勇为、维护校内外治安、在救人救火、同坏人坏事作斗争、抗灾救灾等方面有突出表现者）,奖励金额为200元",
+          "period": ""
+        },
+        "subject": "精神文明奖",
+        "table_id": null,
+        "unit": "元",
+        "value": "200"
+      }
+    ]
+  },
+  {
+    "id": "V2C05",
+    "execution_ok": true,
+    "answer": "结果为1300元。算式：(100) × (13)。",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2025"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "numerator",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "denominator",
+          "op": "lookup",
+          "literal": "13",
+          "unit": "人"
+        },
+        {
+          "id": "result",
+          "op": "multiply",
+          "inputs": [
+            "numerator",
+            "denominator"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {
+      "numerator": [],
+      "denominator": [],
+      "result": []
+    },
+    "operands": [
+      {
+        "comparison": "eq",
+        "doc_id": 259,
+        "field": "生均奖励金额",
+        "field_id": null,
+        "numeric_value": null,
+        "row_id": null,
+        "row_label": null,
+        "scope": {
+          "clause": "",
+          "context": "“甘霖励志奖学金”以精神激励为主,生均奖励金额为100元",
+          "period": ""
+        },
+        "subject": "生均奖励",
+        "table_id": null,
+        "unit": "元/人",
+        "value": "100"
+      }
+    ]
+  },
+  {
+    "id": "V2C06",
+    "execution_ok": true,
+    "answer": "结果为35小时。算式：(120) - (85)。",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2025"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "literal": "85",
+          "unit": "小时"
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {
+      "left": [],
+      "right": [],
+      "result": []
+    },
+    "operands": [
+      {
+        "comparison": "eq",
+        "doc_id": 259,
+        "field": "每学年",
+        "field_id": null,
+        "numeric_value": null,
+        "row_id": null,
+        "row_label": null,
+        "scope": {
+          "clause": "",
+          "context": "志愿服务类。坚持参加志愿服务活动,在重大活动中积极报名,每学年能够完成120小时的志愿服务时长,在校内外各级各类志愿活动过程中表现良好",
+          "period": "每学年"
+        },
+        "subject": "志愿服务类",
+        "table_id": null,
+        "unit": "小时",
+        "value": "120"
+      }
+    ]
+  },
+  {
+    "id": "V2C07",
+    "execution_ok": true,
+    "answer": "结果为3学期。算式：(4) - (1)。",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "numerator",
+          "op": "lookup",
+          "fact_id": "f3"
+        },
+        {
+          "id": "denominator",
+          "op": "lookup",
+          "literal": "1",
+          "unit": "学期"
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "numerator",
+            "denominator"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {
+      "numerator": [],
+      "denominator": [],
+      "result": []
+    },
+    "operands": [
+      {
+        "comparison": "eq",
+        "doc_id": 261,
+        "field": "辅修专业课程安排一般从第三至第六学期",
+        "field_id": null,
+        "numeric_value": null,
+        "row_id": null,
+        "row_label": null,
+        "scope": {
+          "clause": "第十二条",
+          "context": "第十二条辅修专业课程安排一般从第三至第六学期共4学期",
+          "period": ""
+        },
+        "subject": "辅修专业课程安排一般从第三至第六学期",
+        "table_id": null,
+        "unit": "学期",
+        "value": "4"
+      }
+    ]
+  },
+  {
+    "id": "V2C08",
+    "execution_ok": true,
+    "answer": "按所引界限计算，结果为2门。算式：(10) - (8)。",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "upper",
+          "op": "lookup",
+          "fact_id": "f2"
+        },
+        {
+          "id": "lower",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "upper",
+            "lower"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {
+      "upper": [],
+      "lower": [],
+      "result": []
+    },
+    "operands": [
+      {
+        "comparison": "gte",
+        "doc_id": 261,
+        "field": "一般",
+        "field_id": null,
+        "numeric_value": null,
+        "row_id": null,
+        "row_label": null,
+        "scope": {
+          "clause": "第三条",
+          "context": "一般设置8-10门该专业的主要课程,总计20学分左右",
+          "period": ""
+        },
+        "subject": "一般",
+        "table_id": null,
+        "unit": "门",
+        "value": "8"
+      },
+      {
+        "comparison": "lte",
+        "doc_id": 261,
+        "field": "一般",
+        "field_id": null,
+        "numeric_value": null,
+        "row_id": null,
+        "row_label": null,
+        "scope": {
+          "clause": "第三条",
+          "context": "一般设置8-10门该专业的主要课程,总计20学分左右",
+          "period": ""
+        },
+        "subject": "一般",
+        "table_id": null,
+        "unit": "门",
+        "value": "10"
+      }
+    ]
+  },
+  {
+    "id": "L3N01",
+    "execution_ok": false,
+    "answer": "现有证据或计算条件不足，无法可靠给出数值：操作数单位不一致",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "fact_id": "f2"
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {
+      "left": [],
+      "right": []
+    },
+    "operands": []
+  },
+  {
+    "id": "L3N02",
+    "execution_ok": false,
+    "answer": "现有证据或计算条件不足，无法可靠给出数值：b: 缺少inputs",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": true,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": 414,
+      "steps": [
+        {
+          "id": "b",
+          "op": "add",
+          "field_id": 2699
+        }
+      ],
+      "output": "b"
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {},
+    "operands": []
+  },
+  {
+    "id": "L3N03",
+    "execution_ok": false,
+    "answer": "现有证据或计算条件不足，无法可靠给出数值：问题约束：操作数来源与问题指定资料不符；要求：华为奖学金；当前来源：校学发〔2023〕37号“共进电子奖学金”评选办法",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "numerator",
+          "op": "lookup",
+          "fact_id": "f10"
+        },
+        {
+          "id": "denominator",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "result",
+          "op": "divide",
+          "inputs": [
+            "numerator",
+            "denominator"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {
+      "numerator": [],
+      "denominator": [],
+      "result": []
+    },
+    "operands": []
+  },
+  {
+    "id": "L3N04",
+    "execution_ok": true,
+    "answer": "结果为12人。算式：(3) + (9)。",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "fact_id": "f3"
+        },
+        {
+          "id": "result",
+          "op": "add",
+          "inputs": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {
+      "left": [],
+      "right": [],
+      "result": []
+    },
+    "operands": [
+      {
+        "comparison": "eq",
+        "doc_id": 258,
+        "field": "本科生",
+        "field_id": null,
+        "numeric_value": null,
+        "row_id": null,
+        "row_label": null,
+        "scope": {
+          "clause": "",
+          "context": "本科生：3人,5000元／人研究生：9人,8000元／人四、评审办法1.每学年评选一次",
+          "period": ""
+        },
+        "subject": "本科生",
+        "table_id": null,
+        "unit": "人",
+        "value": "3"
+      },
+      {
+        "comparison": "eq",
+        "doc_id": 258,
+        "field": "研究生",
+        "field_id": null,
+        "numeric_value": null,
+        "row_id": null,
+        "row_label": null,
+        "scope": {
+          "clause": "",
+          "context": "研究生：9人,8000元／人四、评审办法1.每学年评选一次",
+          "period": ""
+        },
+        "subject": "研究生",
+        "table_id": null,
+        "unit": "人",
+        "value": "9"
+      }
+    ]
+  },
+  {
+    "id": "L3N05",
+    "execution_ok": false,
+    "answer": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：Expecting property name enclosed in double quotes: line 1 column 120 (char 119)",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": true,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [],
+      "output": ""
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {},
+    "operands": []
+  },
+  {
+    "id": "L3N06",
+    "execution_ok": false,
+    "answer": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：result: inputs只能引用前序步骤或问题明确给定的常数",
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": true,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [],
+      "output": ""
+    },
+    "actual_row_ids": [],
+    "gold_row_ids": [],
+    "row_sets_match": null,
+    "step_row_ids": {},
+    "operands": []
+  }
+]

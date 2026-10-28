@@ -9,3 +9,18 @@ data/eval/stages/*/candidate.patch -whitespace
 data/eval/post_v2_fix_v*/*/candidate.patch -whitespace
 # Preserve pytest's original failure-context spacing in archived output.
 data/eval/post_v2_fix_v*/baseline_unit_tests*.txt -whitespace
+data/eval/semantic_guard_v1/** -text whitespace=cr-at-eol
+data/eval/semantic_guard_v2/** -text whitespace=cr-at-eol
+data/eval/semantic_guard_v3/** -text whitespace=cr-at-eol
+data/eval/text_facts_v1/** -text whitespace=cr-at-eol
+data/eval/fact_scope_v1/** -text whitespace=cr-at-eol
+data/eval/fact_units_v1/** -text whitespace=cr-at-eol
+data/eval/fact_scope_guard_v1/** -text whitespace=cr-at-eol
+data/eval/planning_scope_v1/** -text whitespace=cr-at-eol
+data/eval/planning_scope_v2/** -text whitespace=cr-at-eol
+data/eval/lora_recheck_scope_v1/** -text whitespace=cr-at-eol
+# Archived terminal/pytest output is kept byte-for-byte, including spacing.
+data/eval/fact_scope_v1/regression_stdout.txt -whitespace
+data/eval/fact_scope_v1/reproduction.txt -whitespace
+data/eval/planning_scope_v1/focused_tests.txt -whitespace
+data/eval/text_facts_v1/reproduction.txt -whitespace

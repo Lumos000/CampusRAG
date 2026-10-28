@@ -1,0 +1,92 @@
+{
+  "decision": "do_not_enable",
+  "reason": "Frozen checkpoint fails no-regression gate on the unified accepted runtime; no training, checkpoint reselection, or sealed tests.",
+  "metrics": {
+    "dev36": {
+      "overall": {
+        "correct": 35,
+        "total": 36,
+        "accuracy": 0.9722222222222222
+      },
+      "numeric": {
+        "correct": 7,
+        "total": 8,
+        "accuracy": 0.875
+      },
+      "citations": {
+        "relevant": 31,
+        "total": 31
+      },
+      "literal_numeric_match_count": 7,
+      "regressions": [],
+      "gains": [
+        "C01",
+        "C03"
+      ],
+      "new_wrong_answers": []
+    },
+    "exposed_v2": {
+      "overall": {
+        "correct": 13,
+        "total": 16,
+        "accuracy": 0.8125
+      },
+      "numeric": {
+        "correct": 5,
+        "total": 8,
+        "accuracy": 0.625
+      },
+      "citations": {
+        "relevant": 11,
+        "total": 11
+      },
+      "literal_numeric_match_count": 5,
+      "regressions": [
+        "V2C01",
+        "V2C02",
+        "V2C03"
+      ],
+      "gains": [
+        "V2C06",
+        "V2C07",
+        "V2C08"
+      ],
+      "new_wrong_answers": []
+    },
+    "old_campus": {
+      "overall": {
+        "correct": 5,
+        "total": 10,
+        "accuracy": 0.5
+      },
+      "numeric": {
+        "correct": 1,
+        "total": 6,
+        "accuracy": 0.16666666666666666
+      },
+      "citations": {
+        "relevant": 4,
+        "total": 4
+      },
+      "literal_numeric_match_count": 1,
+      "regressions": [
+        "L3N01"
+      ],
+      "gains": [],
+      "new_wrong_answers": []
+    },
+    "numeric_regression": {
+      "correct": 8,
+      "total": 12,
+      "accuracy": 0.6666666666666666
+    },
+    "taskbook": {
+      "correct": 3,
+      "total": 4,
+      "accuracy": 0.75
+    },
+    "no_known_correct_regressions": false,
+    "holdout_opened": false,
+    "adapter_enabled": false
+  }
+}

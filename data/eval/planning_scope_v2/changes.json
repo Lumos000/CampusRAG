@@ -1,0 +1,684 @@
+[
+  {
+    "id": "V2C05",
+    "group": "exposed_v2",
+    "question": "按2025年甘霖励志奖学金的生均金额，若有13名学生获奖，共需多少元？",
+    "gold": {
+      "id": "V2C05",
+      "category": "calculation",
+      "question": "按2025年甘霖励志奖学金的生均金额，若有13名学生获奖，共需多少元？",
+      "answer": "1300元",
+      "points": [
+        "1300元"
+      ],
+      "expected": "1300",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 259,
+          "quote": "生均奖励金额为100元"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 259,
+          "quote": "生均奖励金额为100元",
+          "chunk_ids": [
+            "e927388a-2dd3-4dfb-87cd-76aeeabfdb39"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    "before": "结果为1300元。算式：(100) × (13)。",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：result: 输入步骤right未先定义或引用自身；合法前序id：left。必须保留每个操作数步骤，问题常数也须先lookup，返回完整JSON",
+    "calculation": null,
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2025"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": true,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [],
+      "output": ""
+    },
+    "references": []
+  },
+  {
+    "id": "L3N01",
+    "group": "old_campus",
+    "question": "按“共进电子奖学金”评选办法，研究生每人的奖学金标准比本科生高多少元？",
+    "gold": {
+      "id": "L3N01",
+      "category": "calculation",
+      "question": "按“共进电子奖学金”评选办法，研究生每人的奖学金标准比本科生高多少元？",
+      "points": [
+        "4000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 247,
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人；本科生：6 名，每学年奖学金标准为8000 元/人。"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 247,
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人；本科生：6 名，每学年奖学金标准为8000 元/人。",
+          "chunk_ids": [
+            "93d06975-8309-40b5-9691-bf21f117b7b4"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "4000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "4000元"
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：问题约束：结果单位与问题要求不符：要求元；请补齐费率、时长等必要运算",
+    "after": "结果为4000元/人。算式：(12000) - (8000)。",
+    "calculation": {
+      "ok": true,
+      "value": "4000",
+      "unit": "元/人",
+      "expression": "(12000) - (8000)",
+      "details": [
+        {
+          "fact_id": "f2",
+          "field": "研究生人均标准",
+          "subject": "研究生",
+          "raw_value": "12000 元/人",
+          "value": "12000",
+          "unit": "元/人",
+          "comparison": "eq",
+          "scope": {
+            "clause": "",
+            "period": "每学年",
+            "context": "研究生：4名,每学年奖学金标准为12000元/人"
+          },
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人",
+          "span": [
+            269,
+            295
+          ],
+          "doc_id": 247,
+          "source_title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+          "source_section": "",
+          "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+          "evidence": {
+            "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+            "text": "— 2 —\n劳全面发展，品学兼优，遵守国家法令和学校各项规章制度，身\n体健康，体测成绩达到良好及以上，并符合下列条件之一：\n1.具有中华人民共和国国籍；\n2.学年综合素质测评成绩优秀；\n3.创新能力突出，在省、部级以上竞赛中名列前茅；\n4.科研能力强，取得一定的科研成果；\n5.凡本学年中有下列情况之一者，均无资格申请奖学金：\n（1）必修课和限选课成绩有不及格现象者（含补考和因个\n人原因缓考者）；\n（2）有抄袭剽窃、弄虚作假等学术不端行为经查证属实者。\n三、奖励名额及标准\n“共进电子奖学金”每年奖励学生10 名，奖项设置方案如\n下：\n研究生：4 名，每学年奖学金标准为12000 元/人；\n本科生：6 名，每学年奖学金标准为8000 元/人。\n四、评审程序\n（一）由学生本人提出书面申请并填写《南京邮电大学“共\n进电子奖学金”申请表”》，并附成绩单或成果证明；所在学院审\n核并公示推荐人选后，确定推荐候选人名单；经学生工作处审核",
+            "score": 0.9929065704345703,
+            "doc_id": 247,
+            "title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2024-02-29",
+            "chunk_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+            "table_id": null,
+            "row_ids": []
+          },
+          "source_match": true
+        },
+        {
+          "fact_id": "f4",
+          "field": "本科生人均标准",
+          "subject": "本科生",
+          "raw_value": "8000 元/人",
+          "value": "8000",
+          "unit": "元/人",
+          "comparison": "eq",
+          "scope": {
+            "clause": "",
+            "period": "每学年",
+            "context": "本科生：6名,每学年奖学金标准为8000元/人"
+          },
+          "quote": "本科生：6 名，每学年奖学金标准为8000 元/人",
+          "span": [
+            297,
+            322
+          ],
+          "doc_id": 247,
+          "source_title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+          "source_section": "",
+          "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+          "evidence": {
+            "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+            "text": "— 2 —\n劳全面发展，品学兼优，遵守国家法令和学校各项规章制度，身\n体健康，体测成绩达到良好及以上，并符合下列条件之一：\n1.具有中华人民共和国国籍；\n2.学年综合素质测评成绩优秀；\n3.创新能力突出，在省、部级以上竞赛中名列前茅；\n4.科研能力强，取得一定的科研成果；\n5.凡本学年中有下列情况之一者，均无资格申请奖学金：\n（1）必修课和限选课成绩有不及格现象者（含补考和因个\n人原因缓考者）；\n（2）有抄袭剽窃、弄虚作假等学术不端行为经查证属实者。\n三、奖励名额及标准\n“共进电子奖学金”每年奖励学生10 名，奖项设置方案如\n下：\n研究生：4 名，每学年奖学金标准为12000 元/人；\n本科生：6 名，每学年奖学金标准为8000 元/人。\n四、评审程序\n（一）由学生本人提出书面申请并填写《南京邮电大学“共\n进电子奖学金”申请表”》，并附成绩单或成果证明；所在学院审\n核并公示推荐人选后，确定推荐候选人名单；经学生工作处审核",
+            "score": 0.9929065704345703,
+            "doc_id": 247,
+            "title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2024-02-29",
+            "chunk_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+            "table_id": null,
+            "row_ids": []
+          },
+          "source_match": true
+        },
+        {
+          "fact_id": "f2",
+          "field": "研究生人均标准",
+          "subject": "研究生",
+          "raw_value": "12000 元/人",
+          "value": "12000",
+          "unit": "元/人",
+          "comparison": "eq",
+          "scope": {
+            "clause": "",
+            "period": "每学年",
+            "context": "研究生：4名,每学年奖学金标准为12000元/人"
+          },
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人",
+          "span": [
+            269,
+            295
+          ],
+          "doc_id": 247,
+          "source_title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+          "source_section": "",
+          "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+          "evidence": {
+            "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+            "text": "— 2 —\n劳全面发展，品学兼优，遵守国家法令和学校各项规章制度，身\n体健康，体测成绩达到良好及以上，并符合下列条件之一：\n1.具有中华人民共和国国籍；\n2.学年综合素质测评成绩优秀；\n3.创新能力突出，在省、部级以上竞赛中名列前茅；\n4.科研能力强，取得一定的科研成果；\n5.凡本学年中有下列情况之一者，均无资格申请奖学金：\n（1）必修课和限选课成绩有不及格现象者（含补考和因个\n人原因缓考者）；\n（2）有抄袭剽窃、弄虚作假等学术不端行为经查证属实者。\n三、奖励名额及标准\n“共进电子奖学金”每年奖励学生10 名，奖项设置方案如\n下：\n研究生：4 名，每学年奖学金标准为12000 元/人；\n本科生：6 名，每学年奖学金标准为8000 元/人。\n四、评审程序\n（一）由学生本人提出书面申请并填写《南京邮电大学“共\n进电子奖学金”申请表”》，并附成绩单或成果证明；所在学院审\n核并公示推荐人选后，确定推荐候选人名单；经学生工作处审核",
+            "score": 0.9929065704345703,
+            "doc_id": 247,
+            "title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2024-02-29",
+            "chunk_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+            "table_id": null,
+            "row_ids": []
+          },
+          "source_match": true
+        },
+        {
+          "fact_id": "f4",
+          "field": "本科生人均标准",
+          "subject": "本科生",
+          "raw_value": "8000 元/人",
+          "value": "8000",
+          "unit": "元/人",
+          "comparison": "eq",
+          "scope": {
+            "clause": "",
+            "period": "每学年",
+            "context": "本科生：6名,每学年奖学金标准为8000元/人"
+          },
+          "quote": "本科生：6 名，每学年奖学金标准为8000 元/人",
+          "span": [
+            297,
+            322
+          ],
+          "doc_id": 247,
+          "source_title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+          "source_section": "",
+          "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+          "evidence": {
+            "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+            "text": "— 2 —\n劳全面发展，品学兼优，遵守国家法令和学校各项规章制度，身\n体健康，体测成绩达到良好及以上，并符合下列条件之一：\n1.具有中华人民共和国国籍；\n2.学年综合素质测评成绩优秀；\n3.创新能力突出，在省、部级以上竞赛中名列前茅；\n4.科研能力强，取得一定的科研成果；\n5.凡本学年中有下列情况之一者，均无资格申请奖学金：\n（1）必修课和限选课成绩有不及格现象者（含补考和因个\n人原因缓考者）；\n（2）有抄袭剽窃、弄虚作假等学术不端行为经查证属实者。\n三、奖励名额及标准\n“共进电子奖学金”每年奖励学生10 名，奖项设置方案如\n下：\n研究生：4 名，每学年奖学金标准为12000 元/人；\n本科生：6 名，每学年奖学金标准为8000 元/人。\n四、评审程序\n（一）由学生本人提出书面申请并填写《南京邮电大学“共\n进电子奖学金”申请表”》，并附成绩单或成果证明；所在学院审\n核并公示推荐人选后，确定推荐候选人名单；经学生工作处审核",
+            "score": 0.9929065704345703,
+            "doc_id": 247,
+            "title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2024-02-29",
+            "chunk_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+            "table_id": null,
+            "row_ids": []
+          },
+          "source_match": true
+        }
+      ],
+      "error": "",
+      "evidence": [
+        {
+          "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+          "text": "— 2 —\n劳全面发展，品学兼优，遵守国家法令和学校各项规章制度，身\n体健康，体测成绩达到良好及以上，并符合下列条件之一：\n1.具有中华人民共和国国籍；\n2.学年综合素质测评成绩优秀；\n3.创新能力突出，在省、部级以上竞赛中名列前茅；\n4.科研能力强，取得一定的科研成果；\n5.凡本学年中有下列情况之一者，均无资格申请奖学金：\n（1）必修课和限选课成绩有不及格现象者（含补考和因个\n人原因缓考者）；\n（2）有抄袭剽窃、弄虚作假等学术不端行为经查证属实者。\n三、奖励名额及标准\n“共进电子奖学金”每年奖励学生10 名，奖项设置方案如\n下：\n研究生：4 名，每学年奖学金标准为12000 元/人；\n本科生：6 名，每学年奖学金标准为8000 元/人。\n四、评审程序\n（一）由学生本人提出书面申请并填写《南京邮电大学“共\n进电子奖学金”申请表”》，并附成绩单或成果证明；所在学院审\n核并公示推荐人选后，确定推荐候选人名单；经学生工作处审核",
+          "score": 0.9929065704345703,
+          "doc_id": 247,
+          "title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+          "department": "学生工作部（处）",
+          "published_at": "2024-02-29",
+          "chunk_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+          "table_id": null,
+          "row_ids": []
+        }
+      ],
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "operands": [],
+          "value": "12000",
+          "unit": "元/人",
+          "expression": "12000",
+          "details": [
+            {
+              "fact_id": "f2",
+              "field": "研究生人均标准",
+              "subject": "研究生",
+              "raw_value": "12000 元/人",
+              "value": "12000",
+              "unit": "元/人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "每学年",
+                "context": "研究生：4名,每学年奖学金标准为12000元/人"
+              },
+              "quote": "研究生：4 名，每学年奖学金标准为12000 元/人",
+              "span": [
+                269,
+                295
+              ],
+              "doc_id": 247,
+              "source_title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+              "evidence": {
+                "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "text": "— 2 —\n劳全面发展，品学兼优，遵守国家法令和学校各项规章制度，身\n体健康，体测成绩达到良好及以上，并符合下列条件之一：\n1.具有中华人民共和国国籍；\n2.学年综合素质测评成绩优秀；\n3.创新能力突出，在省、部级以上竞赛中名列前茅；\n4.科研能力强，取得一定的科研成果；\n5.凡本学年中有下列情况之一者，均无资格申请奖学金：\n（1）必修课和限选课成绩有不及格现象者（含补考和因个\n人原因缓考者）；\n（2）有抄袭剽窃、弄虚作假等学术不端行为经查证属实者。\n三、奖励名额及标准\n“共进电子奖学金”每年奖励学生10 名，奖项设置方案如\n下：\n研究生：4 名，每学年奖学金标准为12000 元/人；\n本科生：6 名，每学年奖学金标准为8000 元/人。\n四、评审程序\n（一）由学生本人提出书面申请并填写《南京邮电大学“共\n进电子奖学金”申请表”》，并附成绩单或成果证明；所在学院审\n核并公示推荐人选后，确定推荐候选人名单；经学生工作处审核",
+                "score": 0.9929065704345703,
+                "doc_id": 247,
+                "title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "table_id": null,
+                "row_ids": []
+              },
+              "source_match": true
+            }
+          ]
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "operands": [],
+          "value": "8000",
+          "unit": "元/人",
+          "expression": "8000",
+          "details": [
+            {
+              "fact_id": "f4",
+              "field": "本科生人均标准",
+              "subject": "本科生",
+              "raw_value": "8000 元/人",
+              "value": "8000",
+              "unit": "元/人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "每学年",
+                "context": "本科生：6名,每学年奖学金标准为8000元/人"
+              },
+              "quote": "本科生：6 名，每学年奖学金标准为8000 元/人",
+              "span": [
+                297,
+                322
+              ],
+              "doc_id": 247,
+              "source_title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+              "evidence": {
+                "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "text": "— 2 —\n劳全面发展，品学兼优，遵守国家法令和学校各项规章制度，身\n体健康，体测成绩达到良好及以上，并符合下列条件之一：\n1.具有中华人民共和国国籍；\n2.学年综合素质测评成绩优秀；\n3.创新能力突出，在省、部级以上竞赛中名列前茅；\n4.科研能力强，取得一定的科研成果；\n5.凡本学年中有下列情况之一者，均无资格申请奖学金：\n（1）必修课和限选课成绩有不及格现象者（含补考和因个\n人原因缓考者）；\n（2）有抄袭剽窃、弄虚作假等学术不端行为经查证属实者。\n三、奖励名额及标准\n“共进电子奖学金”每年奖励学生10 名，奖项设置方案如\n下：\n研究生：4 名，每学年奖学金标准为12000 元/人；\n本科生：6 名，每学年奖学金标准为8000 元/人。\n四、评审程序\n（一）由学生本人提出书面申请并填写《南京邮电大学“共\n进电子奖学金”申请表”》，并附成绩单或成果证明；所在学院审\n核并公示推荐人选后，确定推荐候选人名单；经学生工作处审核",
+                "score": 0.9929065704345703,
+                "doc_id": 247,
+                "title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "table_id": null,
+                "row_ids": []
+              },
+              "source_match": true
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "operands": [
+            {
+              "value": "12000",
+              "unit": "元/人"
+            },
+            {
+              "value": "8000",
+              "unit": "元/人"
+            }
+          ],
+          "value": "4000",
+          "unit": "元/人",
+          "expression": "(12000) - (8000)",
+          "details": [
+            {
+              "fact_id": "f2",
+              "field": "研究生人均标准",
+              "subject": "研究生",
+              "raw_value": "12000 元/人",
+              "value": "12000",
+              "unit": "元/人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "每学年",
+                "context": "研究生：4名,每学年奖学金标准为12000元/人"
+              },
+              "quote": "研究生：4 名，每学年奖学金标准为12000 元/人",
+              "span": [
+                269,
+                295
+              ],
+              "doc_id": 247,
+              "source_title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+              "evidence": {
+                "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "text": "— 2 —\n劳全面发展，品学兼优，遵守国家法令和学校各项规章制度，身\n体健康，体测成绩达到良好及以上，并符合下列条件之一：\n1.具有中华人民共和国国籍；\n2.学年综合素质测评成绩优秀；\n3.创新能力突出，在省、部级以上竞赛中名列前茅；\n4.科研能力强，取得一定的科研成果；\n5.凡本学年中有下列情况之一者，均无资格申请奖学金：\n（1）必修课和限选课成绩有不及格现象者（含补考和因个\n人原因缓考者）；\n（2）有抄袭剽窃、弄虚作假等学术不端行为经查证属实者。\n三、奖励名额及标准\n“共进电子奖学金”每年奖励学生10 名，奖项设置方案如\n下：\n研究生：4 名，每学年奖学金标准为12000 元/人；\n本科生：6 名，每学年奖学金标准为8000 元/人。\n四、评审程序\n（一）由学生本人提出书面申请并填写《南京邮电大学“共\n进电子奖学金”申请表”》，并附成绩单或成果证明；所在学院审\n核并公示推荐人选后，确定推荐候选人名单；经学生工作处审核",
+                "score": 0.9929065704345703,
+                "doc_id": 247,
+                "title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "table_id": null,
+                "row_ids": []
+              },
+              "source_match": true
+            },
+            {
+              "fact_id": "f4",
+              "field": "本科生人均标准",
+              "subject": "本科生",
+              "raw_value": "8000 元/人",
+              "value": "8000",
+              "unit": "元/人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "每学年",
+                "context": "本科生：6名,每学年奖学金标准为8000元/人"
+              },
+              "quote": "本科生：6 名，每学年奖学金标准为8000 元/人",
+              "span": [
+                297,
+                322
+              ],
+              "doc_id": 247,
+              "source_title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+              "evidence": {
+                "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "text": "— 2 —\n劳全面发展，品学兼优，遵守国家法令和学校各项规章制度，身\n体健康，体测成绩达到良好及以上，并符合下列条件之一：\n1.具有中华人民共和国国籍；\n2.学年综合素质测评成绩优秀；\n3.创新能力突出，在省、部级以上竞赛中名列前茅；\n4.科研能力强，取得一定的科研成果；\n5.凡本学年中有下列情况之一者，均无资格申请奖学金：\n（1）必修课和限选课成绩有不及格现象者（含补考和因个\n人原因缓考者）；\n（2）有抄袭剽窃、弄虚作假等学术不端行为经查证属实者。\n三、奖励名额及标准\n“共进电子奖学金”每年奖励学生10 名，奖项设置方案如\n下：\n研究生：4 名，每学年奖学金标准为12000 元/人；\n本科生：6 名，每学年奖学金标准为8000 元/人。\n四、评审程序\n（一）由学生本人提出书面申请并填写《南京邮电大学“共\n进电子奖学金”申请表”》，并附成绩单或成果证明；所在学院审\n核并公示推荐人选后，确定推荐候选人名单；经学生工作处审核",
+                "score": 0.9929065704345703,
+                "doc_id": 247,
+                "title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "table_id": null,
+                "row_ids": []
+              },
+              "source_match": true
+            }
+          ]
+        }
+      ],
+      "repairable": false
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "fact_id": "f2"
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "fact_id": "f4"
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "references": [
+      "校学发〔2023〕37号“共进电子奖学金”评选办法｜学生工作部（处）｜2024-02-29｜https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf"
+    ]
+  },
+  {
+    "id": "L3N02",
+    "group": "old_campus",
+    "question": "按“共进电子奖学金”办法规定的研究生和本科生名额、每人标准，两类奖金合计多少元？",
+    "gold": {
+      "id": "L3N02",
+      "category": "calculation",
+      "question": "按“共进电子奖学金”办法规定的研究生和本科生名额、每人标准，两类奖金合计多少元？",
+      "points": [
+        "96000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 247,
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人；本科生：6 名，每学年奖学金标准为8000 元/人。"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 247,
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人；本科生：6 名，每学年奖学金标准为8000 元/人。",
+          "chunk_ids": [
+            "93d06975-8309-40b5-9691-bf21f117b7b4"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "96000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "96000元"
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：a: 参与计算的记录存在缺失或非确定数值",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：正文计划只能使用提供的fact_id和问题常数，没有可绑定的表格Schema",
+    "calculation": null,
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": true,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [],
+      "output": ""
+    },
+    "references": []
+  },
+  {
+    "id": "L3N05",
+    "group": "old_campus",
+    "question": "按“华为奖学金”办法所列两类名额及每人标准，奖学金预算合计多少元？",
+    "gold": {
+      "id": "L3N05",
+      "category": "calculation",
+      "question": "按“华为奖学金”办法所列两类名额及每人标准，奖学金预算合计多少元？",
+      "points": [
+        "87000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人",
+          "chunk_ids": [
+            "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "87000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "87000元"
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：a: 参与计算的记录存在缺失或非确定数值",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：Expecting ',' delimiter: line 1 column 188 (char 187)",
+    "calculation": null,
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": true,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [],
+      "output": ""
+    },
+    "references": []
+  },
+  {
+    "id": "L3N06",
+    "group": "old_campus",
+    "question": "按“烽火通信奖学金”办法列出的19人名额和每人标准，奖金合计多少元？",
+    "gold": {
+      "id": "L3N06",
+      "category": "calculation",
+      "question": "按“烽火通信奖学金”办法列出的19人名额和每人标准，奖金合计多少元？",
+      "points": [
+        "95000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 262,
+          "quote": "本科生、硕士研究生：19 人，5000 元/人"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 262,
+          "quote": "本科生、硕士研究生：19 人，5000 元/人",
+          "chunk_ids": [
+            "993ebd12-f654-4501-898d-8c5134c41d8c"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "95000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "95000元"
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：a: 参与计算的记录存在缺失或非确定数值",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：result: 输入步骤right未先定义或引用自身；合法前序id：left。必须保留每个操作数步骤，问题常数也须先lookup，返回完整JSON",
+    "calculation": null,
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": true,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [],
+      "output": ""
+    },
+    "references": []
+  }
+]

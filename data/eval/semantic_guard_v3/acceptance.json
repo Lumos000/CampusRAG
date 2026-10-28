@@ -1,0 +1,66 @@
+{
+  "dev36": {
+    "overall": {
+      "correct": 33,
+      "total": 36,
+      "accuracy": 0.9166666666666666
+    },
+    "numeric": {
+      "correct": 5,
+      "total": 8,
+      "accuracy": 0.625
+    },
+    "changed_ids": [],
+    "citations": {
+      "relevant": 29,
+      "total": 29
+    }
+  },
+  "exposed_v2": {
+    "overall": {
+      "correct": 13,
+      "total": 16,
+      "accuracy": 0.8125
+    },
+    "numeric": {
+      "correct": 5,
+      "total": 8,
+      "accuracy": 0.625
+    },
+    "changed_ids": [],
+    "citations": {
+      "relevant": 11,
+      "total": 11
+    }
+  },
+  "old_campus": {
+    "overall": {
+      "correct": 4,
+      "total": 10,
+      "accuracy": 0.4
+    },
+    "numeric": {
+      "correct": 0,
+      "total": 6,
+      "accuracy": 0.0
+    },
+    "changed_ids": [
+      "L3N02",
+      "L3N03",
+      "L3N04"
+    ],
+    "citations": {
+      "relevant": 3,
+      "total": 3
+    }
+  },
+  "numeric_regression": {
+    "correct": 12,
+    "total": 12,
+    "accuracy": 1.0
+  },
+  "automatic_tests": 176,
+  "decision": "retain_guard_fixes",
+  "no_known_correct_answer_regressions": true,
+  "unsafe_known_22_answer": "replaced by safe refusal, not counted as correctness gain"
+}

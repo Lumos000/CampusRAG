@@ -1,0 +1,34 @@
+{
+  "V2C05": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Old correct user-constant calculation regressed after source labels.",
+    "failure_stage": "plan_generation"
+  },
+  "L3N01": {
+    "correct": true,
+    "citation_relevant": [
+      true
+    ],
+    "reason": "Correct per-person standard difference:12000-8000=4000yuan/person, same source and basis; gold unchanged and literal-unit matcher separately reported.",
+    "failure_stage": "plan_generation"
+  },
+  "L3N02": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Still refuses; incomplete or invalid plan, not a correctness gain.",
+    "failure_stage": "plan_generation"
+  },
+  "L3N05": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Still refuses; incomplete or invalid plan, not a correctness gain.",
+    "failure_stage": "plan_generation"
+  },
+  "L3N06": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Still refuses; incomplete or invalid plan, not a correctness gain.",
+    "failure_stage": "plan_generation"
+  }
+}

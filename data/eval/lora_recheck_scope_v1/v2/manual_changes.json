@@ -1,0 +1,90 @@
+{
+  "C01": {
+    "correct": true,
+    "citation_relevant": [
+      true
+    ],
+    "reason": "True lower hourly rate24 multiplied by user12hours equals288yuan; source and lower-bound meaning verified.",
+    "failure_stage": "plan_generation"
+  },
+  "C03": {
+    "correct": true,
+    "citation_relevant": [
+      true
+    ],
+    "reason": "Graduate upper limit25000 minus undergraduate upper limit20000 equals5000yuan; correct operands and direction.",
+    "failure_stage": "plan_generation"
+  },
+  "C08": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Malformed JSON; complete denominator still unresolved.",
+    "failure_stage": "plan_generation"
+  },
+  "V2C01": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Original correct table difference regresses: entity field used as monetary measure.",
+    "failure_stage": "plan_generation"
+  },
+  "V2C02": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Original correct selected-row sum regresses: add lacks inputs.",
+    "failure_stage": "plan_generation"
+  },
+  "V2C03": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Original correct ratio regresses: entity field used as measure.",
+    "failure_stage": "plan_generation"
+  },
+  "V2C06": {
+    "correct": true,
+    "citation_relevant": [
+      true
+    ],
+    "reason": "Annual120hours minus user85hours equals35hours; same period.",
+    "failure_stage": "plan_generation"
+  },
+  "V2C07": {
+    "correct": true,
+    "citation_relevant": [
+      true
+    ],
+    "reason": "Source4semesters minus user1semester equals3semesters.",
+    "failure_stage": "plan_generation"
+  },
+  "V2C08": {
+    "correct": true,
+    "citation_relevant": [
+      true
+    ],
+    "reason": "Upper10courses minus lower8courses equals2courses; bounds preserved.",
+    "failure_stage": "plan_generation"
+  },
+  "L3N01": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "New baseline correct answer regresses: people and yuan/person subtracted; unit check correctly refuses.",
+    "failure_stage": "plan_generation"
+  },
+  "L3N02": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Budget plan lacks inputs; still refuses.",
+    "failure_stage": "plan_generation"
+  },
+  "L3N05": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Malformed multi-step budget JSON; still refuses.",
+    "failure_stage": "plan_generation"
+  },
+  "L3N06": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Illegal step references or unsupported constant source; still refuses.",
+    "failure_stage": "plan_generation"
+  }
+}

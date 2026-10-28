@@ -1,0 +1,188 @@
+warning: in the working copy of 'src/campus_rag/database/query.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/campus_rag/rag/numeric.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/campus_rag/rag/planner.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_post_retrieval_reliability.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_step_reasoning.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/campus_rag/database/query.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/campus_rag/rag/numeric.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/campus_rag/rag/planner.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_post_retrieval_reliability.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_step_reasoning.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/campus_rag/database/query.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/campus_rag/rag/numeric.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/campus_rag/rag/planner.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_post_retrieval_reliability.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_step_reasoning.py', LF will be replaced by CRLF the next time Git touches it
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]
+Loading weights:  12%|����        | 37/311 [00:00<00:00, 361.02it/s]
+Loading weights:  24%|������       | 74/311 [00:00<00:00, 325.34it/s]
+Loading weights:  34%|��������      | 107/311 [00:00<00:00, 308.60it/s]
+Loading weights:  44%|����������     | 138/311 [00:00<00:00, 295.43it/s]
+Loading weights:  55%|������������    | 170/311 [00:00<00:00, 300.13it/s]
+Loading weights:  65%|��������������   | 201/311 [00:00<00:00, 297.26it/s]
+Loading weights:  74%|����������������  | 231/311 [00:00<00:00, 290.16it/s]
+Loading weights:  84%|������������������ | 262/311 [00:00<00:00, 282.96it/s]
+Loading weights:  94%|��������������������| 293/311 [00:00<00:00, 288.47it/s]
+Loading weights: 100%|��������������������| 311/311 [00:01<00:00, 302.16it/s]
+
+Loading weights:   0%|          | 0/71 [00:00<?, ?it/s]
+Loading weights: 100%|��������������������| 71/71 [00:00<00:00, 1431.22it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights:  19%|����        | 38/201 [00:00<00:00, 374.16it/s]
+Loading weights:  38%|��������      | 76/201 [00:00<00:00, 244.74it/s]
+Loading weights: 100%|��������������������| 201/201 [00:00<00:00, 550.16it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches: 100%|��������������������| 1/1 [00:00<00:00,  1.30it/s]
+Batches: 100%|��������������������| 1/1 [00:00<00:00,  1.30it/s]
+{"id": "area_ratio", "correct": false, "seconds": 17.03}
+{"id": "area_sum", "correct": true, "seconds": 8.12}
+{"id": "area_difference", "correct": true, "seconds": 14.38}
+{"id": "area_average", "correct": true, "seconds": 4.36}
+{"id": "procurement_multiply", "correct": false, "seconds": 14.55}
+{"id": "participants_sum", "correct": false, "seconds": 1.24}
+{"id": "participants_count", "correct": true, "seconds": 5.17}
+{"id": "missing_numeric", "correct": true, "seconds": 13.85}
+{"id": "campus_admission", "correct": true, "seconds": 1.03}
+{"id": "campus_fees", "correct": true, "seconds": 0.59}
+{"id": "campus_staff", "correct": true, "seconds": 0.7}
+{"id": "campus_area", "correct": false, "seconds": 19.41}
+{"fixture": {"correct": 5, "total": 8, "accuracy": 0.625}, "campus": {"correct": 3, "total": 4, "accuracy": 0.75}, "all": {"correct": 8, "total": 12, "accuracy": 0.6666666666666666}}
+
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]
+Loading weights:   8%|��         | 26/311 [00:00<00:01, 249.88it/s]
+Loading weights:  17%|����        | 53/311 [00:00<00:01, 257.83it/s]
+Loading weights:  25%|������       | 79/311 [00:00<00:00, 246.86it/s]
+Loading weights:  34%|��������      | 106/311 [00:00<00:00, 251.96it/s]
+Loading weights:  42%|����������     | 132/311 [00:00<00:00, 218.34it/s]
+Loading weights:  50%|����������     | 155/311 [00:00<00:00, 212.30it/s]
+Loading weights:  57%|������������    | 177/311 [00:00<00:00, 207.42it/s]
+Loading weights:  64%|��������������   | 198/311 [00:00<00:00, 205.53it/s]
+Loading weights:  70%|��������������   | 219/311 [00:01<00:00, 192.81it/s]
+Loading weights:  80%|����������������  | 248/311 [00:01<00:00, 218.91it/s]
+Loading weights:  87%|������������������ | 271/311 [00:01<00:00, 208.41it/s]
+Loading weights:  95%|��������������������| 297/311 [00:01<00:00, 222.23it/s]
+Loading weights: 100%|��������������������| 311/311 [00:01<00:00, 224.16it/s]
+
+Loading weights:   0%|          | 0/71 [00:00<?, ?it/s]
+Loading weights: 100%|��������������������| 71/71 [00:00<00:00, 1132.73it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights:   9%|��         | 19/201 [00:00<00:00, 182.14it/s]
+Loading weights:  19%|����        | 38/201 [00:00<00:01, 156.02it/s]
+Loading weights:  27%|������       | 54/201 [00:00<00:01, 144.86it/s]
+Loading weights:  34%|��������      | 69/201 [00:00<00:00, 142.87it/s]
+Loading weights: 100%|��������������������| 201/201 [00:00<00:00, 422.23it/s]
+{"id": "F01", "seconds": 1.616, "error": null}
+{"id": "F02", "seconds": 1.413, "error": null}
+{"id": "F03", "seconds": 1.275, "error": null}
+{"id": "F04", "seconds": 1.241, "error": null}
+{"id": "F05", "seconds": 1.013, "error": null}
+{"id": "F06", "seconds": 1.948, "error": null}
+{"id": "F07", "seconds": 1.25, "error": null}
+{"id": "F08", "seconds": 1.937, "error": null}
+{"id": "P01", "seconds": 2.565, "error": null}
+{"id": "P02", "seconds": 3.265, "error": null}
+{"id": "P03", "seconds": 2.292, "error": null}
+{"id": "P04", "seconds": 3.671, "error": null}
+{"id": "P05", "seconds": 2.74, "error": null}
+{"id": "P06", "seconds": 1.497, "error": null}
+{"id": "L01", "seconds": 1.804, "error": null}
+{"id": "L02", "seconds": 1.612, "error": null}
+{"id": "L03", "seconds": 4.098, "error": null}
+{"id": "L04", "seconds": 1.678, "error": null}
+{"id": "L05", "seconds": 2.061, "error": null}
+{"id": "L06", "seconds": 2.047, "error": null}
+{"id": "C01", "seconds": 7.041, "error": null}
+{"id": "C02", "seconds": 15.335, "error": null}
+{"id": "C03", "seconds": 18.173, "error": null}
+{"id": "C04", "seconds": 9.008, "error": null}
+{"id": "C05", "seconds": 7.329, "error": null}
+{"id": "C06", "seconds": 5.317, "error": null}
+{"id": "C07", "seconds": 6.614, "error": null}
+{"id": "C08", "seconds": 24.225, "error": null}
+{"id": "T01", "seconds": 1.894, "error": null}
+{"id": "T02", "seconds": 1.986, "error": null}
+{"id": "T03", "seconds": 1.403, "error": null}
+{"id": "T04", "seconds": 1.271, "error": null}
+{"id": "R01", "seconds": 0.348, "error": null}
+{"id": "R02", "seconds": 0.048, "error": null}
+{"id": "R03", "seconds": 0.458, "error": null}
+{"id": "R04", "seconds": 0.491, "error": null}
+
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]
+Loading weights:   1%|          | 2/311 [00:00<00:22, 13.96it/s]
+Loading weights:  10%|��         | 30/311 [00:00<00:02, 140.26it/s]
+Loading weights:  20%|����        | 61/311 [00:00<00:01, 202.69it/s]
+Loading weights:  28%|������       | 88/311 [00:00<00:00, 226.80it/s]
+Loading weights:  36%|��������      | 112/311 [00:00<00:00, 228.61it/s]
+Loading weights:  45%|����������     | 139/311 [00:00<00:00, 240.90it/s]
+Loading weights:  53%|������������    | 164/311 [00:00<00:00, 241.72it/s]
+Loading weights:  63%|��������������   | 197/311 [00:00<00:00, 252.24it/s]
+Loading weights:  72%|����������������  | 223/311 [00:01<00:00, 237.44it/s]
+Loading weights:  82%|������������������ | 254/311 [00:01<00:00, 249.93it/s]
+Loading weights:  90%|������������������ | 281/311 [00:01<00:00, 243.31it/s]
+Loading weights: 100%|��������������������| 311/311 [00:01<00:00, 236.92it/s]
+
+Loading weights:   0%|          | 0/71 [00:00<?, ?it/s]
+Loading weights: 100%|��������������������| 71/71 [00:00<00:00, 1020.60it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights:  14%|����        | 28/201 [00:00<00:00, 270.01it/s]
+Loading weights:  28%|������       | 56/201 [00:00<00:00, 216.33it/s]
+Loading weights:  39%|��������      | 79/201 [00:00<00:00, 171.12it/s]
+Loading weights: 100%|��������������������| 201/201 [00:00<00:00, 396.85it/s]
+{"id": "V2C01", "seconds": 14.635, "error": null}
+{"id": "V2C02", "seconds": 20.559, "error": null}
+{"id": "V2C03", "seconds": 19.595, "error": null}
+{"id": "V2C04", "seconds": 9.447, "error": null}
+{"id": "V2C05", "seconds": 11.695, "error": null}
+{"id": "V2C06", "seconds": 11.676, "error": null}
+{"id": "V2C07", "seconds": 20.625, "error": null}
+{"id": "V2C08", "seconds": 7.692, "error": null}
+{"id": "V2F01", "seconds": 1.01, "error": null}
+{"id": "V2F02", "seconds": 1.935, "error": null}
+{"id": "V2P01", "seconds": 1.245, "error": null}
+{"id": "V2L01", "seconds": 2.033, "error": null}
+{"id": "V2T01", "seconds": 1.175, "error": null}
+{"id": "V2T02", "seconds": 1.473, "error": null}
+{"id": "V2R01", "seconds": 0.418, "error": null}
+{"id": "V2R02", "seconds": 0.047, "error": null}
+
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]
+Loading weights:   6%|��         | 20/311 [00:00<00:01, 184.58it/s]
+Loading weights:  15%|����        | 46/311 [00:00<00:01, 220.31it/s]
+Loading weights:  24%|������       | 76/311 [00:00<00:00, 245.75it/s]
+Loading weights:  36%|��������      | 111/311 [00:00<00:00, 274.92it/s]
+Loading weights:  45%|����������     | 139/311 [00:00<00:00, 254.63it/s]
+Loading weights:  53%|������������    | 165/311 [00:00<00:00, 245.19it/s]
+Loading weights:  61%|������������    | 190/311 [00:00<00:00, 227.45it/s]
+Loading weights:  69%|��������������   | 216/311 [00:00<00:00, 230.72it/s]
+Loading weights:  78%|����������������  | 243/311 [00:01<00:00, 239.15it/s]
+Loading weights:  88%|������������������ | 273/311 [00:01<00:00, 246.44it/s]
+Loading weights:  96%|��������������������| 298/311 [00:01<00:00, 242.92it/s]
+Loading weights: 100%|��������������������| 311/311 [00:01<00:00, 247.10it/s]
+
+Loading weights:   0%|          | 0/71 [00:00<?, ?it/s]
+Loading weights: 100%|��������������������| 71/71 [00:00<00:00, 1057.77it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights:   5%|��         | 11/201 [00:00<00:01, 109.54it/s]
+Loading weights:  14%|����        | 28/201 [00:00<00:01, 129.49it/s]
+Loading weights:  26%|������       | 53/201 [00:00<00:00, 167.13it/s]
+Loading weights:  35%|��������      | 70/201 [00:00<00:00, 141.51it/s]
+Loading weights:  42%|����������     | 85/201 [00:00<00:00, 139.72it/s]
+Loading weights: 100%|��������������������| 201/201 [00:00<00:00, 330.46it/s]
+{"id": "L3N01", "seconds": 8.526, "error": null}
+{"id": "L3N02", "seconds": 16.684, "error": null}
+{"id": "L3N03", "seconds": 18.66, "error": null}
+{"id": "L3N04", "seconds": 8.017, "error": null}
+{"id": "L3N05", "seconds": 64.161, "error": null}
+{"id": "L3N06", "seconds": 24.231, "error": null}
+{"id": "L3F01", "seconds": 1.198, "error": null}
+{"id": "L3P01", "seconds": 1.078, "error": null}
+{"id": "L3T01", "seconds": 1.099, "error": null}
+{"id": "L3R01", "seconds": 0.366, "error": null}

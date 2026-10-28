@@ -134,8 +134,11 @@ class RAGService:
         schema = self.structured.schema_context(table_ids,periods,question)
         allowed_ids = [table['table_id'] for table in schema]
         facts = self.numeric.text_facts(evidence)
+        source_requested = self.structured.requested_fact_sources(question,facts)
         context = json.dumps({'tables':schema,'facts':[
-            {k:v for k,v in fact.items() if k!='evidence'} for fact in facts.values()][:24]},ensure_ascii=False)
+            {k:v for k,v in fact.items() if k!='evidence' and
+                (k not in {'source_title','source_section'} or (source_requested and v))}
+            for fact in facts.values()][:24]},ensure_ascii=False)
         # Only supplied facts are available to the executor.
         facts = dict(list(facts.items())[:24])
         self.last_diagnostics.update(route='numeric_plan',schema=schema,

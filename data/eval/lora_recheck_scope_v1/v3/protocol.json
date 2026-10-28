@@ -1,0 +1,11 @@
+{
+  "purpose": "Frozen selected adapter recheck only; no training or checkpoint selection; exposed sets only, sealed tests not opened.",
+  "baseline": "E:/CampusRAG/data/eval/fact_units_v1",
+  "selected_adapter": "data/eval/planner_lora_v3/selected_adapter.json",
+  "selected_sha256": "ad82127bb363e9e30d669dcf212e5bdea2a7aeab115e0a94eae9069870378c8a",
+  "adapter_files": {
+    "adapter_config.json": "accaa024c27c1276e3e1c560c0d3355f343d861b057d4d6ba7b9f157846cfbd7",
+    "adapter_model.safetensors": "187e2788b91499df16988a2048dcf667e7608bd5b18dbfc5cd94de6ce2cec982",
+    "README.md": "4a81ceefde5a711a2a984bb269810621c644e3422716c04a24831a53ac16b737"
+  }
+}

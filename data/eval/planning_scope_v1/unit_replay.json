@@ -1,0 +1,8 @@
+{
+  "purpose": "Replay actual rejected plan, no model call or answer changes",
+  "old_error": "问题约束：结果单位与问题要求不符：要求元；请补齐费率、时长等必要运算",
+  "new_ok": true,
+  "value": "4000",
+  "unit": "元/人",
+  "expression": "(12000) - (8000)"
+}

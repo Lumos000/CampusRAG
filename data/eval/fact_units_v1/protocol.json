@@ -1,0 +1,14 @@
+{
+  "baseline": "fact_scope_v1 accepted; both source-input trials rejected and restored",
+  "scope": "Retain exact fact-scope runtime and explicit per-person difference unit correction only. No source filtering/labels, no new planner, model call, DB/index rebuild or training.",
+  "grading": "Original gold and literal numeric-unit matcher unchanged. Explicit per-person differences are manually reviewed in retained yuan/person units, reported separately from literal-unit matches.",
+  "retention": "No previously correct answer loss; full exposed regression. No new sealed tests.",
+  "files": {
+    "src/campus_rag/rag/numeric.py": "d8fe18765ddccd440dfaea2fee1a411ceab352f73315d4bf02cc63c24c8b84d9",
+    "src/campus_rag/database/query.py": "91111280f5b74702aa205af515a667f6a5a7b79ab0749da3e97a7667d7f284f1",
+    "src/campus_rag/rag/service.py": "eb281e6b7ae01d8e4a3fbd76ee127d22b6ac4de4320437680ca58b5549da7dac",
+    "src/campus_rag/rag/planner.py": "5a427f45409deac373cc6073859b8dc6d9e9b47484f04d6875c39752f1e084c2",
+    "tests/test_fact_scope_binding.py": "0cf2832ea4e9711adaf75c1da958ca60b5f78d636ff3e1c23832e7dc25408a56",
+    "tests/test_rate_difference_units.py": "afb1a9911820b31ea7b3319e8decf17f02d0367a330eddf05a532e1042f37972"
+  }
+}

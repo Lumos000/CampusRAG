@@ -1,0 +1,9 @@
+{
+  "baseline": "text_facts_v1, base Qwen, no adapter",
+  "scope": "Named headcount, explicit same-row period/rate binding, source/group-aware conflicts and group validation. No gold changes, sealed tests, DB rebuild, or training.",
+  "files": {
+    "src/campus_rag/rag/numeric.py": "d8fe18765ddccd440dfaea2fee1a411ceab352f73315d4bf02cc63c24c8b84d9",
+    "src/campus_rag/database/query.py": "ef59042f8dfdb58c1d2681c41b5864fc868ef37053c338bf66c5cb2b750ae199",
+    "tests/test_fact_scope_binding.py": "0cf2832ea4e9711adaf75c1da958ca60b5f78d636ff3e1c23832e7dc25408a56"
+  }
+}

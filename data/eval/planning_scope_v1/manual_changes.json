@@ -1,0 +1,52 @@
+{
+  "V2C01": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Source deletion changed planning; lookup incorrectly includes inputs, original correct answer regressed.",
+    "failure_stage": "plan_generation"
+  },
+  "V2C04": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Source deletion changed planning; one required reward omitted, original correct answer regressed.",
+    "failure_stage": "plan_generation"
+  },
+  "V2C05": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Source deletion changed planning; user headcount step missing, original correct answer regressed.",
+    "failure_stage": "plan_generation"
+  },
+  "L3N01": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Mixed people and person-rate operands; still refuses.",
+    "failure_stage": "plan_generation"
+  },
+  "L3N02": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Wrong arithmetic on count and person-rate; still refuses.",
+    "failure_stage": "plan_generation"
+  },
+  "L3N03": {
+    "correct": true,
+    "citation_relevant": [
+      true
+    ],
+    "reason": "Huawei postgraduate8000 yuan/person minus undergraduate5000 yuan/person gives3000 yuan/person, correct for explicitly per-person difference; source and units retained. Gold unit yuan unchanged, literal unit matcher remains false; semantic judgment is contextual only.",
+    "failure_stage": "plan_generation"
+  },
+  "L3N05": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Headcounts alone do not answer total monetary budget; still refuses.",
+    "failure_stage": "plan_generation"
+  },
+  "L3N06": {
+    "correct": false,
+    "citation_relevant": [],
+    "reason": "Missing input step; still refuses.",
+    "failure_stage": "plan_generation"
+  }
+}

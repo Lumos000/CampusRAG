@@ -1,0 +1,297 @@
+FFFFFFF..............                                                    [100%]
+================================== FAILURES ===================================
+___________ test_explicit_policy_removes_unrelated_tables_and_facts ___________
+
+service = <campus_rag.rag.service.RAGService object at 0x00000114FF627590>
+
+    def test_explicit_policy_removes_unrelated_tables_and_facts(service):
+        facts={'f1':fact('f1','��Զɽ��������ѡ�취'),'f2':fact('f2','����Ϫ��������ѡ�취')}
+        tables=[{'table_id':8,'document':'��һ����취','name':'����'}]
+>       chosen,fs=service._planning_scope('����Զɽ�������취�������ϼƶ��٣�',tables,facts)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_planning_source_scope.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <campus_rag.rag.service.RAGService object at 0x00000114FF627590>
+question = '����Զɽ�������취�������ϼƶ��٣�'
+schema = [{'table_id': 8, 'document': '��һ����취', 'name': '����'}]
+facts = {'f1': {'fact_id': 'f1', 'source_title': '��Զɽ��������ѡ�취', 'source_section': ''}, 'f2': {'fact_id': 'f2', 'source_title': '����Ϫ��������ѡ�취', 'source_section': ''}}
+
+    def _planning_scope(self,question,schema,facts):
+        """Project onto explicitly identified documents, never guess ownership."""
+        requested = self.structured.requested_fact_sources(question,facts)
+        matches = self.structured.matching_sources
+        covered = set()
+        for table in schema:
+            covered.update(matches(requested,[table['document']]))
+        for fact in facts.values():
+            covered.update(matches(requested,[self.structured._fact_source_labels(fact)[0]]))
+        applied = bool(requested and covered==requested)
+        selected_schema = [t for t in schema if matches(requested,[t['document']])] if applied else schema
+        selected_facts = {fid:f for fid,f in facts.items()
+            if matches(requested,self.structured._fact_source_labels(f))} if applied else facts
+>       self.last_diagnostics['planning_scope'] = {'requested':sorted(requested),'applied':applied,
+        ^^^^^^^^^^^^^^^^^^^^^
+            'before_tables':[t['table_id'] for t in schema],
+            'after_tables':[t['table_id'] for t in selected_schema],
+            'before_facts':list(facts),'after_facts':list(selected_facts)}
+E       AttributeError: 'RAGService' object has no attribute 'last_diagnostics'
+
+src\campus_rag\rag\service.py:221: AttributeError
+______________ test_explicit_table_source_keeps_real_schema_ids _______________
+
+service = <campus_rag.rag.service.RAGService object at 0x00000114E7836F50>
+
+    def test_explicit_table_source_keeps_real_schema_ids(service):
+        tables=[{'table_id':8,'document':'Զɽ�����취','name':'����'},
+            {'table_id':9,'document':'��Ϫ�����취','name':'����'}]
+>       chosen,fs=service._planning_scope('����Զɽ�����취����ȫ�����ϼƶ��٣�',tables,{'f2':fact('f2','��Ϫ�����취')})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_planning_source_scope.py:37: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <campus_rag.rag.service.RAGService object at 0x00000114E7836F50>
+question = '����Զɽ�����취����ȫ�����ϼƶ��٣�'
+schema = [{'table_id': 8, 'document': 'Զɽ�����취', 'name': '����'}, {'table_id': 9, 'document': '��Ϫ�����취', 'name': '����'}]
+facts = {'f2': {'fact_id': 'f2', 'source_title': '��Ϫ�����취', 'source_section': ''}}
+
+    def _planning_scope(self,question,schema,facts):
+        """Project onto explicitly identified documents, never guess ownership."""
+        requested = self.structured.requested_fact_sources(question,facts)
+        matches = self.structured.matching_sources
+        covered = set()
+        for table in schema:
+            covered.update(matches(requested,[table['document']]))
+        for fact in facts.values():
+            covered.update(matches(requested,[self.structured._fact_source_labels(fact)[0]]))
+        applied = bool(requested and covered==requested)
+        selected_schema = [t for t in schema if matches(requested,[t['document']])] if applied else schema
+        selected_facts = {fid:f for fid,f in facts.items()
+            if matches(requested,self.structured._fact_source_labels(f))} if applied else facts
+>       self.last_diagnostics['planning_scope'] = {'requested':sorted(requested),'applied':applied,
+        ^^^^^^^^^^^^^^^^^^^^^
+            'before_tables':[t['table_id'] for t in schema],
+            'after_tables':[t['table_id'] for t in selected_schema],
+            'before_facts':list(facts),'after_facts':list(selected_facts)}
+E       AttributeError: 'RAGService' object has no attribute 'last_diagnostics'
+
+src\campus_rag\rag\service.py:221: AttributeError
+____________________ test_explicit_two_policies_keep_both _____________________
+
+service = <campus_rag.rag.service.RAGService object at 0x00000114FFA0DB10>
+
+    def test_explicit_two_policies_keep_both(service):
+        facts={'f1':fact('f1','Զɽ�����취'),'f2':fact('f2','��Ϫ�����취'),'f3':fact('f3','��һ�����취')}
+>       _,chosen=service._planning_scope('����Զɽ�����취���͡���Ϫ�����취�������ϼƶ��٣�',[],facts)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_planning_source_scope.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <campus_rag.rag.service.RAGService object at 0x00000114FFA0DB10>
+question = '����Զɽ�����취���͡���Ϫ�����취�������ϼƶ��٣�', schema = []
+facts = {'f1': {'fact_id': 'f1', 'source_title': 'Զɽ�����취', 'source_section': ''}, 'f2': {'fact_id': 'f2', 'source_title': '��Ϫ�����취', 'source_section': ''}, 'f3': {'fact_id': 'f3', 'source_title': '��һ�����취', 'source_section': ''}}
+
+    def _planning_scope(self,question,schema,facts):
+        """Project onto explicitly identified documents, never guess ownership."""
+        requested = self.structured.requested_fact_sources(question,facts)
+        matches = self.structured.matching_sources
+        covered = set()
+        for table in schema:
+            covered.update(matches(requested,[table['document']]))
+        for fact in facts.values():
+            covered.update(matches(requested,[self.structured._fact_source_labels(fact)[0]]))
+        applied = bool(requested and covered==requested)
+        selected_schema = [t for t in schema if matches(requested,[t['document']])] if applied else schema
+        selected_facts = {fid:f for fid,f in facts.items()
+            if matches(requested,self.structured._fact_source_labels(f))} if applied else facts
+>       self.last_diagnostics['planning_scope'] = {'requested':sorted(requested),'applied':applied,
+        ^^^^^^^^^^^^^^^^^^^^^
+            'before_tables':[t['table_id'] for t in schema],
+            'after_tables':[t['table_id'] for t in selected_schema],
+            'before_facts':list(facts),'after_facts':list(selected_facts)}
+E       AttributeError: 'RAGService' object has no attribute 'last_diagnostics'
+
+src\campus_rag\rag\service.py:221: AttributeError
+_ test_no_guess_when_source_is_unspecified_or_incomplete[\u4e24\u4e2a\u7ec4\u7684\u8865\u52a9\u5408\u8ba1\u591a\u5c11\uff1f] _
+
+service = <campus_rag.rag.service.RAGService object at 0x00000114FFA07410>
+question = '������Ĳ����ϼƶ��٣�'
+
+    @pytest.mark.parametrize('question',[
+        '������Ĳ����ϼƶ��٣�',
+        '������δʶ��İ취�����ϼƶ��٣�',
+        '����Զɽ�����취���͡�δ�ҵ��İ취�����ϼƶ��٣�'])
+    def test_no_guess_when_source_is_unspecified_or_incomplete(service,question):
+        facts={'f1':fact('f1','Զɽ�����취'),'f2':fact('f2','��Ϫ�����취')}
+        tables=[{'table_id':9,'document':'��Ϫ�����취','name':'����'}]
+>       chosen,fs=service._planning_scope(question,tables,facts)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_planning_source_scope.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <campus_rag.rag.service.RAGService object at 0x00000114FFA07410>
+question = '������Ĳ����ϼƶ��٣�'
+schema = [{'table_id': 9, 'document': '��Ϫ�����취', 'name': '����'}]
+facts = {'f1': {'fact_id': 'f1', 'source_title': 'Զɽ�����취', 'source_section': ''}, 'f2': {'fact_id': 'f2', 'source_title': '��Ϫ�����취', 'source_section': ''}}
+
+    def _planning_scope(self,question,schema,facts):
+        """Project onto explicitly identified documents, never guess ownership."""
+        requested = self.structured.requested_fact_sources(question,facts)
+        matches = self.structured.matching_sources
+        covered = set()
+        for table in schema:
+            covered.update(matches(requested,[table['document']]))
+        for fact in facts.values():
+            covered.update(matches(requested,[self.structured._fact_source_labels(fact)[0]]))
+        applied = bool(requested and covered==requested)
+        selected_schema = [t for t in schema if matches(requested,[t['document']])] if applied else schema
+        selected_facts = {fid:f for fid,f in facts.items()
+            if matches(requested,self.structured._fact_source_labels(f))} if applied else facts
+>       self.last_diagnostics['planning_scope'] = {'requested':sorted(requested),'applied':applied,
+        ^^^^^^^^^^^^^^^^^^^^^
+            'before_tables':[t['table_id'] for t in schema],
+            'after_tables':[t['table_id'] for t in selected_schema],
+            'before_facts':list(facts),'after_facts':list(selected_facts)}
+E       AttributeError: 'RAGService' object has no attribute 'last_diagnostics'
+
+src\campus_rag\rag\service.py:221: AttributeError
+_ test_no_guess_when_source_is_unspecified_or_incomplete[\u6309\u300a\u5c1a\u672a\u8bc6\u522b\u7684\u529e\u6cd5\u300b\uff0c\u5408\u8ba1\u591a\u5c11\uff1f] _
+
+service = <campus_rag.rag.service.RAGService object at 0x00000114FF9DC8D0>
+question = '������δʶ��İ취�����ϼƶ��٣�'
+
+    @pytest.mark.parametrize('question',[
+        '������Ĳ����ϼƶ��٣�',
+        '������δʶ��İ취�����ϼƶ��٣�',
+        '����Զɽ�����취���͡�δ�ҵ��İ취�����ϼƶ��٣�'])
+    def test_no_guess_when_source_is_unspecified_or_incomplete(service,question):
+        facts={'f1':fact('f1','Զɽ�����취'),'f2':fact('f2','��Ϫ�����취')}
+        tables=[{'table_id':9,'document':'��Ϫ�����취','name':'����'}]
+>       chosen,fs=service._planning_scope(question,tables,facts)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_planning_source_scope.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <campus_rag.rag.service.RAGService object at 0x00000114FF9DC8D0>
+question = '������δʶ��İ취�����ϼƶ��٣�'
+schema = [{'table_id': 9, 'document': '��Ϫ�����취', 'name': '����'}]
+facts = {'f1': {'fact_id': 'f1', 'source_title': 'Զɽ�����취', 'source_section': ''}, 'f2': {'fact_id': 'f2', 'source_title': '��Ϫ�����취', 'source_section': ''}}
+
+    def _planning_scope(self,question,schema,facts):
+        """Project onto explicitly identified documents, never guess ownership."""
+        requested = self.structured.requested_fact_sources(question,facts)
+        matches = self.structured.matching_sources
+        covered = set()
+        for table in schema:
+            covered.update(matches(requested,[table['document']]))
+        for fact in facts.values():
+            covered.update(matches(requested,[self.structured._fact_source_labels(fact)[0]]))
+        applied = bool(requested and covered==requested)
+        selected_schema = [t for t in schema if matches(requested,[t['document']])] if applied else schema
+        selected_facts = {fid:f for fid,f in facts.items()
+            if matches(requested,self.structured._fact_source_labels(f))} if applied else facts
+>       self.last_diagnostics['planning_scope'] = {'requested':sorted(requested),'applied':applied,
+        ^^^^^^^^^^^^^^^^^^^^^
+            'before_tables':[t['table_id'] for t in schema],
+            'after_tables':[t['table_id'] for t in selected_schema],
+            'before_facts':list(facts),'after_facts':list(selected_facts)}
+E       AttributeError: 'RAGService' object has no attribute 'last_diagnostics'
+
+src\campus_rag\rag\service.py:221: AttributeError
+_ test_no_guess_when_source_is_unspecified_or_incomplete[\u6309\u300a\u8fdc\u5c71\u8d44\u52a9\u529e\u6cd5\u300b\u548c\u300a\u672a\u627e\u5230\u7684\u529e\u6cd5\u300b\uff0c\u5408\u8ba1\u591a\u5c11\uff1f] _
+
+service = <campus_rag.rag.service.RAGService object at 0x00000114FF9F4A50>
+question = '����Զɽ�����취���͡�δ�ҵ��İ취�����ϼƶ��٣�'
+
+    @pytest.mark.parametrize('question',[
+        '������Ĳ����ϼƶ��٣�',
+        '������δʶ��İ취�����ϼƶ��٣�',
+        '����Զɽ�����취���͡�δ�ҵ��İ취�����ϼƶ��٣�'])
+    def test_no_guess_when_source_is_unspecified_or_incomplete(service,question):
+        facts={'f1':fact('f1','Զɽ�����취'),'f2':fact('f2','��Ϫ�����취')}
+        tables=[{'table_id':9,'document':'��Ϫ�����취','name':'����'}]
+>       chosen,fs=service._planning_scope(question,tables,facts)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_planning_source_scope.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <campus_rag.rag.service.RAGService object at 0x00000114FF9F4A50>
+question = '����Զɽ�����취���͡�δ�ҵ��İ취�����ϼƶ��٣�'
+schema = [{'table_id': 9, 'document': '��Ϫ�����취', 'name': '����'}]
+facts = {'f1': {'fact_id': 'f1', 'source_title': 'Զɽ�����취', 'source_section': ''}, 'f2': {'fact_id': 'f2', 'source_title': '��Ϫ�����취', 'source_section': ''}}
+
+    def _planning_scope(self,question,schema,facts):
+        """Project onto explicitly identified documents, never guess ownership."""
+        requested = self.structured.requested_fact_sources(question,facts)
+        matches = self.structured.matching_sources
+        covered = set()
+        for table in schema:
+            covered.update(matches(requested,[table['document']]))
+        for fact in facts.values():
+            covered.update(matches(requested,[self.structured._fact_source_labels(fact)[0]]))
+        applied = bool(requested and covered==requested)
+        selected_schema = [t for t in schema if matches(requested,[t['document']])] if applied else schema
+        selected_facts = {fid:f for fid,f in facts.items()
+            if matches(requested,self.structured._fact_source_labels(f))} if applied else facts
+>       self.last_diagnostics['planning_scope'] = {'requested':sorted(requested),'applied':applied,
+        ^^^^^^^^^^^^^^^^^^^^^
+            'before_tables':[t['table_id'] for t in schema],
+            'after_tables':[t['table_id'] for t in selected_schema],
+            'before_facts':list(facts),'after_facts':list(selected_facts)}
+E       AttributeError: 'RAGService' object has no attribute 'last_diagnostics'
+
+src\campus_rag\rag\service.py:221: AttributeError
+__________ test_handbook_section_only_does_not_guess_table_ownership __________
+
+service = <campus_rag.rag.service.RAGService object at 0x00000114FFA04950>
+
+    def test_handbook_section_only_does_not_guess_table_ownership(service):
+        facts={'f1':fact('f1','�������','Զɽ�����취')}
+        tables=[{'table_id':9,'document':'�������','name':'ĳҳ����'}]
+>       chosen,fs=service._planning_scope('����Զɽ�����취���������٣�',tables,facts)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_planning_source_scope.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <campus_rag.rag.service.RAGService object at 0x00000114FFA04950>
+question = '����Զɽ�����취���������٣�'
+schema = [{'table_id': 9, 'document': '�������', 'name': 'ĳҳ����'}]
+facts = {'f1': {'fact_id': 'f1', 'source_title': '�������', 'source_section': 'Զɽ�����취'}}
+
+    def _planning_scope(self,question,schema,facts):
+        """Project onto explicitly identified documents, never guess ownership."""
+        requested = self.structured.requested_fact_sources(question,facts)
+        matches = self.structured.matching_sources
+        covered = set()
+        for table in schema:
+            covered.update(matches(requested,[table['document']]))
+        for fact in facts.values():
+            covered.update(matches(requested,[self.structured._fact_source_labels(fact)[0]]))
+        applied = bool(requested and covered==requested)
+        selected_schema = [t for t in schema if matches(requested,[t['document']])] if applied else schema
+        selected_facts = {fid:f for fid,f in facts.items()
+            if matches(requested,self.structured._fact_source_labels(f))} if applied else facts
+>       self.last_diagnostics['planning_scope'] = {'requested':sorted(requested),'applied':applied,
+        ^^^^^^^^^^^^^^^^^^^^^
+            'before_tables':[t['table_id'] for t in schema],
+            'after_tables':[t['table_id'] for t in selected_schema],
+            'before_facts':list(facts),'after_facts':list(selected_facts)}
+E       AttributeError: 'RAGService' object has no attribute 'last_diagnostics'
+
+src\campus_rag\rag\service.py:221: AttributeError
+=========================== short test summary info ===========================
+FAILED tests/test_planning_source_scope.py::test_explicit_policy_removes_unrelated_tables_and_facts
+FAILED tests/test_planning_source_scope.py::test_explicit_table_source_keeps_real_schema_ids
+FAILED tests/test_planning_source_scope.py::test_explicit_two_policies_keep_both
+FAILED tests/test_planning_source_scope.py::test_no_guess_when_source_is_unspecified_or_incomplete[\u4e24\u4e2a\u7ec4\u7684\u8865\u52a9\u5408\u8ba1\u591a\u5c11\uff1f]
+FAILED tests/test_planning_source_scope.py::test_no_guess_when_source_is_unspecified_or_incomplete[\u6309\u300a\u5c1a\u672a\u8bc6\u522b\u7684\u529e\u6cd5\u300b\uff0c\u5408\u8ba1\u591a\u5c11\uff1f]
+FAILED tests/test_planning_source_scope.py::test_no_guess_when_source_is_unspecified_or_incomplete[\u6309\u300a\u8fdc\u5c71\u8d44\u52a9\u529e\u6cd5\u300b\u548c\u300a\u672a\u627e\u5230\u7684\u529e\u6cd5\u300b\uff0c\u5408\u8ba1\u591a\u5c11\uff1f]
+FAILED tests/test_planning_source_scope.py::test_handbook_section_only_does_not_guess_table_ownership
+7 failed, 14 passed in 2.52s

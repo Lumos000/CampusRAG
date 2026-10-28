@@ -1,0 +1,18 @@
+{
+  "src/campus_rag/rag/service.py": {
+    "archive": "data/eval/planning_scope_v2/candidate_files/service.py",
+    "sha256": "3066966a378ab2bbe39f808112c2334fd62f943641e0365275b3de1872ad46f7"
+  },
+  "src/campus_rag/rag/planner.py": {
+    "archive": "data/eval/planning_scope_v2/candidate_files/planner.py",
+    "sha256": "64f1dbbe890a66b61c9ffedb9c54c04229b8bf5253d9f665fd621e080e33c342"
+  },
+  "src/campus_rag/database/query.py": {
+    "archive": "data/eval/planning_scope_v2/candidate_files/query.py",
+    "sha256": "e9189b43df3a30b53933486cda246a2cc3fd2c5f2f817b482ae8e57c7d24493d"
+  },
+  "tests/test_planning_source_scope.py": {
+    "archive": "data/eval/planning_scope_v2/candidate_files/test_planning_source_scope.py",
+    "sha256": "cab1161ab52bfd7153160d241ff3c3a84cd70a50e8c881203de0dd8e19a54a35"
+  }
+}

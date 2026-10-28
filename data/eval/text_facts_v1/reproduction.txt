@@ -1,0 +1,201 @@
+FFFFFFFFFFF..........                                                    [100%]
+================================== FAILURES ===================================
+_________ test_rate_slash_preserves_unit_and_original_span[\u4eba-/] __________
+
+slash = '/', denominator = '��'
+
+    @pytest.mark.parametrize('slash',['/','��'])
+    @pytest.mark.parametrize('denominator',['��','Сʱ','̨'])
+    def test_rate_slash_preserves_unit_and_original_span(slash,denominator):
+        item=source(f'�������׼Ϊ 37 Ԫ {slash} {denominator}��')
+        fact,=NumericEngine.text_facts([item]).values()
+        assert fact['unit']=='Ԫ/'+denominator
+        assert fact['value']=='37' and fact['comparison']=='eq'
+        assert fact['quote']==item.text[slice(*fact['span'])]
+>       assert slash in fact['quote'] and denominator in fact['raw_value']
+E       AssertionError: assert ('/' in '�������׼Ϊ 37 Ԫ / ��' and '��' in '37Ԫ')
+
+tests\test_text_rate_extraction.py:25: AssertionError
+_______ test_rate_slash_preserves_unit_and_original_span[\u4eba-\uff0f] _______
+
+slash = '��', denominator = '��'
+
+    @pytest.mark.parametrize('slash',['/','��'])
+    @pytest.mark.parametrize('denominator',['��','Сʱ','̨'])
+    def test_rate_slash_preserves_unit_and_original_span(slash,denominator):
+        item=source(f'�������׼Ϊ 37 Ԫ {slash} {denominator}��')
+        fact,=NumericEngine.text_facts([item]).values()
+>       assert fact['unit']=='Ԫ/'+denominator
+E       AssertionError: assert 'Ԫ' == 'Ԫ/��'
+E         
+E         - Ԫ/��
+E         + Ԫ
+
+tests\test_text_rate_extraction.py:22: AssertionError
+______ test_rate_slash_preserves_unit_and_original_span[\u5c0f\u65f6-/] _______
+
+slash = '/', denominator = 'Сʱ'
+
+    @pytest.mark.parametrize('slash',['/','��'])
+    @pytest.mark.parametrize('denominator',['��','Сʱ','̨'])
+    def test_rate_slash_preserves_unit_and_original_span(slash,denominator):
+        item=source(f'�������׼Ϊ 37 Ԫ {slash} {denominator}��')
+        fact,=NumericEngine.text_facts([item]).values()
+        assert fact['unit']=='Ԫ/'+denominator
+        assert fact['value']=='37' and fact['comparison']=='eq'
+        assert fact['quote']==item.text[slice(*fact['span'])]
+>       assert slash in fact['quote'] and denominator in fact['raw_value']
+E       AssertionError: assert ('/' in '�������׼Ϊ 37 Ԫ / Сʱ' and 'Сʱ' in '37Ԫ')
+
+tests\test_text_rate_extraction.py:25: AssertionError
+____ test_rate_slash_preserves_unit_and_original_span[\u5c0f\u65f6-\uff0f] ____
+
+slash = '��', denominator = 'Сʱ'
+
+    @pytest.mark.parametrize('slash',['/','��'])
+    @pytest.mark.parametrize('denominator',['��','Сʱ','̨'])
+    def test_rate_slash_preserves_unit_and_original_span(slash,denominator):
+        item=source(f'�������׼Ϊ 37 Ԫ {slash} {denominator}��')
+        fact,=NumericEngine.text_facts([item]).values()
+>       assert fact['unit']=='Ԫ/'+denominator
+E       AssertionError: assert 'Ԫ' == 'Ԫ/Сʱ'
+E         
+E         - Ԫ/Сʱ
+E         + Ԫ
+
+tests\test_text_rate_extraction.py:22: AssertionError
+_________ test_rate_slash_preserves_unit_and_original_span[\u53f0-/] __________
+
+slash = '/', denominator = '̨'
+
+    @pytest.mark.parametrize('slash',['/','��'])
+    @pytest.mark.parametrize('denominator',['��','Сʱ','̨'])
+    def test_rate_slash_preserves_unit_and_original_span(slash,denominator):
+        item=source(f'�������׼Ϊ 37 Ԫ {slash} {denominator}��')
+        fact,=NumericEngine.text_facts([item]).values()
+        assert fact['unit']=='Ԫ/'+denominator
+        assert fact['value']=='37' and fact['comparison']=='eq'
+        assert fact['quote']==item.text[slice(*fact['span'])]
+>       assert slash in fact['quote'] and denominator in fact['raw_value']
+E       AssertionError: assert ('/' in '�������׼Ϊ 37 Ԫ / ̨' and '̨' in '37Ԫ')
+
+tests\test_text_rate_extraction.py:25: AssertionError
+_______ test_rate_slash_preserves_unit_and_original_span[\u53f0-\uff0f] _______
+
+slash = '��', denominator = '̨'
+
+    @pytest.mark.parametrize('slash',['/','��'])
+    @pytest.mark.parametrize('denominator',['��','Сʱ','̨'])
+    def test_rate_slash_preserves_unit_and_original_span(slash,denominator):
+        item=source(f'�������׼Ϊ 37 Ԫ {slash} {denominator}��')
+        fact,=NumericEngine.text_facts([item]).values()
+>       assert fact['unit']=='Ԫ/'+denominator
+E       AssertionError: assert 'Ԫ' == 'Ԫ/̨'
+E         
+E         - Ԫ/̨
+E         + Ԫ
+
+tests\test_text_rate_extraction.py:22: AssertionError
+_______ test_adjacent_headcount_and_rate_bind_to_the_same_subject[,-/] ________
+
+slash = '/', comma = ','
+
+    @pytest.mark.parametrize('slash',['/','��'])
+    @pytest.mark.parametrize('comma',[',','��\n'])
+    def test_adjacent_headcount_and_rate_bind_to_the_same_subject(slash,comma):
+        item=source(f'�����飺3��{comma}37Ԫ{slash}�ˣ���ϰ�飺7��{comma}53Ԫ{slash}�ˡ�')
+        facts=list(NumericEngine.text_facts([item]).values())
+>       assert {(f['subject'],f['value'],f['unit']) for f in facts}=={
+            ('������','3','��'),('������','37','Ԫ/��'),('��ϰ��','7','��'),('��ϰ��','53','Ԫ/��')}
+E       AssertionError: assert {('������', '3',...��', '7', '��')} == {('������', '3',...��', '7', '��')}
+E         
+E         Extra items in the right set:
+E         ('��ϰ��', '53', 'Ԫ/��')
+E         ('������', '37', 'Ԫ/��')
+E         Use -v to get more diff
+
+tests\test_text_rate_extraction.py:34: AssertionError
+_____ test_adjacent_headcount_and_rate_bind_to_the_same_subject[,-\uff0f] _____
+
+slash = '��', comma = ','
+
+    @pytest.mark.parametrize('slash',['/','��'])
+    @pytest.mark.parametrize('comma',[',','��\n'])
+    def test_adjacent_headcount_and_rate_bind_to_the_same_subject(slash,comma):
+        item=source(f'�����飺3��{comma}37Ԫ{slash}�ˣ���ϰ�飺7��{comma}53Ԫ{slash}�ˡ�')
+        facts=list(NumericEngine.text_facts([item]).values())
+>       assert {(f['subject'],f['value'],f['unit']) for f in facts}=={
+            ('������','3','��'),('������','37','Ԫ/��'),('��ϰ��','7','��'),('��ϰ��','53','Ԫ/��')}
+E       AssertionError: assert {('������', '3',...��', '7', '��')} == {('������', '3',...��', '7', '��')}
+E         
+E         Extra items in the right set:
+E         ('��ϰ��', '53', 'Ԫ/��')
+E         ('������', '37', 'Ԫ/��')
+E         Use -v to get more diff
+
+tests\test_text_rate_extraction.py:34: AssertionError
+____ test_adjacent_headcount_and_rate_bind_to_the_same_subject[\uff0c\n-/] ____
+
+slash = '/', comma = '��\n'
+
+    @pytest.mark.parametrize('slash',['/','��'])
+    @pytest.mark.parametrize('comma',[',','��\n'])
+    def test_adjacent_headcount_and_rate_bind_to_the_same_subject(slash,comma):
+        item=source(f'�����飺3��{comma}37Ԫ{slash}�ˣ���ϰ�飺7��{comma}53Ԫ{slash}�ˡ�')
+        facts=list(NumericEngine.text_facts([item]).values())
+>       assert {(f['subject'],f['value'],f['unit']) for f in facts}=={
+            ('������','3','��'),('������','37','Ԫ/��'),('��ϰ��','7','��'),('��ϰ��','53','Ԫ/��')}
+E       AssertionError: assert {('������', '3',...��', '7', '��')} == {('������', '3',...��', '7', '��')}
+E         
+E         Extra items in the right set:
+E         ('��ϰ��', '53', 'Ԫ/��')
+E         ('������', '37', 'Ԫ/��')
+E         Use -v to get more diff
+
+tests\test_text_rate_extraction.py:34: AssertionError
+_ test_adjacent_headcount_and_rate_bind_to_the_same_subject[\uff0c\n-\uff0f] __
+
+slash = '��', comma = '��\n'
+
+    @pytest.mark.parametrize('slash',['/','��'])
+    @pytest.mark.parametrize('comma',[',','��\n'])
+    def test_adjacent_headcount_and_rate_bind_to_the_same_subject(slash,comma):
+        item=source(f'�����飺3��{comma}37Ԫ{slash}�ˣ���ϰ�飺7��{comma}53Ԫ{slash}�ˡ�')
+        facts=list(NumericEngine.text_facts([item]).values())
+>       assert {(f['subject'],f['value'],f['unit']) for f in facts}=={
+            ('������','3','��'),('������','37','Ԫ/��'),('��ϰ��','7','��'),('��ϰ��','53','Ԫ/��')}
+E       AssertionError: assert {('������', '3',...��', '7', '��')} == {('������', '3',...��', '7', '��')}
+E         
+E         Extra items in the right set:
+E         ('��ϰ��', '53', 'Ԫ/��')
+E         ('������', '37', 'Ԫ/��')
+E         Use -v to get more diff
+
+tests\test_text_rate_extraction.py:34: AssertionError
+________________ test_paired_rates_execute_from_verified_facts ________________
+
+tmp_path = WindowsPath('C:/Users/HP/AppData/Local/Temp/pytest-of-HP/pytest-134/test_paired_rates_execute_from0')
+
+    def test_paired_rates_execute_from_verified_facts(tmp_path):
+        item=source('�����飺3�ˣ�37Ԫ���ˣ���ϰ�飺7�ˣ�53Ԫ/�ˡ�')
+        facts=NumericEngine.text_facts([item]);steps=[]
+        for name,sid in [('������','first'),('��ϰ��','second')]:
+            for kind,unit in [('count','��'),('rate','Ԫ/��')]:
+>               fid=next(fid for fid,f in facts.items() if f['subject']==name and f['unit']==unit)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               StopIteration
+
+tests\test_text_rate_extraction.py:46: StopIteration
+=========================== short test summary info ===========================
+FAILED tests/test_text_rate_extraction.py::test_rate_slash_preserves_unit_and_original_span[\u4eba-/]
+FAILED tests/test_text_rate_extraction.py::test_rate_slash_preserves_unit_and_original_span[\u4eba-\uff0f]
+FAILED tests/test_text_rate_extraction.py::test_rate_slash_preserves_unit_and_original_span[\u5c0f\u65f6-/]
+FAILED tests/test_text_rate_extraction.py::test_rate_slash_preserves_unit_and_original_span[\u5c0f\u65f6-\uff0f]
+FAILED tests/test_text_rate_extraction.py::test_rate_slash_preserves_unit_and_original_span[\u53f0-/]
+FAILED tests/test_text_rate_extraction.py::test_rate_slash_preserves_unit_and_original_span[\u53f0-\uff0f]
+FAILED tests/test_text_rate_extraction.py::test_adjacent_headcount_and_rate_bind_to_the_same_subject[,-/]
+FAILED tests/test_text_rate_extraction.py::test_adjacent_headcount_and_rate_bind_to_the_same_subject[,-\uff0f]
+FAILED tests/test_text_rate_extraction.py::test_adjacent_headcount_and_rate_bind_to_the_same_subject[\uff0c\n-/]
+FAILED tests/test_text_rate_extraction.py::test_adjacent_headcount_and_rate_bind_to_the_same_subject[\uff0c\n-\uff0f]
+FAILED tests/test_text_rate_extraction.py::test_paired_rates_execute_from_verified_facts
+11 failed, 10 passed in 1.29s

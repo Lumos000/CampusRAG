@@ -295,6 +295,22 @@ class StructuredQueryEngine:
                 raise PlanError('存在未参与最终结果的步骤')
             try:
                 self._check_question_operation(plan,question,result,facts)
+                final = next(s for s in plan.steps if s['id']==plan.output)
+                if final['op']=='ratio' and '占' in question:
+                    sides = question.split('占',1)
+                    for side,(part,item) in enumerate(zip(sides,final['inputs'])):
+                        operand = self._step_input(item,values,question)
+                        if table is not None:
+                            try:
+                                self._check_requested_objects(rows,columns,part,operand['details'])
+                            except PlanError as exc:
+                                raise PlanError(('分子' if side==0 else '分母')+'对象或范围不符：'+str(exc)) from exc
+                        else:
+                            expected = {f.get('subject','') for f in facts.values()
+                                if _object_mentioned(f.get('subject',''),part)}
+                            actual = {f.get('subject','') for f in operand['details']}
+                            if expected and expected!=actual:
+                                raise PlanError('比例操作数对象与“占”两侧不符，请分别核对分子和分母的fact_id')
             except PlanError as exc:
                 raise QuestionConstraintError('问题约束：'+str(exc)) from exc
             # Include every executed source, including intermediate computations.
@@ -444,7 +460,67 @@ class StructuredQueryEngine:
             raise ValueError('公共资料中的示例不能代替个人实际计算条件')
 
     @staticmethod
+    def _fact_source_labels(fact):
+        title = fact.get('source_title') or getattr(fact.get('evidence'),'title','')
+        return [title,fact.get('source_section','')]
+
+    @staticmethod
+    def requested_fact_sources(question,facts):
+        requested = {m[1] for m in re.finditer(r'《([^》]+)》',question)
+            if re.search(r'办法|规定|指南|章程|通知|标准|方案$',m[1])
+            or re.search(r'按|根据|依据|参照|依照',question[max(0,m.start()-8):m.start()])}
+        requested.update(re.findall(r'[“"]([^”"]+)[”"]\s*(?:评选)?(?:办法|规定|指南|章程|通知)',question))
+        for fact in facts.values():
+            for label in StructuredQueryEngine._fact_source_labels(fact):
+                for name in re.findall(r'[“"]([^”"]+)[”"]',label):
+                    if name in question and re.search(r'办法|规定|指南|章程|通知',label):
+                        requested.add(name)
+        return {re.sub('[《》“”"\']','',compact(v)) for v in requested}
+
+    @staticmethod
+    def _check_fact_sources(question,details,facts):
+        used = [d for d in details if 'fact_id' in d]
+        if not used:
+            return
+        requested = StructuredQueryEngine.requested_fact_sources(question,facts)
+        def normalized(value):
+            return re.sub('[《》“”"\']','',compact(value))
+        if not requested:
+            return
+        covered = set()
+        for fact in used:
+            labels = StructuredQueryEngine._fact_source_labels(fact)
+            matched = {name for name in requested if any(name in normalized(label) for label in labels)}
+            if not matched:
+                raise PlanError('操作数来源与问题指定资料不符；要求：'+'、'.join(sorted(requested))+
+                    '；当前来源：'+' / '.join(filter(None,labels)))
+            covered.update(matched)
+        if requested-covered:
+            raise PlanError('计算未覆盖问题明确列举的资料：'+'、'.join(sorted(requested-covered)))
+
+    @staticmethod
     def _check_question_operation(plan,question,result,facts=None):
+        StructuredQueryEngine._check_fact_sources(question,result['details'],facts or {})
+        groups = {f.get('scope',{}).get('group','') for f in (facts or {}).values()}
+        requested_groups = {g for g in groups if g and compact(g) in compact(question)}
+        requested_groups = {g for g in requested_groups if not any(g!=other and g in other for other in requested_groups)}
+        used_groups = {d.get('scope',{}).get('group','') for d in result['details'] if 'fact_id' in d}
+        if requested_groups and used_groups and (used_groups-requested_groups or requested_groups-used_groups):
+            raise PlanError('正文分组口径与问题不符；要求：'+'、'.join(sorted(requested_groups)))
+        if not requested_groups:
+            def scope_key(fact):
+                scope = fact.get('scope',{})
+                return (fact.get('doc_id'),fact.get('source_section',''),fact.get('subject'),
+                    fact.get('field'),fact.get('unit'),fact.get('comparison'),scope.get('clause'),scope.get('period'))
+            alternatives = {}
+            for fact in (facts or {}).values():
+                group = fact.get('scope',{}).get('group')
+                if group:
+                    alternatives.setdefault(scope_key(fact),set()).add(group)
+            for detail in result['details']:
+                possible = alternatives.get(scope_key(detail),set()) if 'fact_id' in detail else set()
+                if len(possible)>1:
+                    raise ValueError('正文口径不明确：同一主体和指标涉及多个分组，请明确：'+'、'.join(sorted(possible)))
         compare = bool(re.search(r'相差|差额|比.*(?:多|少|高|低).*多少|减去|还差|还剩',question))
         final = next(s for s in plan.steps if s['id']==plan.output)
         record_count = bool(re.search(r'(?:多少|几)(?:条|行)|共有几(?:个|项)|有多少个',question))
@@ -476,7 +552,8 @@ class StructuredQueryEngine:
                 raise PlanError('问题要求总额：必须使用问题明确的人数和人均费率，不能只返回单人金额')
         def subject(fact):
             return re.sub(r'\([^)]*\)','',compact(fact.get('subject','')))
-        named = {subject(f) for f in (facts or {}).values() if len(subject(f))>=2 and subject(f) in compact(question)}
+        text_only = bool(result['details']) and all('fact_id' in d for d in result['details'])
+        named = {subject(f) for f in (facts or {}).values() if text_only and len(subject(f))>=2 and subject(f) in compact(question)}
         actual = {subject(f) for f in result['details']}
         if len(named)>1 and named-actual:
             raise PlanError('未覆盖问题列举的正文对象：'+'、'.join(sorted(named-actual)))
@@ -493,7 +570,12 @@ class StructuredQueryEngine:
         if result['value']<0 and re.search(r'相差|高多少|多多少|还剩|还差',question):
             raise PlanError('差额方向与问题不符：请核对被比较对象顺序和周期，不能直接相减不同周期的上限')
         target = re.search(r'多少(元|小时|平方米|学期|门)',compact(question))
-        if target and result['unit']!=target[1]:
+        person_basis = (question.count('每人')>=2 or re.search(r'人均|生均',question)
+            or ('每人' in question and '标准' in question))
+        rate_difference = (compare and person_basis and result['unit']=='元/人'
+            and not re.search(r'总额|预算|合计|总计|总金额|共需',question))
+        target_unit = '元/人' if target and target[1]=='元' and rate_difference else target[1] if target else ''
+        if target and result['unit']!=target_unit:
             raise PlanError('结果单位与问题要求不符：要求'+target[1]+'；请补齐费率、时长等必要运算')
         periods = {d.get('scope',{}).get('period') for d in result['details'] if isinstance(d.get('scope'),dict)}
         constants = [s['literal'] for s in plan.steps if 'literal' in s]

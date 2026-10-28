@@ -1,0 +1,41 @@
+{
+  "model_generation_repeated": false,
+  "gold_changed": false,
+  "runs": {
+    "fact_units_v1": {
+      "executor_calls_replayed": 18,
+      "syntax_or_shortcut_paths": 16,
+      "fixture_calls_with_no_group_scope": 10,
+      "record_hashes": {
+        "data/eval/fact_units_v1/dev36/run1/results.json": "6c97ba4124f9d127db19387e98750f2164bd6342858274522f2e4b9c42444cea",
+        "data/eval/fact_units_v1/exposed_v2/run1/results.json": "27cf51e6fd8ea68a79d670d0ae2376be1c14399ffd65a4b0b9e3997fbd608766",
+        "data/eval/fact_units_v1/old_campus/run1/results.json": "ee1098714b3d774eec2e3a93e6ce5911da15337daf3e3055e797b113d72a4414",
+        "data/eval/fact_units_v1/numeric_results.json": "390f0208d3647f9de305b2eb46bd02142423d467715a895dd89f9e65ba6c015c"
+      }
+    },
+    "lora_recheck_scope_v1/v2": {
+      "executor_calls_replayed": 26,
+      "syntax_or_shortcut_paths": 6,
+      "fixture_calls_with_no_group_scope": 9,
+      "record_hashes": {
+        "data/eval/lora_recheck_scope_v1/v2/dev36/run1/results.json": "7b1a885348f5c48a41845e1e20c5ec193b7335debfbb2a3e9d36467a8a6047e5",
+        "data/eval/lora_recheck_scope_v1/v2/exposed_v2/run1/results.json": "7e8010864a117bff383edfc0053d140b9fe7486ac9b93000faff66da17e43f64",
+        "data/eval/lora_recheck_scope_v1/v2/old_campus/run1/results.json": "b9971086e0788a491368a1aadbf65ea88648eb7ee66ec3f4fcf244d5ce39a2c5",
+        "data/eval/lora_recheck_scope_v1/v2/numeric_results.json": "91d85368ee20b750269a0db0ab76f8c330c07cd57e0b65c9ebd25a7aef77a38f"
+      }
+    },
+    "lora_recheck_scope_v1/v3": {
+      "executor_calls_replayed": 22,
+      "syntax_or_shortcut_paths": 6,
+      "fixture_calls_with_no_group_scope": 8,
+      "record_hashes": {
+        "data/eval/lora_recheck_scope_v1/v3/dev36/run1/results.json": "c1e6d1142759d47e1aa7c0a112c58250431f05d8dd703410499c2518f2e0bc89",
+        "data/eval/lora_recheck_scope_v1/v3/exposed_v2/run1/results.json": "83f979442015f9897610634d0ad37315e9a3332f44c8db5cb79eebeaa25bfd09",
+        "data/eval/lora_recheck_scope_v1/v3/old_campus/run1/results.json": "293aa9727b648c1872330a8a12a21c1801e3183dd03c1a5749e61695080cca57",
+        "data/eval/lora_recheck_scope_v1/v3/numeric_results.json": "2758dba1aa30db9fd65d49c9aa868f43acc9947579c2ecbad762980585a69abf"
+      }
+    }
+  },
+  "deltas": [],
+  "query_sha256": "85e4359e3bf52cda8445650016f3de532bb4f888e3720d468a1263d7df3b68d8"
+}

@@ -1,0 +1,1455 @@
+[
+  {
+    "id": "V2C01",
+    "group": "exposed_v2",
+    "question": "按《本科学生奖学金评定办法》，综合一等奖与二等奖的奖励金额相差多少元？",
+    "gold": {
+      "id": "V2C01",
+      "category": "calculation",
+      "question": "按《本科学生奖学金评定办法》，综合一等奖与二等奖的奖励金额相差多少元？",
+      "answer": "300元",
+      "points": [
+        "300元"
+      ],
+      "expected": "300",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 248,
+          "quote": "一等奖学金10003二等奖学金70010"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 248,
+          "quote": "一等奖学金10003二等奖学金70010",
+          "chunk_ids": [
+            "b4abf303-4533-4a1a-b465-9fdc7184e79e"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    "before": "结果为300元。算式：(1000) - (700)。",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：right: 算术步骤字段不合法",
+    "calculation": {
+      "ok": false,
+      "value": null,
+      "unit": "",
+      "expression": "",
+      "details": [],
+      "error": "right: 算术步骤字段不合法",
+      "evidence": [],
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "operands": [],
+          "value": "1000",
+          "unit": "元",
+          "expression": "1000",
+          "details": [
+            {
+              "table_id": 429,
+              "table_name": "第1页表1",
+              "row_id": 11563,
+              "row_index": 0,
+              "row_label": "一等奖学金",
+              "field": "金额（元）",
+              "field_id": 2699,
+              "cell_id": 85379,
+              "raw_value": "1000",
+              "numeric_value": "1000",
+              "unit": "元",
+              "locator": "page-1-table-1:R1C2",
+              "doc_id": 248,
+              "title": "校学发〔2023〕14号本科学生奖学金评定办法",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/1d/13/fbabbf3d4aa7a2a1bb42d180bf4b/17b0bd86-db75-4284-a4eb-99892784be09.pdf",
+              "department": "学生工作部（处）",
+              "published_at": "2024-02-29"
+            }
+          ]
+        }
+      ],
+      "repairable": true
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": true,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": 429,
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "field_id": 2699,
+          "filters": [
+            {
+              "field_id": 2698,
+              "op": "eq",
+              "value": "一等奖学金"
+            }
+          ]
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "field_id": 2699,
+          "filters": [
+            {
+              "field_id": 2698,
+              "op": "eq",
+              "value": "二等奖学金"
+            }
+          ],
+          "inputs": [
+            "left"
+          ]
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "references": []
+  },
+  {
+    "id": "V2C04",
+    "group": "exposed_v2",
+    "question": "按《本科学生奖学金评定办法》，精神文明奖200元与示范宿舍长奖100元金额之和是多少？",
+    "gold": {
+      "id": "V2C04",
+      "category": "calculation",
+      "question": "按《本科学生奖学金评定办法》，精神文明奖200元与示范宿舍长奖100元金额之和是多少？",
+      "answer": "300元",
+      "points": [
+        "300元"
+      ],
+      "expected": "300",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 248,
+          "quote": "奖励金额为200元。7.示范宿舍长奖（与综合奖可兼得）被评为“示范宿舍”的宿舍长，奖励金额为100元。"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 248,
+          "quote": "奖励金额为200元。7.示范宿舍长奖（与综合奖可兼得）被评为“示范宿舍”的宿舍长，奖励金额为100元。",
+          "chunk_ids": [
+            "decb5d1c-9179-48f8-9904-fd1316849af0"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    "before": "结果为300元。算式：(200) + (100)。",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：问题约束：未覆盖问题列举的正文对象：精神文明奖",
+    "calculation": {
+      "ok": false,
+      "value": null,
+      "unit": "",
+      "expression": "",
+      "details": [],
+      "error": "问题约束：未覆盖问题列举的正文对象：精神文明奖",
+      "evidence": [],
+      "steps": [
+        {
+          "id": "right",
+          "op": "lookup",
+          "operands": [],
+          "value": "100",
+          "unit": "元",
+          "expression": "100",
+          "details": [
+            {
+              "fact_id": "f2",
+              "field": "奖励金额",
+              "subject": "示范宿舍长奖",
+              "raw_value": "100元",
+              "value": "100",
+              "unit": "元",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "",
+                "context": "7.示范宿舍长奖（与综合奖可兼得）被评为“示范宿舍”的宿舍长,奖励金额为100元"
+              },
+              "quote": "7.示范宿舍长奖（与综合奖可兼得）\n被评为“示范宿舍”的宿舍长，奖励金额为100 元",
+              "span": [
+                116,
+                158
+              ],
+              "doc_id": 248,
+              "source_title": "校学发〔2023〕14号本科学生奖学金评定办法",
+              "source_section": "",
+              "evidence_id": "decb5d1c-9179-48f8-9904-fd1316849af0",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/1d/13/fbabbf3d4aa7a2a1bb42d180bf4b/17b0bd86-db75-4284-a4eb-99892784be09.pdf",
+              "evidence": {
+                "evidence_id": "decb5d1c-9179-48f8-9904-fd1316849af0",
+                "text": "精神文明奖（与综合奖可兼得）\n在社会主义精神文明建设中有突出表现（如在校风建设活动\n中表现突出；能长年累月坚持学雷锋；能见义勇为、维护校内外\n治安、在救人救火、同坏人坏事作斗争、抗灾救灾等方面有突出\n表现者），奖励金额为200 元。7.示范宿舍长奖（与综合奖可兼得）\n被评为“示范宿舍”的宿舍长，奖励金额为100 元。",
+                "score": 0.9988150596618652,
+                "doc_id": 248,
+                "title": "校学发〔2023〕14号本科学生奖学金评定办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/1d/13/fbabbf3d4aa7a2a1bb42d180bf4b/17b0bd86-db75-4284-a4eb-99892784be09.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "decb5d1c-9179-48f8-9904-fd1316849af0",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "repairable": true
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "right",
+          "op": "lookup",
+          "fact_id": "f2"
+        }
+      ],
+      "output": "right"
+    },
+    "references": []
+  },
+  {
+    "id": "V2C05",
+    "group": "exposed_v2",
+    "question": "按2025年甘霖励志奖学金的生均金额，若有13名学生获奖，共需多少元？",
+    "gold": {
+      "id": "V2C05",
+      "category": "calculation",
+      "question": "按2025年甘霖励志奖学金的生均金额，若有13名学生获奖，共需多少元？",
+      "answer": "1300元",
+      "points": [
+        "1300元"
+      ],
+      "expected": "1300",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 259,
+          "quote": "生均奖励金额为100元"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 259,
+          "quote": "生均奖励金额为100元",
+          "chunk_ids": [
+            "e927388a-2dd3-4dfb-87cd-76aeeabfdb39"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    "before": "结果为1300元。算式：(100) × (13)。",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：result: 输入步骤right未先定义或引用自身；合法前序id：left。必须保留每个操作数步骤，问题常数也须先lookup，返回完整JSON",
+    "calculation": null,
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2025"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": true,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [],
+      "output": ""
+    },
+    "references": []
+  },
+  {
+    "id": "L3N01",
+    "group": "old_campus",
+    "question": "按“共进电子奖学金”评选办法，研究生每人的奖学金标准比本科生高多少元？",
+    "gold": {
+      "id": "L3N01",
+      "category": "calculation",
+      "question": "按“共进电子奖学金”评选办法，研究生每人的奖学金标准比本科生高多少元？",
+      "points": [
+        "4000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 247,
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人；本科生：6 名，每学年奖学金标准为8000 元/人。"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 247,
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人；本科生：6 名，每学年奖学金标准为8000 元/人。",
+          "chunk_ids": [
+            "93d06975-8309-40b5-9691-bf21f117b7b4"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "4000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "4000元"
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：问题约束：结果单位与问题要求不符：要求元；请补齐费率、时长等必要运算",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：操作数单位不一致",
+    "calculation": {
+      "ok": false,
+      "value": null,
+      "unit": "",
+      "expression": "",
+      "details": [],
+      "error": "操作数单位不一致",
+      "evidence": [],
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "operands": [],
+          "value": "4",
+          "unit": "人",
+          "expression": "4",
+          "details": [
+            {
+              "fact_id": "f1",
+              "field": "研究生",
+              "subject": "研究生",
+              "raw_value": "4名",
+              "value": "4",
+              "unit": "人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "",
+                "context": "研究生：4名,每学年奖学金标准为12000元/人"
+              },
+              "quote": "研究生：4 名",
+              "span": [
+                269,
+                276
+              ],
+              "doc_id": 247,
+              "source_title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+              "evidence": {
+                "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "text": "— 2 —\n劳全面发展，品学兼优，遵守国家法令和学校各项规章制度，身\n体健康，体测成绩达到良好及以上，并符合下列条件之一：\n1.具有中华人民共和国国籍；\n2.学年综合素质测评成绩优秀；\n3.创新能力突出，在省、部级以上竞赛中名列前茅；\n4.科研能力强，取得一定的科研成果；\n5.凡本学年中有下列情况之一者，均无资格申请奖学金：\n（1）必修课和限选课成绩有不及格现象者（含补考和因个\n人原因缓考者）；\n（2）有抄袭剽窃、弄虚作假等学术不端行为经查证属实者。\n三、奖励名额及标准\n“共进电子奖学金”每年奖励学生10 名，奖项设置方案如\n下：\n研究生：4 名，每学年奖学金标准为12000 元/人；\n本科生：6 名，每学年奖学金标准为8000 元/人。\n四、评审程序\n（一）由学生本人提出书面申请并填写《南京邮电大学“共\n进电子奖学金”申请表”》，并附成绩单或成果证明；所在学院审\n核并公示推荐人选后，确定推荐候选人名单；经学生工作处审核",
+                "score": 0.9929065704345703,
+                "doc_id": 247,
+                "title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "operands": [],
+          "value": "8000",
+          "unit": "元/人",
+          "expression": "8000",
+          "details": [
+            {
+              "fact_id": "f4",
+              "field": "本科生人均标准",
+              "subject": "本科生",
+              "raw_value": "8000 元/人",
+              "value": "8000",
+              "unit": "元/人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "每学年",
+                "context": "本科生：6名,每学年奖学金标准为8000元/人"
+              },
+              "quote": "本科生：6 名，每学年奖学金标准为8000 元/人",
+              "span": [
+                297,
+                322
+              ],
+              "doc_id": 247,
+              "source_title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+              "evidence": {
+                "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "text": "— 2 —\n劳全面发展，品学兼优，遵守国家法令和学校各项规章制度，身\n体健康，体测成绩达到良好及以上，并符合下列条件之一：\n1.具有中华人民共和国国籍；\n2.学年综合素质测评成绩优秀；\n3.创新能力突出，在省、部级以上竞赛中名列前茅；\n4.科研能力强，取得一定的科研成果；\n5.凡本学年中有下列情况之一者，均无资格申请奖学金：\n（1）必修课和限选课成绩有不及格现象者（含补考和因个\n人原因缓考者）；\n（2）有抄袭剽窃、弄虚作假等学术不端行为经查证属实者。\n三、奖励名额及标准\n“共进电子奖学金”每年奖励学生10 名，奖项设置方案如\n下：\n研究生：4 名，每学年奖学金标准为12000 元/人；\n本科生：6 名，每学年奖学金标准为8000 元/人。\n四、评审程序\n（一）由学生本人提出书面申请并填写《南京邮电大学“共\n进电子奖学金”申请表”》，并附成绩单或成果证明；所在学院审\n核并公示推荐人选后，确定推荐候选人名单；经学生工作处审核",
+                "score": 0.9929065704345703,
+                "doc_id": 247,
+                "title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "repairable": false
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "fact_id": "f4"
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "references": []
+  },
+  {
+    "id": "L3N02",
+    "group": "old_campus",
+    "question": "按“共进电子奖学金”办法规定的研究生和本科生名额、每人标准，两类奖金合计多少元？",
+    "gold": {
+      "id": "L3N02",
+      "category": "calculation",
+      "question": "按“共进电子奖学金”办法规定的研究生和本科生名额、每人标准，两类奖金合计多少元？",
+      "points": [
+        "96000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 247,
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人；本科生：6 名，每学年奖学金标准为8000 元/人。"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 247,
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人；本科生：6 名，每学年奖学金标准为8000 元/人。",
+          "chunk_ids": [
+            "93d06975-8309-40b5-9691-bf21f117b7b4"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "96000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "96000元"
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：a: 参与计算的记录存在缺失或非确定数值",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：操作数单位不一致",
+    "calculation": {
+      "ok": false,
+      "value": null,
+      "unit": "",
+      "expression": "",
+      "details": [],
+      "error": "操作数单位不一致",
+      "evidence": [],
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "operands": [],
+          "value": "4",
+          "unit": "人",
+          "expression": "4",
+          "details": [
+            {
+              "fact_id": "f1",
+              "field": "研究生",
+              "subject": "研究生",
+              "raw_value": "4名",
+              "value": "4",
+              "unit": "人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "",
+                "context": "研究生：4名,每学年奖学金标准为12000元/人"
+              },
+              "quote": "研究生：4 名",
+              "span": [
+                269,
+                276
+              ],
+              "doc_id": 247,
+              "source_title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+              "evidence": {
+                "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "text": "— 2 —\n劳全面发展，品学兼优，遵守国家法令和学校各项规章制度，身\n体健康，体测成绩达到良好及以上，并符合下列条件之一：\n1.具有中华人民共和国国籍；\n2.学年综合素质测评成绩优秀；\n3.创新能力突出，在省、部级以上竞赛中名列前茅；\n4.科研能力强，取得一定的科研成果；\n5.凡本学年中有下列情况之一者，均无资格申请奖学金：\n（1）必修课和限选课成绩有不及格现象者（含补考和因个\n人原因缓考者）；\n（2）有抄袭剽窃、弄虚作假等学术不端行为经查证属实者。\n三、奖励名额及标准\n“共进电子奖学金”每年奖励学生10 名，奖项设置方案如\n下：\n研究生：4 名，每学年奖学金标准为12000 元/人；\n本科生：6 名，每学年奖学金标准为8000 元/人。\n四、评审程序\n（一）由学生本人提出书面申请并填写《南京邮电大学“共\n进电子奖学金”申请表”》，并附成绩单或成果证明；所在学院审\n核并公示推荐人选后，确定推荐候选人名单；经学生工作处审核",
+                "score": 0.9877393841743469,
+                "doc_id": 247,
+                "title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "operands": [],
+          "value": "12000",
+          "unit": "元/人",
+          "expression": "12000",
+          "details": [
+            {
+              "fact_id": "f2",
+              "field": "研究生人均标准",
+              "subject": "研究生",
+              "raw_value": "12000 元/人",
+              "value": "12000",
+              "unit": "元/人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "每学年",
+                "context": "研究生：4名,每学年奖学金标准为12000元/人"
+              },
+              "quote": "研究生：4 名，每学年奖学金标准为12000 元/人",
+              "span": [
+                269,
+                295
+              ],
+              "doc_id": 247,
+              "source_title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+              "evidence": {
+                "evidence_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "text": "— 2 —\n劳全面发展，品学兼优，遵守国家法令和学校各项规章制度，身\n体健康，体测成绩达到良好及以上，并符合下列条件之一：\n1.具有中华人民共和国国籍；\n2.学年综合素质测评成绩优秀；\n3.创新能力突出，在省、部级以上竞赛中名列前茅；\n4.科研能力强，取得一定的科研成果；\n5.凡本学年中有下列情况之一者，均无资格申请奖学金：\n（1）必修课和限选课成绩有不及格现象者（含补考和因个\n人原因缓考者）；\n（2）有抄袭剽窃、弄虚作假等学术不端行为经查证属实者。\n三、奖励名额及标准\n“共进电子奖学金”每年奖励学生10 名，奖项设置方案如\n下：\n研究生：4 名，每学年奖学金标准为12000 元/人；\n本科生：6 名，每学年奖学金标准为8000 元/人。\n四、评审程序\n（一）由学生本人提出书面申请并填写《南京邮电大学“共\n进电子奖学金”申请表”》，并附成绩单或成果证明；所在学院审\n核并公示推荐人选后，确定推荐候选人名单；经学生工作处审核",
+                "score": 0.9877393841743469,
+                "doc_id": 247,
+                "title": "校学发〔2023〕37号“共进电子奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "93d06975-8309-40b5-9691-bf21f117b7b4",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "repairable": false
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "fact_id": "f2"
+        },
+        {
+          "id": "result",
+          "op": "sum",
+          "inputs": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "references": []
+  },
+  {
+    "id": "L3N03",
+    "group": "old_campus",
+    "question": "按“华为奖学金”评选办法，研究生每人奖励比本科生每人奖励高多少元？",
+    "gold": {
+      "id": "L3N03",
+      "category": "calculation",
+      "question": "按“华为奖学金”评选办法，研究生每人奖励比本科生每人奖励高多少元？",
+      "points": [
+        "3000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人",
+          "chunk_ids": [
+            "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "3000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "3000元"
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：问题约束：操作数来源与问题指定资料不符；要求：华为奖学金；当前来源：校学发〔2023〕37号“共进电子奖学金”评选办法",
+    "after": "结果为3000元/人。算式：(8000) - (5000)。",
+    "calculation": {
+      "ok": true,
+      "value": "3000",
+      "unit": "元/人",
+      "expression": "(8000) - (5000)",
+      "details": [
+        {
+          "fact_id": "f4",
+          "field": "研究生人均标准",
+          "subject": "研究生",
+          "raw_value": "8000 元／人",
+          "value": "8000",
+          "unit": "元/人",
+          "comparison": "eq",
+          "scope": {
+            "clause": "",
+            "period": "",
+            "context": "研究生：9人,8000元／人四、评审办法1.每学年评选一次"
+          },
+          "quote": "研究生：9 人，8000 元／人",
+          "span": [
+            93,
+            109
+          ],
+          "doc_id": 258,
+          "source_title": "校学发〔2023〕18号“华为奖学金”评选办法",
+          "source_section": "",
+          "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+          "evidence": {
+            "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+            "text": "— 2 —\n3.具有较强的科技实践能力，并取得一定的科研成果；\n4.学术理论水平较高，其论文在省、部级以上学术会议或刊\n物上发表。\n三、奖励名额及标准\n本科生：3 人，5000 元／人\n研究生：9 人，8000 元／人\n四、评审办法\n1.每学年评选一次；\n2.由学生本人提出书面申请，并附成绩单或成果证明，在学\n院初审推荐的基础上，报学校审批；\n3.获奖学生名单及材料抄送华为技术有限公司。\n五、附则\n本办法由学生工作处负责解释，自颁布之日起开始施行，原\n有学校《“华为奖学金”评选办法》相关文件同时废止。\n南京邮电大学\n2023 年6 月30 日\n南京邮电大学校长办公室\n2023 年6 月30 日印发",
+            "score": 0.99860018491745,
+            "doc_id": 258,
+            "title": "校学发〔2023〕18号“华为奖学金”评选办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2024-02-29",
+            "chunk_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+            "table_id": null,
+            "row_ids": []
+          }
+        },
+        {
+          "fact_id": "f2",
+          "field": "本科生人均标准",
+          "subject": "本科生",
+          "raw_value": "5000 元／人",
+          "value": "5000",
+          "unit": "元/人",
+          "comparison": "eq",
+          "scope": {
+            "clause": "",
+            "period": "",
+            "context": "本科生：3人,5000元／人研究生：9人,8000元／人四、评审办法1.每学年评选一次"
+          },
+          "quote": "本科生：3 人，5000 元／人",
+          "span": [
+            76,
+            92
+          ],
+          "doc_id": 258,
+          "source_title": "校学发〔2023〕18号“华为奖学金”评选办法",
+          "source_section": "",
+          "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+          "evidence": {
+            "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+            "text": "— 2 —\n3.具有较强的科技实践能力，并取得一定的科研成果；\n4.学术理论水平较高，其论文在省、部级以上学术会议或刊\n物上发表。\n三、奖励名额及标准\n本科生：3 人，5000 元／人\n研究生：9 人，8000 元／人\n四、评审办法\n1.每学年评选一次；\n2.由学生本人提出书面申请，并附成绩单或成果证明，在学\n院初审推荐的基础上，报学校审批；\n3.获奖学生名单及材料抄送华为技术有限公司。\n五、附则\n本办法由学生工作处负责解释，自颁布之日起开始施行，原\n有学校《“华为奖学金”评选办法》相关文件同时废止。\n南京邮电大学\n2023 年6 月30 日\n南京邮电大学校长办公室\n2023 年6 月30 日印发",
+            "score": 0.99860018491745,
+            "doc_id": 258,
+            "title": "校学发〔2023〕18号“华为奖学金”评选办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2024-02-29",
+            "chunk_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+            "table_id": null,
+            "row_ids": []
+          }
+        },
+        {
+          "fact_id": "f4",
+          "field": "研究生人均标准",
+          "subject": "研究生",
+          "raw_value": "8000 元／人",
+          "value": "8000",
+          "unit": "元/人",
+          "comparison": "eq",
+          "scope": {
+            "clause": "",
+            "period": "",
+            "context": "研究生：9人,8000元／人四、评审办法1.每学年评选一次"
+          },
+          "quote": "研究生：9 人，8000 元／人",
+          "span": [
+            93,
+            109
+          ],
+          "doc_id": 258,
+          "source_title": "校学发〔2023〕18号“华为奖学金”评选办法",
+          "source_section": "",
+          "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+          "evidence": {
+            "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+            "text": "— 2 —\n3.具有较强的科技实践能力，并取得一定的科研成果；\n4.学术理论水平较高，其论文在省、部级以上学术会议或刊\n物上发表。\n三、奖励名额及标准\n本科生：3 人，5000 元／人\n研究生：9 人，8000 元／人\n四、评审办法\n1.每学年评选一次；\n2.由学生本人提出书面申请，并附成绩单或成果证明，在学\n院初审推荐的基础上，报学校审批；\n3.获奖学生名单及材料抄送华为技术有限公司。\n五、附则\n本办法由学生工作处负责解释，自颁布之日起开始施行，原\n有学校《“华为奖学金”评选办法》相关文件同时废止。\n南京邮电大学\n2023 年6 月30 日\n南京邮电大学校长办公室\n2023 年6 月30 日印发",
+            "score": 0.99860018491745,
+            "doc_id": 258,
+            "title": "校学发〔2023〕18号“华为奖学金”评选办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2024-02-29",
+            "chunk_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+            "table_id": null,
+            "row_ids": []
+          }
+        },
+        {
+          "fact_id": "f2",
+          "field": "本科生人均标准",
+          "subject": "本科生",
+          "raw_value": "5000 元／人",
+          "value": "5000",
+          "unit": "元/人",
+          "comparison": "eq",
+          "scope": {
+            "clause": "",
+            "period": "",
+            "context": "本科生：3人,5000元／人研究生：9人,8000元／人四、评审办法1.每学年评选一次"
+          },
+          "quote": "本科生：3 人，5000 元／人",
+          "span": [
+            76,
+            92
+          ],
+          "doc_id": 258,
+          "source_title": "校学发〔2023〕18号“华为奖学金”评选办法",
+          "source_section": "",
+          "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+          "evidence": {
+            "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+            "text": "— 2 —\n3.具有较强的科技实践能力，并取得一定的科研成果；\n4.学术理论水平较高，其论文在省、部级以上学术会议或刊\n物上发表。\n三、奖励名额及标准\n本科生：3 人，5000 元／人\n研究生：9 人，8000 元／人\n四、评审办法\n1.每学年评选一次；\n2.由学生本人提出书面申请，并附成绩单或成果证明，在学\n院初审推荐的基础上，报学校审批；\n3.获奖学生名单及材料抄送华为技术有限公司。\n五、附则\n本办法由学生工作处负责解释，自颁布之日起开始施行，原\n有学校《“华为奖学金”评选办法》相关文件同时废止。\n南京邮电大学\n2023 年6 月30 日\n南京邮电大学校长办公室\n2023 年6 月30 日印发",
+            "score": 0.99860018491745,
+            "doc_id": 258,
+            "title": "校学发〔2023〕18号“华为奖学金”评选办法",
+            "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+            "department": "学生工作部（处）",
+            "published_at": "2024-02-29",
+            "chunk_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+            "table_id": null,
+            "row_ids": []
+          }
+        }
+      ],
+      "error": "",
+      "evidence": [
+        {
+          "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+          "text": "— 2 —\n3.具有较强的科技实践能力，并取得一定的科研成果；\n4.学术理论水平较高，其论文在省、部级以上学术会议或刊\n物上发表。\n三、奖励名额及标准\n本科生：3 人，5000 元／人\n研究生：9 人，8000 元／人\n四、评审办法\n1.每学年评选一次；\n2.由学生本人提出书面申请，并附成绩单或成果证明，在学\n院初审推荐的基础上，报学校审批；\n3.获奖学生名单及材料抄送华为技术有限公司。\n五、附则\n本办法由学生工作处负责解释，自颁布之日起开始施行，原\n有学校《“华为奖学金”评选办法》相关文件同时废止。\n南京邮电大学\n2023 年6 月30 日\n南京邮电大学校长办公室\n2023 年6 月30 日印发",
+          "score": 0.99860018491745,
+          "doc_id": 258,
+          "title": "校学发〔2023〕18号“华为奖学金”评选办法",
+          "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+          "department": "学生工作部（处）",
+          "published_at": "2024-02-29",
+          "chunk_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+          "table_id": null,
+          "row_ids": []
+        }
+      ],
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "operands": [],
+          "value": "8000",
+          "unit": "元/人",
+          "expression": "8000",
+          "details": [
+            {
+              "fact_id": "f4",
+              "field": "研究生人均标准",
+              "subject": "研究生",
+              "raw_value": "8000 元／人",
+              "value": "8000",
+              "unit": "元/人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "",
+                "context": "研究生：9人,8000元／人四、评审办法1.每学年评选一次"
+              },
+              "quote": "研究生：9 人，8000 元／人",
+              "span": [
+                93,
+                109
+              ],
+              "doc_id": 258,
+              "source_title": "校学发〔2023〕18号“华为奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+              "evidence": {
+                "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+                "text": "— 2 —\n3.具有较强的科技实践能力，并取得一定的科研成果；\n4.学术理论水平较高，其论文在省、部级以上学术会议或刊\n物上发表。\n三、奖励名额及标准\n本科生：3 人，5000 元／人\n研究生：9 人，8000 元／人\n四、评审办法\n1.每学年评选一次；\n2.由学生本人提出书面申请，并附成绩单或成果证明，在学\n院初审推荐的基础上，报学校审批；\n3.获奖学生名单及材料抄送华为技术有限公司。\n五、附则\n本办法由学生工作处负责解释，自颁布之日起开始施行，原\n有学校《“华为奖学金”评选办法》相关文件同时废止。\n南京邮电大学\n2023 年6 月30 日\n南京邮电大学校长办公室\n2023 年6 月30 日印发",
+                "score": 0.99860018491745,
+                "doc_id": 258,
+                "title": "校学发〔2023〕18号“华为奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "operands": [],
+          "value": "5000",
+          "unit": "元/人",
+          "expression": "5000",
+          "details": [
+            {
+              "fact_id": "f2",
+              "field": "本科生人均标准",
+              "subject": "本科生",
+              "raw_value": "5000 元／人",
+              "value": "5000",
+              "unit": "元/人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "",
+                "context": "本科生：3人,5000元／人研究生：9人,8000元／人四、评审办法1.每学年评选一次"
+              },
+              "quote": "本科生：3 人，5000 元／人",
+              "span": [
+                76,
+                92
+              ],
+              "doc_id": 258,
+              "source_title": "校学发〔2023〕18号“华为奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+              "evidence": {
+                "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+                "text": "— 2 —\n3.具有较强的科技实践能力，并取得一定的科研成果；\n4.学术理论水平较高，其论文在省、部级以上学术会议或刊\n物上发表。\n三、奖励名额及标准\n本科生：3 人，5000 元／人\n研究生：9 人，8000 元／人\n四、评审办法\n1.每学年评选一次；\n2.由学生本人提出书面申请，并附成绩单或成果证明，在学\n院初审推荐的基础上，报学校审批；\n3.获奖学生名单及材料抄送华为技术有限公司。\n五、附则\n本办法由学生工作处负责解释，自颁布之日起开始施行，原\n有学校《“华为奖学金”评选办法》相关文件同时废止。\n南京邮电大学\n2023 年6 月30 日\n南京邮电大学校长办公室\n2023 年6 月30 日印发",
+                "score": 0.99860018491745,
+                "doc_id": 258,
+                "title": "校学发〔2023〕18号“华为奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "operands": [
+            {
+              "value": "8000",
+              "unit": "元/人"
+            },
+            {
+              "value": "5000",
+              "unit": "元/人"
+            }
+          ],
+          "value": "3000",
+          "unit": "元/人",
+          "expression": "(8000) - (5000)",
+          "details": [
+            {
+              "fact_id": "f4",
+              "field": "研究生人均标准",
+              "subject": "研究生",
+              "raw_value": "8000 元／人",
+              "value": "8000",
+              "unit": "元/人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "",
+                "context": "研究生：9人,8000元／人四、评审办法1.每学年评选一次"
+              },
+              "quote": "研究生：9 人，8000 元／人",
+              "span": [
+                93,
+                109
+              ],
+              "doc_id": 258,
+              "source_title": "校学发〔2023〕18号“华为奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+              "evidence": {
+                "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+                "text": "— 2 —\n3.具有较强的科技实践能力，并取得一定的科研成果；\n4.学术理论水平较高，其论文在省、部级以上学术会议或刊\n物上发表。\n三、奖励名额及标准\n本科生：3 人，5000 元／人\n研究生：9 人，8000 元／人\n四、评审办法\n1.每学年评选一次；\n2.由学生本人提出书面申请，并附成绩单或成果证明，在学\n院初审推荐的基础上，报学校审批；\n3.获奖学生名单及材料抄送华为技术有限公司。\n五、附则\n本办法由学生工作处负责解释，自颁布之日起开始施行，原\n有学校《“华为奖学金”评选办法》相关文件同时废止。\n南京邮电大学\n2023 年6 月30 日\n南京邮电大学校长办公室\n2023 年6 月30 日印发",
+                "score": 0.99860018491745,
+                "doc_id": 258,
+                "title": "校学发〔2023〕18号“华为奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+                "table_id": null,
+                "row_ids": []
+              }
+            },
+            {
+              "fact_id": "f2",
+              "field": "本科生人均标准",
+              "subject": "本科生",
+              "raw_value": "5000 元／人",
+              "value": "5000",
+              "unit": "元/人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "",
+                "context": "本科生：3人,5000元／人研究生：9人,8000元／人四、评审办法1.每学年评选一次"
+              },
+              "quote": "本科生：3 人，5000 元／人",
+              "span": [
+                76,
+                92
+              ],
+              "doc_id": 258,
+              "source_title": "校学发〔2023〕18号“华为奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+              "evidence": {
+                "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+                "text": "— 2 —\n3.具有较强的科技实践能力，并取得一定的科研成果；\n4.学术理论水平较高，其论文在省、部级以上学术会议或刊\n物上发表。\n三、奖励名额及标准\n本科生：3 人，5000 元／人\n研究生：9 人，8000 元／人\n四、评审办法\n1.每学年评选一次；\n2.由学生本人提出书面申请，并附成绩单或成果证明，在学\n院初审推荐的基础上，报学校审批；\n3.获奖学生名单及材料抄送华为技术有限公司。\n五、附则\n本办法由学生工作处负责解释，自颁布之日起开始施行，原\n有学校《“华为奖学金”评选办法》相关文件同时废止。\n南京邮电大学\n2023 年6 月30 日\n南京邮电大学校长办公室\n2023 年6 月30 日印发",
+                "score": 0.99860018491745,
+                "doc_id": 258,
+                "title": "校学发〔2023〕18号“华为奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "repairable": false
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "fact_id": "f4"
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "fact_id": "f2"
+        },
+        {
+          "id": "result",
+          "op": "subtract",
+          "inputs": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "references": [
+      "校学发〔2023〕18号“华为奖学金”评选办法｜学生工作部（处）｜2024-02-29｜https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf"
+    ]
+  },
+  {
+    "id": "L3N05",
+    "group": "old_campus",
+    "question": "按“华为奖学金”办法所列两类名额及每人标准，奖学金预算合计多少元？",
+    "gold": {
+      "id": "L3N05",
+      "category": "calculation",
+      "question": "按“华为奖学金”办法所列两类名额及每人标准，奖学金预算合计多少元？",
+      "points": [
+        "87000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人",
+          "chunk_ids": [
+            "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "87000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "87000元"
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：a: 参与计算的记录存在缺失或非确定数值",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：问题约束：结果单位与问题要求不符：要求元；请补齐费率、时长等必要运算",
+    "calculation": {
+      "ok": false,
+      "value": null,
+      "unit": "",
+      "expression": "",
+      "details": [],
+      "error": "问题约束：结果单位与问题要求不符：要求元；请补齐费率、时长等必要运算",
+      "evidence": [],
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "operands": [],
+          "value": "3",
+          "unit": "人",
+          "expression": "3",
+          "details": [
+            {
+              "fact_id": "f1",
+              "field": "本科生",
+              "subject": "本科生",
+              "raw_value": "3人",
+              "value": "3",
+              "unit": "人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "",
+                "context": "本科生：3人,5000元／人研究生：9人,8000元／人四、评审办法1.每学年评选一次"
+              },
+              "quote": "本科生：3 人",
+              "span": [
+                76,
+                83
+              ],
+              "doc_id": 258,
+              "source_title": "校学发〔2023〕18号“华为奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+              "evidence": {
+                "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+                "text": "— 2 —\n3.具有较强的科技实践能力，并取得一定的科研成果；\n4.学术理论水平较高，其论文在省、部级以上学术会议或刊\n物上发表。\n三、奖励名额及标准\n本科生：3 人，5000 元／人\n研究生：9 人，8000 元／人\n四、评审办法\n1.每学年评选一次；\n2.由学生本人提出书面申请，并附成绩单或成果证明，在学\n院初审推荐的基础上，报学校审批；\n3.获奖学生名单及材料抄送华为技术有限公司。\n五、附则\n本办法由学生工作处负责解释，自颁布之日起开始施行，原\n有学校《“华为奖学金”评选办法》相关文件同时废止。\n南京邮电大学\n2023 年6 月30 日\n南京邮电大学校长办公室\n2023 年6 月30 日印发",
+                "score": 0.925950288772583,
+                "doc_id": 258,
+                "title": "校学发〔2023〕18号“华为奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "operands": [],
+          "value": "9",
+          "unit": "人",
+          "expression": "9",
+          "details": [
+            {
+              "fact_id": "f3",
+              "field": "研究生",
+              "subject": "研究生",
+              "raw_value": "9人",
+              "value": "9",
+              "unit": "人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "",
+                "context": "研究生：9人,8000元／人四、评审办法1.每学年评选一次"
+              },
+              "quote": "研究生：9 人",
+              "span": [
+                93,
+                100
+              ],
+              "doc_id": 258,
+              "source_title": "校学发〔2023〕18号“华为奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+              "evidence": {
+                "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+                "text": "— 2 —\n3.具有较强的科技实践能力，并取得一定的科研成果；\n4.学术理论水平较高，其论文在省、部级以上学术会议或刊\n物上发表。\n三、奖励名额及标准\n本科生：3 人，5000 元／人\n研究生：9 人，8000 元／人\n四、评审办法\n1.每学年评选一次；\n2.由学生本人提出书面申请，并附成绩单或成果证明，在学\n院初审推荐的基础上，报学校审批；\n3.获奖学生名单及材料抄送华为技术有限公司。\n五、附则\n本办法由学生工作处负责解释，自颁布之日起开始施行，原\n有学校《“华为奖学金”评选办法》相关文件同时废止。\n南京邮电大学\n2023 年6 月30 日\n南京邮电大学校长办公室\n2023 年6 月30 日印发",
+                "score": 0.925950288772583,
+                "doc_id": 258,
+                "title": "校学发〔2023〕18号“华为奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "op": "sum",
+          "operands": [
+            {
+              "value": "3",
+              "unit": "人"
+            },
+            {
+              "value": "9",
+              "unit": "人"
+            }
+          ],
+          "value": "12",
+          "unit": "人",
+          "expression": "(3) + (9)",
+          "details": [
+            {
+              "fact_id": "f1",
+              "field": "本科生",
+              "subject": "本科生",
+              "raw_value": "3人",
+              "value": "3",
+              "unit": "人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "",
+                "context": "本科生：3人,5000元／人研究生：9人,8000元／人四、评审办法1.每学年评选一次"
+              },
+              "quote": "本科生：3 人",
+              "span": [
+                76,
+                83
+              ],
+              "doc_id": 258,
+              "source_title": "校学发〔2023〕18号“华为奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+              "evidence": {
+                "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+                "text": "— 2 —\n3.具有较强的科技实践能力，并取得一定的科研成果；\n4.学术理论水平较高，其论文在省、部级以上学术会议或刊\n物上发表。\n三、奖励名额及标准\n本科生：3 人，5000 元／人\n研究生：9 人，8000 元／人\n四、评审办法\n1.每学年评选一次；\n2.由学生本人提出书面申请，并附成绩单或成果证明，在学\n院初审推荐的基础上，报学校审批；\n3.获奖学生名单及材料抄送华为技术有限公司。\n五、附则\n本办法由学生工作处负责解释，自颁布之日起开始施行，原\n有学校《“华为奖学金”评选办法》相关文件同时废止。\n南京邮电大学\n2023 年6 月30 日\n南京邮电大学校长办公室\n2023 年6 月30 日印发",
+                "score": 0.925950288772583,
+                "doc_id": 258,
+                "title": "校学发〔2023〕18号“华为奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+                "table_id": null,
+                "row_ids": []
+              }
+            },
+            {
+              "fact_id": "f3",
+              "field": "研究生",
+              "subject": "研究生",
+              "raw_value": "9人",
+              "value": "9",
+              "unit": "人",
+              "comparison": "eq",
+              "scope": {
+                "clause": "",
+                "period": "",
+                "context": "研究生：9人,8000元／人四、评审办法1.每学年评选一次"
+              },
+              "quote": "研究生：9 人",
+              "span": [
+                93,
+                100
+              ],
+              "doc_id": 258,
+              "source_title": "校学发〔2023〕18号“华为奖学金”评选办法",
+              "source_section": "",
+              "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+              "evidence": {
+                "evidence_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+                "text": "— 2 —\n3.具有较强的科技实践能力，并取得一定的科研成果；\n4.学术理论水平较高，其论文在省、部级以上学术会议或刊\n物上发表。\n三、奖励名额及标准\n本科生：3 人，5000 元／人\n研究生：9 人，8000 元／人\n四、评审办法\n1.每学年评选一次；\n2.由学生本人提出书面申请，并附成绩单或成果证明，在学\n院初审推荐的基础上，报学校审批；\n3.获奖学生名单及材料抄送华为技术有限公司。\n五、附则\n本办法由学生工作处负责解释，自颁布之日起开始施行，原\n有学校《“华为奖学金”评选办法》相关文件同时废止。\n南京邮电大学\n2023 年6 月30 日\n南京邮电大学校长办公室\n2023 年6 月30 日印发",
+                "score": 0.925950288772583,
+                "doc_id": 258,
+                "title": "校学发〔2023〕18号“华为奖学金”评选办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-02-29",
+                "chunk_id": "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "repairable": true
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "left",
+          "op": "lookup",
+          "fact_id": "f1"
+        },
+        {
+          "id": "right",
+          "op": "lookup",
+          "fact_id": "f3"
+        },
+        {
+          "id": "result",
+          "op": "sum",
+          "inputs": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "output": "result"
+    },
+    "references": []
+  },
+  {
+    "id": "L3N06",
+    "group": "old_campus",
+    "question": "按“烽火通信奖学金”办法列出的19人名额和每人标准，奖金合计多少元？",
+    "gold": {
+      "id": "L3N06",
+      "category": "calculation",
+      "question": "按“烽火通信奖学金”办法列出的19人名额和每人标准，奖金合计多少元？",
+      "points": [
+        "95000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 262,
+          "quote": "本科生、硕士研究生：19 人，5000 元/人"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 262,
+          "quote": "本科生、硕士研究生：19 人，5000 元/人",
+          "chunk_ids": [
+            "993ebd12-f654-4501-898d-8c5134c41d8c"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "95000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "95000元"
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：a: 参与计算的记录存在缺失或非确定数值",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：result: 输入步骤right未先定义或引用自身；合法前序id：left。必须保留每个操作数步骤，问题常数也须先lookup，返回完整JSON",
+    "calculation": null,
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": true,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [],
+      "output": ""
+    },
+    "references": []
+  }
+]
