@@ -1,0 +1,17 @@
+﻿id,category,correct,verdict,numeric_correct,citation_complete,reason,failure_stage
+V2C01,calculation,False,refusal,False,False,原表一等奖1000元、二等奖700元，差额300元；名称简称未绑定到表内奖项，计划只lookup金额列，无奖项筛选，纳入单项奖100～300区间而拒答。表内原始数值正确，不能归因于金额缺失。,field_binding
+V2C02,calculation,False,refusal,False,False,应筛选综合一二三等奖并计算1000+700+400=2100元；实际无筛选求整列和，包含额外的单项奖区间，被完整性校验拒绝。,field_binding
+V2C03,calculation,False,refusal,False,False,应按三等奖400元除以一等奖1000元得40%；实际分子分母均无奖项筛选，第一步即因全表区间记录拒绝。,field_binding
+V2C04,calculation,False,refusal,False,False,原文明确精神文明奖200元、示范宿舍长奖100元；只读组件复核发现两条Facts均被标成同一主体“奖励”、字段“奖励金额”，200与100被误认为冲突并全部剔除。,facts_extraction
+V2C05,calculation,False,incorrect,False,False,应将生均100元乘以13人，得到1300元；实际只lookup生均100元且执行器标记通过。用户人数未参与计算，总额语义未校验；引用仅支持生均金额，不支持13人的总额100元。,question_semantics
+V2C06,calculation,False,refusal,False,False,原文120小时和用户85小时应相减得35小时；“能够完成120小时”的表述未进入Facts，建议运算为lookup，误选公示月份，单位校验拒绝。,facts_extraction
+V2C07,calculation,False,refusal,False,False,4-1=3学期；含“共4学期”的原文在实际检索前8项中，但“共”未被现有关系触发词接受，Facts为空。单位正则包含学期，不能误报为不支持学期单位。,facts_extraction
+V2C08,calculation,False,refusal,False,False,原文“一般设置8-10门”明确范围，10-8=2门；范围表达及门类量词未得到当前Facts表示支持，未进入规划。,facts_extraction
+V2F01,fact,True,correct,,True,逐字核对原文适用范围，明确具有中华人民共和国国籍；同时保留在校全日制本科学生的适用主体。,
+V2F02,fact,False,refusal,,False,原文第十三条明确“不计算平均学分绩点”；是否计入是事实题，因关键词“平均”被误送数值通道，未生成文字答案。,routing
+V2P01,procedure,True,correct,,True,输出原文明确每年12月1日前报学生工作处备案，冻结要点满足；但回退758字，混入申请条件、其他办理情形及文件封面。,
+V2L01,list,True,correct,,True,原文第二十条两类均完整保留：予以编级；因辅修课程考核严重违纪或作弊。答案仍混入总则。金标称终止，原文与回答用中止，按停止辅修学习的列举语义评审，不改金标。,
+V2T01,temporal,True,correct,,True,所引2026端午通知明确6月19日闭馆，年份及节日条件相符；保留了部分通知背景。,
+V2T02,temporal,True,correct,,True,所引2026端午通知明确6月20日至21日8:30至22:00，日期与时段对应正确；附有落款。,
+V2R01,refusal,False,refusal,,False,没有输出个人获奖结果或金额，行为安全；但实际理由是元/人与元的单位不符，未说明缺少个人资格和评审结果。按冻结原因要点判未通过，安全拒答另计，不能用偶然执行失败替代资格边界判断。,refusal_reason
+V2R02,refusal,True,refusal,,False,因未找到符合所问年份和资料类型的证据而拒答，无2029开馆时间或伪造引用；与缺少2029正式通知的要点相符，虽沿用数值拒答前缀。,

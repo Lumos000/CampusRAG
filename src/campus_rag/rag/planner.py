@@ -5,6 +5,7 @@ import re
 from decimal import Decimal, InvalidOperation
 
 from campus_rag.types import CalculationSpec, FilterSpec, OperandSpec, QueryPlan
+from campus_rag.tools.numbers import question_quantities, asks_total
 
 
 PLAN_PROMPT = """你是校园资料查询规划器。只输出一个 JSON 对象，不要输出解释、Markdown 或 SQL。
@@ -51,13 +52,14 @@ def text_plan_context(operation,payload):
 def operation_hint(question):
     if re.search(r'占|百分比',question):
         return 'ratio'
-    if re.search(r'相差|差额|比.*(?:多|少|高|低)|减去|相比.*还剩',question):
+    if re.search(r'相差|差额|比.*(?:多|少|高|低)|减去|还差|还剩',question):
         return 'subtract'
     if re.search(r'共有几|有几个|有多少个|多少(?:条|行)|数量.*共|按.*行.*计|行数',question):
         return 'count'
     if '平均' in question.replace('平均学分绩点','绩点'):
         return 'average'
-    if re.search(r'乘|单价.*数量|标准.*(?:小时|工时|数量).*(?:合计|总|多少)',question):
+    if re.search(r'乘|单价.*数量|标准.*(?:小时|工时|数量).*(?:合计|总|多少)',question) or (
+            re.search(r'人均|生均|每人',question) and question_quantities(question,'人') and asks_total(question)):
         return 'multiply'
     if re.search(r'除以|商为',question):
         return 'divide'
@@ -84,7 +86,7 @@ def step_example(operation,context='',question=''):
     measures = lambda t:[c for c in t['columns'] if c.get('role')=='measure' and c['unit']]
     # Text-only evidence, or a table with no measure suitable for arithmetic.
     if text_plan_context(operation,payload):
-        desired = re.search(r'多少\s*(元|小时|人|个|年)',question)
+        desired = re.search(r'多少\s*(元|小时|人|个|学期|门|年)',question)
         candidates = [f for f in facts if f['unit'].startswith(desired[1])] if desired else facts
         candidates = candidates or facts
         if '上限' in question and '下限' not in question:
@@ -100,6 +102,18 @@ def step_example(operation,context='',question=''):
             return max((n for n in range(3,min(12,len(subject))+1)
                 for i in range(len(subject)-n+1) if subject[i:i+n] in head),default=0)
         candidates = sorted(candidates,key=subject_score,reverse=True)
+        named = [f for f in candidates if len(f.get('subject',''))>=2 and f['subject'] in question]
+        if len({f['subject'] for f in named})>1:
+            unique = {}
+            for fact in named:
+                unique.setdefault(fact['subject'],fact)
+            candidates = list(unique.values())
+            candidates.sort(key=lambda f:question.find(f['subject']))
+        if operation=='subtract' and '上限' in question and '下限' in question:
+            upper = next((f for f in candidates if f.get('comparison')=='lte'),None)
+            lower = next((f for f in candidates if f.get('comparison')=='gte'),None)
+            if upper and lower:
+                candidates = [upper,lower]
         a = {'id':'a','op':'lookup','fact_id':candidates[0]['fact_id']}
         steps = [a]
         period = re.search(r'(?:连续|累计|为期|共计)(\d+|[一二两三四五六七八九十]+)(周|月|天|学期)',question)
@@ -116,12 +130,16 @@ def step_example(operation,context='',question=''):
                 {'id':'result','op':'subtract','inputs':['cap','used']}])
         if operation=='multiply' and '/' in candidates[0]['unit']:
             denominator = candidates[0]['unit'].rsplit('/',1)[1]
-            constant = re.search(r'(\d+(?:\.\d+)?|[一二两三四五六七八九十]+)\s*'+re.escape(denominator),question)
-            if constant:
-                from campus_rag.tools.numbers import chinese_integer
-                value = constant[1] if constant[1][0].isdigit() else str(chinese_integer(constant[1]))
-                steps += [{'id':'b','op':'lookup','literal':value,'unit':denominator},
+            constants = question_quantities(question,denominator)
+            if len(constants)==1:
+                steps += [{'id':'b','op':'lookup','literal':constants[0]['literal'],'unit':denominator},
                     {'id':'c','op':'multiply','inputs':['a','b']}]
+        elif operation=='subtract' and any(re.search(r'已(?:经)?(?:完成|修读|修|使用|用)\s*$',question[:q['span'][0]])
+                for q in question_quantities(question,candidates[0]['unit'])):
+            done = next(q for q in question_quantities(question,candidates[0]['unit'])
+                if re.search(r'已(?:经)?(?:完成|修读|修|使用|用)\s*$',question[:q['span'][0]]))
+            steps += [{'id':'b','op':'lookup','literal':done['literal'],'unit':done['unit']},
+                {'id':'c','op':'subtract','inputs':['a','b']}]
         elif operation in {'subtract','add','divide','ratio','average','sum'} and len(candidates)>1 and candidates[0]['unit']==candidates[1]['unit']:
             steps += [{'id':'b','op':'lookup','fact_id':candidates[1]['fact_id']},
                 {'id':'c','op':operation,'inputs':['a','b']}]
@@ -162,6 +180,17 @@ def step_example(operation,context='',question=''):
             a['field_id'] = b['field_id'] = chosen['field_id']
         if not count and table.get('total_row_count')==1:
             b.update(op='lookup',scope='total')
+        if not count and chosen and '占' in question:
+            # Use the executor's object binding, including unambiguous short
+            # names. A named denominator is distinct from a whole-table total.
+            from campus_rag.database.query import _object_mentioned
+            numerator,denominator = question.split('占',1)
+            left = [v for v in chosen['values'] if _object_mentioned(v,numerator)]
+            right = [v for v in chosen['values'] if _object_mentioned(v,denominator)]
+            if len(left)==len(right)==1 and left!=right and not re.search(r'全部|所有|整张|全表|表内合计|总额|总人数|总面积',denominator):
+                a.update(op='lookup',filters=[{'field_id':chosen['field_id'],'op':'eq','value':left[0]}])
+                b.update(op='lookup',filters=[{'field_id':chosen['field_id'],'op':'eq','value':right[0]}])
+                b.pop('scope',None)
         steps += [b,{'id':'c','op':'ratio','inputs':['a','b']}]
     elif operation in {'subtract','multiply','divide'} and columns and filters:
         b = {**a,'id':'b'}
@@ -186,6 +215,9 @@ class QueryPlanner:
             '\n上次完整计划：'+json.dumps(previous,ensure_ascii=False))
         hint = operation_hint(question)
         payload = json.loads(context) if context else {}
+        if hint in {'lookup','sum'} and asks_total(question) and question_quantities(question,'人') and any(
+                f['unit']=='元/人' for f in payload.get('facts',[])):
+            hint = 'multiply'
         text_only = text_plan_context(hint,payload)
         if text_only:
             context = json.dumps({'facts':payload['facts']},ensure_ascii=False)

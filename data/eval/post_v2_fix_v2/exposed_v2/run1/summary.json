@@ -1,0 +1,286 @@
+{
+  "overall": {
+    "correct": 13,
+    "total": 16,
+    "accuracy": 0.8125
+  },
+  "answerable_accuracy": 0.7857142857142857,
+  "categories": {
+    "calculation": {
+      "correct": 5,
+      "total": 8,
+      "accuracy": 0.625
+    },
+    "fact": {
+      "correct": 2,
+      "total": 2,
+      "accuracy": 1.0
+    },
+    "procedure": {
+      "correct": 1,
+      "total": 1,
+      "accuracy": 1.0
+    },
+    "list": {
+      "correct": 1,
+      "total": 1,
+      "accuracy": 1.0
+    },
+    "temporal": {
+      "correct": 2,
+      "total": 2,
+      "accuracy": 1.0
+    },
+    "refusal": {
+      "correct": 2,
+      "total": 2,
+      "accuracy": 1.0
+    }
+  },
+  "verdict_counts": {
+    "correct": 11,
+    "refusal": 5
+  },
+  "numeric_execution_accuracy": 0.625,
+  "refusal_accuracy": 1.0,
+  "false_refusal_rate": 0.21428571428571427,
+  "refusal_precision": 0.4,
+  "citation_completeness": 0.7857142857142857,
+  "citation_precision": 1.0,
+  "citation_counts": {
+    "relevant": 11,
+    "total": 11
+  },
+  "retrieval": {
+    "bm25": {
+      "hit@5": 1,
+      "recall@5": 1.0,
+      "evidence_group_recall@5": 1.0,
+      "all_evidence_hit@5": 1,
+      "hit@10": 1,
+      "recall@10": 1.0,
+      "evidence_group_recall@10": 1.0,
+      "all_evidence_hit@10": 1,
+      "hit@20": 1,
+      "recall@20": 1.0,
+      "evidence_group_recall@20": 1.0,
+      "all_evidence_hit@20": 1,
+      "rr@20": 0.9464285714285714
+    },
+    "dense": {
+      "hit@5": 0.9285714285714286,
+      "recall@5": 0.9285714285714286,
+      "evidence_group_recall@5": 0.9285714285714286,
+      "all_evidence_hit@5": 0.9285714285714286,
+      "hit@10": 1,
+      "recall@10": 1.0,
+      "evidence_group_recall@10": 1.0,
+      "all_evidence_hit@10": 1,
+      "hit@20": 1,
+      "recall@20": 1.0,
+      "evidence_group_recall@20": 1.0,
+      "all_evidence_hit@20": 1,
+      "rr@20": 0.7817460317460317
+    },
+    "hybrid": {
+      "hit@5": 1,
+      "recall@5": 1.0,
+      "evidence_group_recall@5": 1.0,
+      "all_evidence_hit@5": 1,
+      "hit@10": 1,
+      "recall@10": 1.0,
+      "evidence_group_recall@10": 1.0,
+      "all_evidence_hit@10": 1,
+      "hit@20": 1,
+      "recall@20": 1.0,
+      "evidence_group_recall@20": 1.0,
+      "all_evidence_hit@20": 1,
+      "rr@20": 0.875
+    },
+    "rerank": {
+      "hit@5": 1,
+      "recall@5": 1.0,
+      "evidence_group_recall@5": 1.0,
+      "all_evidence_hit@5": 1,
+      "hit@10": 1,
+      "recall@10": 1.0,
+      "evidence_group_recall@10": 1.0,
+      "all_evidence_hit@10": 1,
+      "hit@20": 1,
+      "recall@20": 1.0,
+      "evidence_group_recall@20": 1.0,
+      "all_evidence_hit@20": 1,
+      "rr@20": 0.7559523809523809
+    }
+  },
+  "cases": [
+    {
+      "id": "V2C01",
+      "category": "calculation",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": true,
+      "citation_complete": true,
+      "reason": "核对真实奖项行：一等奖1000元减二等奖700元为300元；未包含区间行。",
+      "failure_stage": ""
+    },
+    {
+      "id": "V2C02",
+      "category": "calculation",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": true,
+      "citation_complete": true,
+      "reason": "核对真实三档奖项，1000+700+400=2100元，额外单项奖区间未参与。",
+      "failure_stage": ""
+    },
+    {
+      "id": "V2C03",
+      "category": "calculation",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": true,
+      "citation_complete": true,
+      "reason": "若通过，必须是三等奖400元除一等奖1000元的40%；逐项核对分子、分母与真实记录。",
+      "failure_stage": ""
+    },
+    {
+      "id": "V2C04",
+      "category": "calculation",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": true,
+      "citation_complete": true,
+      "reason": "两个原文标题分别绑定精神文明奖200元和示范宿舍长奖100元，算式200+100=300元。",
+      "failure_stage": ""
+    },
+    {
+      "id": "V2C05",
+      "category": "calculation",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": true,
+      "citation_complete": true,
+      "reason": "原文生均100元/人，问题明确13名，实际乘法100×13=1300元；无个人获奖预测。",
+      "failure_stage": ""
+    },
+    {
+      "id": "V2C06",
+      "category": "calculation",
+      "correct": false,
+      "verdict": "refusal",
+      "numeric_correct": false,
+      "citation_complete": false,
+      "reason": "120小时与用户85小时均已有真实Facts/常数示例，但模型漏定义right，修复仍失败，拒答。",
+      "failure_stage": "plan_generation"
+    },
+    {
+      "id": "V2C07",
+      "category": "calculation",
+      "correct": false,
+      "verdict": "refusal",
+      "numeric_correct": false,
+      "citation_complete": false,
+      "reason": "共4学期已被抽取，模型漏定义已完成1学期的right，修复仍失败，拒答。",
+      "failure_stage": "plan_generation"
+    },
+    {
+      "id": "V2C08",
+      "category": "calculation",
+      "correct": false,
+      "verdict": "refusal",
+      "numeric_correct": false,
+      "citation_complete": false,
+      "reason": "8至10门已拆为上下界，模型漏定义right，修复仍失败，拒答。",
+      "failure_stage": "plan_generation"
+    },
+    {
+      "id": "V2F01",
+      "category": "fact",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "逐字核对原文适用范围，明确具有中华人民共和国国籍；同时保留在校全日制本科学生的适用主体。",
+      "failure_stage": ""
+    },
+    {
+      "id": "V2F02",
+      "category": "fact",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "核对第十三条：成绩及学分计入成绩表，不计算平均学分绩点；否定完整保留。仍附无关总则，不能宣称回答已简洁。",
+      "failure_stage": ""
+    },
+    {
+      "id": "V2P01",
+      "category": "procedure",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "输出原文明确每年12月1日前报学生工作处备案，冻结要点满足；但回退758字，混入申请条件、其他办理情形及文件封面。",
+      "failure_stage": ""
+    },
+    {
+      "id": "V2L01",
+      "category": "list",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "原文第二十条两类均完整保留：予以编级；因辅修课程考核严重违纪或作弊。答案仍混入总则。金标称终止，原文与回答用中止，按停止辅修学习的列举语义评审，不改金标。",
+      "failure_stage": ""
+    },
+    {
+      "id": "V2T01",
+      "category": "temporal",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "所引2026端午通知明确6月19日闭馆，年份及节日条件相符；保留了部分通知背景。",
+      "failure_stage": ""
+    },
+    {
+      "id": "V2T02",
+      "category": "temporal",
+      "correct": true,
+      "verdict": "correct",
+      "numeric_correct": null,
+      "citation_complete": true,
+      "reason": "所引2026端午通知明确6月20日至21日8:30至22:00，日期与时段对应正确；附有落款。",
+      "failure_stage": ""
+    },
+    {
+      "id": "V2R01",
+      "category": "refusal",
+      "correct": true,
+      "verdict": "refusal",
+      "numeric_correct": null,
+      "citation_complete": false,
+      "reason": "明确缺少个人资格及审批或评审结果，无法判断是否获批或最终到账；不再依靠偶然单位错误拒答。",
+      "failure_stage": ""
+    },
+    {
+      "id": "V2R02",
+      "category": "refusal",
+      "correct": true,
+      "verdict": "refusal",
+      "numeric_correct": null,
+      "citation_complete": false,
+      "reason": "因未找到符合所问年份和资料类型的证据而拒答，无2029开馆时间或伪造引用；与缺少2029正式通知的要点相符，虽沿用数值拒答前缀。",
+      "failure_stage": ""
+    }
+  ],
+  "baseline_commit": "10b9ceb3ee8817fc954475dff228ce6096a23fc0",
+  "manifest_sha256": "876a87af5d07581daa5a7eb1085bd1ecda86e51ff39dc274e1331130326a5801",
+  "artifact_hashes": {
+    "gold_sha256": "ea515004c8fb01d0c82d59421616d2fa8829a990ad76a4843022d4e0bd573fd0",
+    "results_sha256": "785f009e22fb977cb22b962ead4075b2c7c1bf8d891ea7e0cf4d7a260ec33880",
+    "reviews_sha256": "d762a25495f9fb270e33fbcf88588bc7dfaaa7f0c06b055ef2455f15a43eedb3"
+  },
+  "caveat": "Post-exposure regression, not independent accuracy. Original frozen run retained unchanged."
+}

@@ -1,0 +1,64 @@
+{
+  "numeric": {
+    "numeric_total": 8,
+    "planning_invoked": 5,
+    "initial_json_parseable": 5,
+    "initial_plan_valid": 5,
+    "plan_valid_after_repair": 5,
+    "execution_completed": 2,
+    "executor_verified": 1,
+    "semantic_correct": 0,
+    "verified_but_semantically_wrong": [
+      "V2C05"
+    ]
+  },
+  "primary_failure_stages": {
+    "field_binding": 3,
+    "facts_extraction": 4,
+    "question_semantics": 1,
+    "routing": 1,
+    "refusal_reason": 1
+  },
+  "answerable_gold_evidence_in_actual_top8": {
+    "count": 14,
+    "total": 14,
+    "cases": [
+      "V2C01",
+      "V2C02",
+      "V2C03",
+      "V2C04",
+      "V2C05",
+      "V2C06",
+      "V2C07",
+      "V2C08",
+      "V2F01",
+      "V2F02",
+      "V2P01",
+      "V2L01",
+      "V2T01",
+      "V2T02"
+    ]
+  },
+  "source_overlap": {
+    "v2_source_documents": 5,
+    "shared_document_ids_with_development": 0,
+    "shared_raw_sha256_with_development": 0,
+    "caveat": "Same indexed school corpus and same-assistant author/reviewer; document-level non-overlap does not prove content-level independence."
+  },
+  "citation_topic_relevance": {
+    "count": 6,
+    "total": 6
+  },
+  "citation_conclusion_support": {
+    "count": 5,
+    "total": 6
+  },
+  "safety_only_refusal": {
+    "count": 2,
+    "total": 2
+  },
+  "strict_reason_correct_refusal": {
+    "count": 1,
+    "total": 2
+  }
+}

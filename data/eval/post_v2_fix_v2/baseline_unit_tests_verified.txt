@@ -1,0 +1,178 @@
+F.FFFFFFFFFFF.FFFFF..FFF                                                 [100%]
+================================== FAILURES ===================================
+______________ test_generic_amounts_belong_to_their_real_heading ______________
+tests\test_post_retrieval_reliability.py:37: in test_generic_amounts_belong_to_their_real_heading
+    assert {(f['subject'],f['value']) for f in facts}=={('资料维护费','17'),('外业补贴','29')}
+E   AssertionError: assert set() == {('外业补贴', '29...资料维护费', '17')}
+E     
+E     Extra items in the right set:
+E     ('外业补贴', '29')
+E     ('资料维护费', '17')
+E     Use -v to get more diff
+_ test_explicit_completion_total_and_interval_facts[2.\u670d\u52a1\u7c7b\u3002\u6bcf\u5b66\u5e74\u80fd\u591f\u5b8c\u621093\u5c0f\u65f6\u7684\u670d\u52a1\u65f6\u957f\u3002-expected0] _
+tests\test_post_retrieval_reliability.py:54: in test_explicit_completion_total_and_interval_facts
+    assert [(f['value'],f['unit'],f['comparison']) for f in facts]==expected
+E   AssertionError: assert [] == [('93', '小时', 'eq')]
+E     
+E     Right contains one more item: ('93', '小时', 'eq')
+E     Use -v to get more diff
+_ test_explicit_completion_total_and_interval_facts[\u8f85\u4fee\u8bfe\u7a0b\u51716\u5b66\u671f\u3002-expected1] _
+tests\test_post_retrieval_reliability.py:54: in test_explicit_completion_total_and_interval_facts
+    assert [(f['value'],f['unit'],f['comparison']) for f in facts]==expected
+E   AssertionError: assert [] == [('6', '学期', 'eq')]
+E     
+E     Right contains one more item: ('6', '学期', 'eq')
+E     Use -v to get more diff
+_ test_explicit_completion_total_and_interval_facts[\u4e13\u4e1a\u4e00\u822c\u8bbe\u7f6e7\u81f312\u95e8\u4e3b\u8981\u8bfe\u7a0b\u3002-expected2] _
+tests\test_post_retrieval_reliability.py:54: in test_explicit_completion_total_and_interval_facts
+    assert [(f['value'],f['unit'],f['comparison']) for f in facts]==expected
+E   AssertionError: assert [] == [('7', '门', '..., '门', 'lte')]
+E     
+E     Right contains 2 more items, first extra item: ('7', '门', 'gte')
+E     Use -v to get more diff
+_ test_explicit_completion_total_and_interval_facts[\u4e13\u4e1a\u4e00\u822c\u8bbe\u7f6e7-12\u95e8\u4e3b\u8981\u8bfe\u7a0b\u3002-expected3] _
+tests\test_post_retrieval_reliability.py:54: in test_explicit_completion_total_and_interval_facts
+    assert [(f['value'],f['unit'],f['comparison']) for f in facts]==expected
+E   AssertionError: assert [] == [('7', '门', '..., '门', 'lte')]
+E     
+E     Right contains 2 more items, first extra item: ('7', '门', 'gte')
+E     Use -v to get more diff
+________________ test_calendar_date_is_not_a_duration_operand _________________
+tests\test_post_retrieval_reliability.py:60: in test_calendar_date_is_not_a_duration_operand
+    assert [(f['value'],f['unit']) for f in facts.values()]==[('9','小时')]
+E   AssertionError: assert [('6', '月'), ('9', '小时')] == [('9', '小时')]
+E     
+E     At index 0 diff: ('6', '月') != ('9', '小时')
+E     Left contains one more item: ('9', '小时')
+E     Use -v to get more diff
+________ test_person_rate_and_explicit_total_cannot_degrade_to_lookup _________
+tests\test_post_retrieval_reliability.py:67: in test_person_rate_and_explicit_total_cannot_degrade_to_lookup
+    assert facts['f1']['unit']=='元/人'
+E   AssertionError: assert '元' == '元/人'
+E     
+E     - 元/人
+E     + 元
+_____________________ test_year_is_not_an_amount_operand ______________________
+tests\test_post_retrieval_reliability.py:82: in test_year_is_not_an_amount_operand
+    assert result.ok and result.value==133
+E   AssertionError: assert (False)
+E    +  where False = CalculationResult(ok=False, value=None, unit='', expression='', details=[], error='乘法单位组合尚不支持', evidence=[], steps=[{'... 'expression': '7', 'details': [], 'source': {'kind': 'question', 'quote': '7人', 'span': [13, 15]}}], repairable=False).ok
+________ test_annual_completed_amount_has_to_share_an_explicit_period _________
+tests\test_post_retrieval_reliability.py:91: in test_annual_completed_amount_has_to_share_an_explicit_period
+    assert good.ok and good.value==25
+E   AssertionError: assert (False)
+E    +  where False = CalculationResult(ok=False, value=None, unit='', expression='', details=[], error='cap: fact_id不在已核验正文事实中', evidence=[], steps=[], repairable=True).ok
+_____ test_short_award_names_bind_to_real_values_without_extra_range_row ______
+tests\test_post_retrieval_reliability.py:110: in test_short_award_names_bind_to_real_values_without_extra_range_row
+    labels=schema[0]['question_matches'][0]['values']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   IndexError: list index out of range
+________________ test_short_name_exclusion_cannot_be_reversed _________________
+tests\test_post_retrieval_reliability.py:130: in test_short_name_exclusion_cannot_be_reversed
+    assert good.ok and good.value==3
+E   AssertionError: assert (False)
+E    +  where False = CalculationResult(ok=False, value=None, unit='', expression='', details=[], error='筛选对象未在问题中出现：一等奖学金', evidence=[], steps=[], repairable=True).ok
+_______ test_total_accepts_added_group_amounts_but_not_their_difference _______
+tests\test_post_retrieval_reliability.py:143: in test_total_accepts_added_group_amounts_but_not_their_difference
+    assert good.ok and good.value==272
+E   AssertionError: assert (False)
+E    +  where False = CalculationResult(ok=False, value=None, unit='', expression='', details=[], error='常数的单位未紧邻对应数值出现在问题中', evidence=[], s...://example.edu/rule', department='', published_at=None, chunk_id=None, table_id=None, row_ids=[])}]}], repairable=True).ok
+______ test_examples_use_question_constants_and_bounds_in_correct_order _______
+tests\test_post_retrieval_reliability.py:159: in test_examples_use_question_constants_and_bounds_in_correct_order
+    assert operation_hint(q)=='multiply'
+E   AssertionError: assert 'lookup' == 'multiply'
+E     
+E     - multiply
+E     + lookup
+_ test_membership_question_is_text_not_average_calculation[\u8f85\u4fee\u6210\u7ee9\u662f\u5426\u8ba1\u5165\u5e73\u5747\u5b66\u5206\u7ee9\u70b9\uff1f] _
+tests\test_post_retrieval_reliability.py:177: in test_membership_question_is_text_not_average_calculation
+    assert service.last_diagnostics['route']=='text' and result.references
+E   AssertionError: assert ('numeric_plan' == 'text'
+E     
+E     - text
+E     + numeric_plan)
+_ test_membership_question_is_text_not_average_calculation[\u8fd9\u4e9b\u8865\u8d34\u4f1a\u8ba1\u5165\u5e73\u5747\u5de5\u8d44\u5417\uff1f] _
+tests\test_post_retrieval_reliability.py:177: in test_membership_question_is_text_not_average_calculation
+    assert service.last_diagnostics['route']=='text' and result.references
+E   AssertionError: assert ('numeric_plan' == 'text'
+E     
+E     - text
+E     + numeric_plan)
+_ test_personal_outcome_uses_qualification_boundary_not_unit_error[\u6211\u4eca\u5e74\u80fd\u5426\u83b7\u5f97\u8fd9\u9879\u8865\u52a9\uff0c\u6700\u7ec8\u4f1a\u5230\u8d26\u591a\u5c11\u5143\uff1f] _
+tests\test_post_retrieval_reliability.py:187: in test_personal_outcome_uses_qualification_boundary_not_unit_error
+    result=RAGService(Settings(tmp_path,tmp_path,tmp_path,tmp_path,tmp_path),Index(),Generator(),repo.connection).answer(question)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.tmp\post_v2_full_baseline\src\campus_rag\rag\service.py:48: in answer
+    result = self._answer(question)
+             ^^^^^^^^^^^^^^^^^^^^^^
+.tmp\post_v2_full_baseline\src\campus_rag\rag\service.py:144: in _answer
+    plan = self.planner.step_plan(question,context,error,previous)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.tmp\post_v2_full_baseline\src\campus_rag\rag\planner.py:194: in step_plan
+    raw = self.generator.generate(self.last_prompt,
+tests\test_post_retrieval_reliability.py:186: in generate
+    def generate(self,*a,**kw):raise AssertionError('No personal assessment outcome is public evidence')
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: No personal assessment outcome is public evidence
+_ test_personal_outcome_uses_qualification_boundary_not_unit_error[\u6309\u8bc4\u9009\u529e\u6cd5\uff0c\u6211\u662f\u5426\u4f1a\u83b7\u5f97\u8fd9\u4e2a\u5956\uff1f] _
+tests\test_post_retrieval_reliability.py:187: in test_personal_outcome_uses_qualification_boundary_not_unit_error
+    result=RAGService(Settings(tmp_path,tmp_path,tmp_path,tmp_path,tmp_path),Index(),Generator(),repo.connection).answer(question)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.tmp\post_v2_full_baseline\src\campus_rag\rag\service.py:48: in answer
+    result = self._answer(question)
+             ^^^^^^^^^^^^^^^^^^^^^^
+.tmp\post_v2_full_baseline\src\campus_rag\rag\service.py:81: in _answer
+    raw = self.generator.generate(prompt,thinking=False,temperature=0.0,max_new_tokens=self.settings.max_new_tokens)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_post_retrieval_reliability.py:186: in generate
+    def generate(self,*a,**kw):raise AssertionError('No personal assessment outcome is public evidence')
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: No personal assessment outcome is public evidence
+______ test_only_following_public_rules_cannot_predict_personal_outcome _______
+tests\test_post_retrieval_reliability.py:211: in test_only_following_public_rules_cannot_predict_personal_outcome
+    result=service.answer('只按评选办法，我是否会获得这个奖，最终实际到账多少元？')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.tmp\post_v2_full_baseline\src\campus_rag\rag\service.py:48: in answer
+    result = self._answer(question)
+             ^^^^^^^^^^^^^^^^^^^^^^
+.tmp\post_v2_full_baseline\src\campus_rag\rag\service.py:144: in _answer
+    plan = self.planner.step_plan(question,context,error,previous)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.tmp\post_v2_full_baseline\src\campus_rag\rag\planner.py:194: in step_plan
+    raw = self.generator.generate(self.last_prompt,
+tests\test_post_retrieval_reliability.py:209: in generate
+    def generate(self,*a,**kw):raise AssertionError('Public rules cannot determine personal outcomes')
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: Public rules cannot determine personal outcomes
+_______________ test_equal_sized_groups_cannot_be_counted_once ________________
+tests\test_post_retrieval_reliability.py:223: in test_equal_sized_groups_cannot_be_counted_once
+    assert result.ok and result.value==306
+E   AssertionError: assert (False)
+E    +  where False = CalculationResult(ok=False, value=None, unit='', expression='', details=[], error='常数的单位未紧邻对应数值出现在问题中', evidence=[], s...://example.edu/rule', department='', published_at=None, chunk_id=None, table_id=None, row_ids=[])}]}], repairable=True).ok
+___________ test_named_ratio_example_uses_the_requested_denominator ___________
+tests\test_post_retrieval_reliability.py:232: in test_named_ratio_example_uses_the_requested_denominator
+    assert pair[0]['filters']==[{'field_id':name,'op':'eq','value':'二等奖学金'}]
+           ^^^^^^^^^^^^^^^^^^
+E   KeyError: 'filters'
+=========================== short test summary info ===========================
+FAILED tests/test_post_retrieval_reliability.py::test_generic_amounts_belong_to_their_real_heading
+FAILED tests/test_post_retrieval_reliability.py::test_explicit_completion_total_and_interval_facts[2.\u670d\u52a1\u7c7b\u3002\u6bcf\u5b66\u5e74\u80fd\u591f\u5b8c\u621093\u5c0f\u65f6\u7684\u670d\u52a1\u65f6\u957f\u3002-expected0]
+FAILED tests/test_post_retrieval_reliability.py::test_explicit_completion_total_and_interval_facts[\u8f85\u4fee\u8bfe\u7a0b\u51716\u5b66\u671f\u3002-expected1]
+FAILED tests/test_post_retrieval_reliability.py::test_explicit_completion_total_and_interval_facts[\u4e13\u4e1a\u4e00\u822c\u8bbe\u7f6e7\u81f312\u95e8\u4e3b\u8981\u8bfe\u7a0b\u3002-expected2]
+FAILED tests/test_post_retrieval_reliability.py::test_explicit_completion_total_and_interval_facts[\u4e13\u4e1a\u4e00\u822c\u8bbe\u7f6e7-12\u95e8\u4e3b\u8981\u8bfe\u7a0b\u3002-expected3]
+FAILED tests/test_post_retrieval_reliability.py::test_calendar_date_is_not_a_duration_operand
+FAILED tests/test_post_retrieval_reliability.py::test_person_rate_and_explicit_total_cannot_degrade_to_lookup
+FAILED tests/test_post_retrieval_reliability.py::test_year_is_not_an_amount_operand
+FAILED tests/test_post_retrieval_reliability.py::test_annual_completed_amount_has_to_share_an_explicit_period
+FAILED tests/test_post_retrieval_reliability.py::test_short_award_names_bind_to_real_values_without_extra_range_row
+FAILED tests/test_post_retrieval_reliability.py::test_short_name_exclusion_cannot_be_reversed
+FAILED tests/test_post_retrieval_reliability.py::test_total_accepts_added_group_amounts_but_not_their_difference
+FAILED tests/test_post_retrieval_reliability.py::test_examples_use_question_constants_and_bounds_in_correct_order
+FAILED tests/test_post_retrieval_reliability.py::test_membership_question_is_text_not_average_calculation[\u8f85\u4fee\u6210\u7ee9\u662f\u5426\u8ba1\u5165\u5e73\u5747\u5b66\u5206\u7ee9\u70b9\uff1f]
+FAILED tests/test_post_retrieval_reliability.py::test_membership_question_is_text_not_average_calculation[\u8fd9\u4e9b\u8865\u8d34\u4f1a\u8ba1\u5165\u5e73\u5747\u5de5\u8d44\u5417\uff1f]
+FAILED tests/test_post_retrieval_reliability.py::test_personal_outcome_uses_qualification_boundary_not_unit_error[\u6211\u4eca\u5e74\u80fd\u5426\u83b7\u5f97\u8fd9\u9879\u8865\u52a9\uff0c\u6700\u7ec8\u4f1a\u5230\u8d26\u591a\u5c11\u5143\uff1f]
+FAILED tests/test_post_retrieval_reliability.py::test_personal_outcome_uses_qualification_boundary_not_unit_error[\u6309\u8bc4\u9009\u529e\u6cd5\uff0c\u6211\u662f\u5426\u4f1a\u83b7\u5f97\u8fd9\u4e2a\u5956\uff1f]
+FAILED tests/test_post_retrieval_reliability.py::test_only_following_public_rules_cannot_predict_personal_outcome
+FAILED tests/test_post_retrieval_reliability.py::test_equal_sized_groups_cannot_be_counted_once
+FAILED tests/test_post_retrieval_reliability.py::test_named_ratio_example_uses_the_requested_denominator
+20 failed, 4 passed in 3.27s

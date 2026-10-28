@@ -1,0 +1,76 @@
+{
+  "cases": [
+    {
+      "id": "V2C01",
+      "doc_id": 248,
+      "gold_quote_in_raw": true
+    },
+    {
+      "id": "V2C02",
+      "doc_id": 248,
+      "gold_quote_in_raw": true
+    },
+    {
+      "id": "V2C03",
+      "doc_id": 248,
+      "gold_quote_in_raw": true
+    },
+    {
+      "id": "V2C04",
+      "doc_id": 248,
+      "gold_quote_in_raw": true
+    },
+    {
+      "id": "V2C05",
+      "doc_id": 259,
+      "gold_quote_in_raw": true
+    },
+    {
+      "id": "V2C06",
+      "doc_id": 259,
+      "gold_quote_in_raw": true
+    },
+    {
+      "id": "V2C07",
+      "doc_id": 261,
+      "gold_quote_in_raw": true
+    },
+    {
+      "id": "V2C08",
+      "doc_id": 261,
+      "gold_quote_in_raw": true
+    },
+    {
+      "id": "V2F01",
+      "doc_id": 255,
+      "gold_quote_in_raw": true
+    },
+    {
+      "id": "V2F02",
+      "doc_id": 261,
+      "gold_quote_in_raw": true
+    },
+    {
+      "id": "V2P01",
+      "doc_id": 255,
+      "gold_quote_in_raw": true
+    },
+    {
+      "id": "V2L01",
+      "doc_id": 261,
+      "gold_quote_in_raw": true
+    },
+    {
+      "id": "V2T01",
+      "doc_id": 341,
+      "gold_quote_in_raw": true
+    },
+    {
+      "id": "V2T02",
+      "doc_id": 341,
+      "gold_quote_in_raw": true
+    }
+  ],
+  "all_quotes_verified": true,
+  "method": "Read original PDF/HTML independently of the RAG pipeline; compare whitespace-normalized frozen quotes."
+}

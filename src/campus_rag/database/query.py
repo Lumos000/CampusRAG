@@ -5,7 +5,7 @@ import json
 import re
 from decimal import Decimal
 
-from campus_rag.tools.numbers import convert_unit
+from campus_rag.tools.numbers import convert_unit, question_quantities, asks_total
 from campus_rag.types import CalculationResult, Evidence, FilterSpec, OperandSpec, QueryPlan
 from campus_rag.tools.temporal import matches_period, question_periods
 from campus_rag.ingest.navigation import navigation_table_ids
@@ -35,18 +35,44 @@ def _legal_fields(columns):
 
 def _excluded_object(value,question):
     clauses = re.findall(r'除(?:了)?(.*?)(?:之外|以外)|(?:不含|不包括|不包含|排除)([^，。；？?]+)',compact(question))
-    return any(compact(value) in text for parts in clauses for text in parts)
+    return any(_object_mentioned(value,text) for parts in clauses for text in parts)
 
 
 def _object_key(value):
     return re.sub(r'(?:工程)?实验教学中心|实验室|中心|学院|专业|场馆|组别','',compact(value))
 
 
+def _object_query(question):
+    query = compact(question)
+    return re.sub(r'([一二三四五六七八九十]+(?:[、和与及][一二三四五六七八九十]+)+)等奖',
+        lambda m:'、'.join(n+'等奖' for n in re.split('[、和与及]',m[1])),query)
+
+
+def _award_alias(value):
+    text = compact(value)
+    return text[:-2] if re.search(r'[一二三四五六七八九十]+等奖学金$',text) else text
+
+
+def _mentioned_objects(values,question,strict=False):
+    labels = list(dict.fromkeys(v for v in values if _object_mentioned(v,question)))
+    aliases = {}
+    for value in labels:
+        aliases.setdefault(_award_alias(value),set()).add(compact(value))
+    if any(len(names)>1 and not all(n in _object_query(question) for n in names) for names in aliases.values()):
+        if strict:
+            raise QuestionConstraintError('问题约束：对象简称对应多个真实名称，需明确统计对象')
+        return []
+    return labels
+
+
 def _object_mentioned(value, question):
-    text, query = compact(value), compact(question)
+    text, query = compact(value), _object_query(question)
     if not text or text in {'合计','总计','小计'}:
         return False
     if text in query:
+        return True
+    alias = _award_alias(text)
+    if alias!=text and alias in query:
         return True
     suffix = re.search(r'((?:工程)?实验教学中心|实验室|中心|场馆)$',text)
     if not suffix:
@@ -115,8 +141,8 @@ class StructuredQueryEngine:
                 role = _field_role(dict(col),values)
                 described.append({'field_id':col['id'],'name':col['original_name'],
                     'type':col['data_type'],'unit':col['unit'],'role':role})
-                labels = list(dict.fromkeys(v for v in values if _object_mentioned(v,question))) if role in {'entity','category'} else []
-                labels.sort(key=lambda v:compact(question).find(compact(v)) if compact(v) in compact(question)
+                labels = _mentioned_objects(values,question) if role in {'entity','category'} else []
+                labels.sort(key=lambda v:_object_query(question).find(_award_alias(v)) if _award_alias(v) in _object_query(question)
                     else compact(question).find(_object_key(v)))
                 if labels:
                     matched.append({'field_id':col['id'],'values':labels})
@@ -166,7 +192,8 @@ class StructuredQueryEngine:
                     operands = [self._step_input(v,values,question) for v in inputs]
                     value,unit,expression = self._step_arithmetic(op,operands)
                     value_record = {'value':value,'unit':unit,'expression':expression,
-                                    'details':[d for v in operands for d in v['details']]}
+                                    'details':[d for v in operands for d in v['details']],
+                                    'question_inputs':[q for v in operands for q in v.get('question_inputs',[])]}
                     kinds = [v.get('kind','value') for v in operands]
                     value_record['kind'] = 'count' if op in {'add','sum'} and set(kinds)=={'count'} else op
                     if op=='divide' and kinds==['sum','count'] and {
@@ -267,7 +294,7 @@ class StructuredQueryEngine:
             if needed!={step['id'] for step in plan.steps}:
                 raise PlanError('存在未参与最终结果的步骤')
             try:
-                self._check_question_operation(plan,question,result)
+                self._check_question_operation(plan,question,result,facts)
             except PlanError as exc:
                 raise QuestionConstraintError('问题约束：'+str(exc)) from exc
             # Include every executed source, including intermediate computations.
@@ -367,8 +394,8 @@ class StructuredQueryEngine:
         for fid,col in columns.items():
             if col['data_type']!='text' or _field_role(col) in {'identifier','time'}:
                 continue
-            labels = {r['cells'][fid]['normalized_value'] for r in rows if not r['is_total']
-                and _object_mentioned(r['cells'][fid]['normalized_value'],question)}
+            labels = set(_mentioned_objects([r['cells'][fid]['normalized_value'] for r in rows
+                if not r['is_total']],question,strict=True))
             if labels:
                 excluded = {v for v in labels if _excluded_object(v,question)}
                 included = labels-excluded
@@ -417,8 +444,8 @@ class StructuredQueryEngine:
             raise ValueError('公共资料中的示例不能代替个人实际计算条件')
 
     @staticmethod
-    def _check_question_operation(plan,question,result):
-        compare = bool(re.search(r'相差|差额|比.*(?:多|少|高|低).*多少|减去|相比.*还剩',question))
+    def _check_question_operation(plan,question,result,facts=None):
+        compare = bool(re.search(r'相差|差额|比.*(?:多|少|高|低).*多少|减去|还差|还剩',question))
         final = next(s for s in plan.steps if s['id']==plan.output)
         record_count = bool(re.search(r'(?:多少|几)(?:条|行)|共有几(?:个|项)|有多少个',question))
         if record_count and not re.search(r'占|百分比|平均',question) and not compare and result.get('kind')!='count':
@@ -434,14 +461,38 @@ class StructuredQueryEngine:
                 raise PlanError('问题要求合计，不能返回平均值')
         if compare and final['op']!='subtract':
             raise PlanError('问题要求比较差额，最终步骤必须subtract，不能只返回一个lookup')
+        total = asks_total(question)
+        person_rates = [d for d in result['details'] if d.get('unit')=='元/人']
+        if total and person_rates:
+            people = question_quantities(question,'人')
+            if any(re.search(r'(?:约|大约|近|至少|至多|不少于|不超过|[-—–－～~至到])\s*$',question[:q['span'][0]])
+                    or re.match(r'\s*(?:左右|上下|以上|以下)',question[q['span'][1]:]) for q in people):
+                raise PlanError('人数仅有范围或近似值，无法确定实际总额')
+            from collections import Counter
+            requested = Counter(Decimal(q['literal']) for q in people)
+            used = Counter(Decimal(q['literal']) for q in result.get('question_inputs',[]) if q['unit']=='人')
+            monetary_total = not compare and not re.search(r'占|百分比|平均',question)
+            if requested-used or (monetary_total and (result['unit']!='元' or result.get('kind') not in {'multiply','add','sum'})):
+                raise PlanError('问题要求总额：必须使用问题明确的人数和人均费率，不能只返回单人金额')
+        def subject(fact):
+            return re.sub(r'\([^)]*\)','',compact(fact.get('subject','')))
+        named = {subject(f) for f in (facts or {}).values() if len(subject(f))>=2 and subject(f) in compact(question)}
+        actual = {subject(f) for f in result['details']}
+        if len(named)>1 and named-actual:
+            raise PlanError('未覆盖问题列举的正文对象：'+'、'.join(sorted(named-actual)))
+        if '上限' in question and '下限' in question:
+            available = {f.get('comparison') for f in (facts or {}).values()}
+            used_bounds = {f.get('comparison') for f in result['details']}
+            if {'gte','lte'}<=available and not {'gte','lte'}<=used_bounds:
+                raise PlanError('上限与下限必须分别使用对应的两条界限事实，不能重复同一边界')
         required = 'multiply' if re.search(r'相乘|乘积|乘以|单价.*数量|标准乘',question) else 'divide' if '除以' in question else None
         if required and final['op']!=required:
             raise PlanError('问题明确要求'+required+'，不能只返回一个操作数，必须保留两个操作数和最终运算')
         if not compare and re.search(r'百分比|占.*(?:比例|多少)',question) and final['op']!='ratio':
             raise PlanError('问题要求百分比，最终步骤必须ratio，不能只返回计数或求和')
-        if result['value']<0 and re.search(r'相差|高多少|多多少|还剩',question):
+        if result['value']<0 and re.search(r'相差|高多少|多多少|还剩|还差',question):
             raise PlanError('差额方向与问题不符：请核对被比较对象顺序和周期，不能直接相减不同周期的上限')
-        target = re.search(r'多少(元|小时|平方米)',compact(question))
+        target = re.search(r'多少(元|小时|平方米|学期|门)',compact(question))
         if target and result['unit']!=target[1]:
             raise PlanError('结果单位与问题要求不符：要求'+target[1]+'；请补齐费率、时长等必要运算')
         periods = {d.get('scope',{}).get('period') for d in result['details'] if isinstance(d.get('scope'),dict)}
@@ -534,16 +585,24 @@ class StructuredQueryEngine:
         from campus_rag.tools.numbers import chinese_integer
         tokens = re.findall(r'\d+(?:\.\d+)?|[一二两三四五六七八九十]+',question)
         grounded = any((Decimal(t) if re.fullmatch(r'\d+(?:\.\d+)?',t) else Decimal(chinese_integer(t)))==value for t in tokens)
-        if not grounded or item['unit'] not in {'','年','学年','学期','月','周','天','小时','分钟','次','个','台','人','元','平方米'}:
+        canonical_unit = '人' if item['unit'] in {'名','位'} else item['unit']
+        if not grounded or canonical_unit not in {'','年','学年','学期','月','周','天','小时','分钟','次','个','台','人','元','平方米','门'}:
             raise PlanError('常数或单位没有问题原文支持')
-        if item['unit']:
-            paired = [t for t in tokens if (Decimal(t) if re.fullmatch(r'\d+(?:\.\d+)?',t) else Decimal(chinese_integer(t)))==value
-                and re.search(re.escape(t)+r'\s*(?:个)?(?:学)?'+re.escape(item['unit']),question)]
+        if canonical_unit:
+            paired = [q for q in question_quantities(question,canonical_unit) if Decimal(q['literal'])==value]
             if not paired:
                 raise PlanError('常数的单位未紧邻对应数值出现在问题中')
+            source = paired[0]
+            periods = set(re.findall(r'(?:每|本)(学年|学期|年|月|周|天)',question))
+            completed = bool(re.search(r'已(?:经)?(?:完成|修读|修|使用|用)\s*$',question[:source['span'][0]]))
+            return {'value':value,'unit':canonical_unit,'expression':str(value),'details':[],
+                'question_inputs':[{'literal':str(value),'unit':canonical_unit}],
+                **({'within_period':next(iter(periods))} if completed and len(periods)==1 else {}),
+                'source':{'kind':'question','quote':source['quote'],'span':source['span']}}
         token = next(t for t in tokens if (Decimal(t) if re.fullmatch(r'\d+(?:\.\d+)?',t) else Decimal(chinese_integer(t)))==value)
         located = re.search(r'(?<!\d)'+re.escape(token)+r'(?!\d)'+(r'\s*(?:个)?(?:学)?'+re.escape(item['unit']) if item['unit'] else ''),question)
         return {'value':value,'unit':item['unit'],'expression':str(value),'details':[],
+            'question_inputs':[{'literal':str(value),'unit':item['unit']}],
             'source':{'kind':'question','quote':located.group(),'span':list(located.span())}}
 
     @staticmethod
@@ -559,7 +618,9 @@ class StructuredQueryEngine:
             if len({x.get('per_unit') for x in operands})>1 and not (
                     op=='subtract' and len(operands)==2 and
                     sum(bool(x.get('per_unit')) for x in operands)==1 and
-                    any(x.get('expanded_period') for x in operands)):
+                    (any(x.get('expanded_period') for x in operands) or any(
+                        x.get('within_period')==next(v['per_unit'] for v in operands if v.get('per_unit'))
+                        for x in operands))):
                 raise QuestionConstraintError('问题约束：不同周期数或周期范围不能直接加减，需先用问题给定周期数计算实际用量')
             value = numbers[0]-numbers[1] if op=='subtract' else sum(numbers,Decimal(0))
             unit = units[0]

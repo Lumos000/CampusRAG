@@ -21,6 +21,18 @@ def number(value):
     return format(value, 'f').rstrip('0').rstrip('.') if '.' in format(value, 'f') else format(value, 'f')
 
 
+def _fact_heading(text):
+    pattern = (r'(?:^|(?<=[。\n]))[ \t]*(?:\d+[.．、][ \t]*'
+        r'(?P<numbered>[^。；;\n，,：:（）()]{2,32})(?=[（(\n。:：])|'
+        r'(?P<caption>[^。；;\n，,：:（）()]{2,32})[（(][^。\n]{1,32}[）)](?=[ \t]*(?:\n|$)))')
+    headings = list(re.finditer(pattern,text))
+    if not headings:
+        return '',0
+    match = headings[-1]
+    field = 'numbered' if match['numbered'] is not None else 'caption'
+    return match[field].strip(),match.start(field)
+
+
 @dataclass
 class NumericOutcome:
     handled: bool = False
@@ -69,11 +81,12 @@ class NumericEngine:
         """
         from campus_rag.database.normalization import quantity
         facts, seen = {}, set()
-        units = r'万元|亿元|元|万人|千人|人|平方米|㎡|台|本|项|个|学年|学期|年|月|周|天|小时|分钟|%|％'
-        amount = re.compile(r'(?<![\d.])(?P<number>\d[\d,]*(?:\.\d+)?)(?P<unit>'+units+r')?(?P<denominator>/(?:小时|分钟|天|周|月|学年|年|人|次|台|个))?')
+        units = r'万元|亿元|元|万人|千人|人|平方米|㎡|台|本|项|个|门|学年|学期|年|月|周|天|小时|分钟|%|％'
+        amount = re.compile(r'(?<![\d.])(?P<number>\d[\d,]*(?:\.\d+)?)(?:[-—–～~至到](?P<upper>\d[\d,]*(?:\.\d+)?))?(?P<unit>'+units+r')?(?P<denominator>/(?:小时|分钟|天|周|月|学年|年|人|次|台|个))?')
         relations = {'不超过':'lte','不高于':'lte','至多':'lte','最多':'lte','上限为':'lte',
             '不低于':'gte','不少于':'gte','至少':'gte','最低为':'gte','下限为':'gte',
             '超过':'gt','高于':'gt','低于':'lt','小于':'lt','大于':'gt',
+            '能够完成':'eq','完成':'eq','共计':'eq','共':'eq','设置':'eq',
             '为':'eq','有':'eq','是':'eq',':':'eq','：':'eq'}
         connector = re.compile('('+'|'.join(sorted(relations,key=len,reverse=True))+r')(?:每(?:小时|分钟|天|周|月|年|人))?$')
         for item in evidence:
@@ -86,6 +99,9 @@ class NumericEngine:
                 prefix = text[start:match.start()]
                 # A nearby number alone is not a fact (page numbers, dates, codes).
                 local = re.split('[，,]',prefix)[-1]
+                if match['unit'] in {'年','月'} and (re.match(r'\d+(?:月|日)',text[match.end():])
+                        or re.search(r'日期|公示|截止|评选时间',local)):
+                    continue
                 relation = connector.search(local)
                 suffix = re.match(r'(及以上|及以下|以上|以下)',text[match.end():])
                 gpa = bool(re.search(r'(?:平均学分)?绩点(?:要求)?(?:为|不低于|不超过|高于|低于)?$',local))
@@ -111,19 +127,6 @@ class NumericEngine:
                 label = re.sub(r'^（[一二三四五六七八九十]+）','',label)
                 if not label or not re.search(r'[\u4e00-\u9fffA-Za-z]',label):
                     continue
-                raw = match['number']+(match['unit'] or '')
-                # A quantity-kind label distinguishes dimensionless GPA from an
-                # unknown unit or an arbitrary scalar; it is not a physical unit.
-                value,unit = quantity(raw) if match['unit'] else (Decimal(match['number']), '绩点')
-                if value is None and match['unit'] in {'学年','学期','月','周','分钟'}:
-                    value,unit = Decimal(match['number'].replace(',','')),match['unit']
-                if value is None:
-                    continue
-                per = re.search(r'每(小时|分钟|天|周|月|年|人)$',prefix)
-                if match['denominator']:
-                    unit += match['denominator']
-                elif per and unit=='元':
-                    unit += '/'+per[1]
                 periods = re.findall(r'每(?:人每年|学年|学期|小时|分钟|天|周|月|年|人)',prefix)
                 period = periods[-1] if periods else ''
                 clauses = re.findall(r'第[一二三四五六七八九十百\d]+条',text[:match.start()])
@@ -131,18 +134,43 @@ class NumericEngine:
                 subject = re.split(r'每|(?:平均学分)?绩点|额度|金额|预算|时长',label,maxsplit=1)[0] or label
                 end = match.end()+(len(suffix[1]) if suffix else 0)
                 original_start,original_end = offsets[start],offsets[end-1]+1
+                heading,heading_start = _fact_heading(item.text[:offsets[match.start()]])
+                if heading and (subject in {'奖励','金额','补贴','补助','时长','课程','标准','预算'}
+                        or re.fullmatch(r'每(?:学年|学期|年|月|周|天)',label)):
+                    subject = heading
+                    original_start = min(original_start,heading_start)
                 boundary = re.search('[。；;！？]',text[end:])
                 scope_end = end+boundary.start() if boundary else len(text)
-                scope = {'clause':clause,'period':period,'context':text[start:scope_end]}
-                key = (item.doc_id,subject,label,clause,period,comparison,str(value),unit)
-                if key in seen:
-                    continue
-                seen.add(key)
-                fid = 'f'+str(len(facts)+1)
-                facts[fid] = {'fact_id':fid,'field':label,'subject':subject,'raw_value':raw,
-                    'value':str(value),'unit':unit,'comparison':comparison,'scope':scope,
-                    'quote':item.text[original_start:original_end],'span':[original_start,original_end],
-                    'doc_id':item.doc_id,'evidence_id':item.evidence_id,'source_url':item.source_url,'evidence':item}
+                scope = {'clause':clause,'period':period,'context':compact(item.text[original_start:offsets[scope_end-1]+1])}
+                values = [(match['number'],comparison)]
+                if match['upper']:
+                    if Decimal(match['upper'].replace(',',''))<Decimal(match['number'].replace(',','')):
+                        continue
+                    values = [(match['number'],'gte'),(match['upper'],'lte')]
+                for token,comparison in values:
+                    raw = token+(match['unit'] or '')
+                    value,unit = quantity(raw) if match['unit'] else (Decimal(token),'绩点')
+                    if value is None and match['unit'] in {'学年','学期','月','周','分钟','门'}:
+                        value,unit = Decimal(token.replace(',','')),match['unit']
+                    if value is None:
+                        continue
+                    per = re.search(r'每(小时|分钟|天|周|月|年|人)$',prefix)
+                    if match['denominator']:
+                        unit += match['denominator']
+                    elif per and unit=='元':
+                        unit += '/'+per[1]
+                    elif unit=='元' and re.search(r'生均|人均',prefix):
+                        unit += '/人'
+                    key = (item.doc_id,subject,label,clause,period,comparison,str(value),unit)
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    fid = 'f'+str(len(facts)+1)
+                    facts[fid] = {'fact_id':fid,'field':label,'subject':subject,
+                        'raw_value':match.group() if match['upper'] else raw,
+                        'value':str(value),'unit':unit,'comparison':comparison,'scope':scope,
+                        'quote':item.text[original_start:original_end],'span':[original_start,original_end],
+                        'doc_id':item.doc_id,'evidence_id':item.evidence_id,'source_url':item.source_url,'evidence':item}
         # Conflicts concern the same subject, clause, period and comparison, not
         # unrelated objects that happen to have the same measure name.
         groups = {}

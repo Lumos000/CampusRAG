@@ -14,6 +14,23 @@ _UNIT_PATTERNS = (
 )
 
 
+def question_quantities(question: str, unit: str) -> list[dict]:
+    """Explicit unit-adjacent question inputs, not years or arbitrary numbers."""
+    aliases = r'(?:人|名|位)' if unit=='人' else re.escape(unit)
+    pattern = r'(?<![\d.+-])(?P<value>\d+(?:\.\d+)?|[一二两三四五六七八九十百千]+)\s*(?:个)?'+aliases
+    output = []
+    for match in re.finditer(pattern,question):
+        token = match['value']
+        value = Decimal(token) if token[0].isdigit() else chinese_integer(token)
+        if value is not None:
+            output.append({'literal':str(value),'unit':unit,'quote':match.group(),'span':list(match.span())})
+    return output
+
+
+def asks_total(question: str) -> bool:
+    return bool(re.search(r'共需|共计|合计|总计|总额|总共|一共|总金额|共.*多少元',question))
+
+
 def chinese_integer(text: str) -> int | None:
     if not text or any(ch not in _DIGITS | _SMALL_UNITS | _BIG_UNITS for ch in text):
         return None

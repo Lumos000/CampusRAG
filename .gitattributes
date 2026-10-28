@@ -2,5 +2,10 @@
 data/eval/reliability_trials_v2/** -text whitespace=cr-at-eol
 data/eval/stages/sentence_selection_v*/** -text whitespace=cr-at-eol
 data/eval/stages/constrained_plan_v1/** -text whitespace=cr-at-eol
+data/eval/independent_v2_run_10b9ceb/** -text whitespace=cr-at-eol
+data/eval/post_v2_fix_v*/** -text whitespace=cr-at-eol
 # A unified diff's blank context line deliberately contains one space.
 data/eval/stages/*/candidate.patch -whitespace
+data/eval/post_v2_fix_v*/*/candidate.patch -whitespace
+# Preserve pytest's original failure-context spacing in archived output.
+data/eval/post_v2_fix_v*/baseline_unit_tests*.txt -whitespace

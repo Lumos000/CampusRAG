@@ -1,0 +1,684 @@
+diff --git a/src/campus_rag/database/query.py b/src/campus_rag/database/query.py
+index c0c16d7..a867dad 100644
+--- a/src/campus_rag/database/query.py
++++ b/src/campus_rag/database/query.py
+@@ -5,7 +5,7 @@ import json
+ import re
+ from decimal import Decimal
+ 
+-from campus_rag.tools.numbers import convert_unit
++from campus_rag.tools.numbers import convert_unit, question_quantities, asks_total
+ from campus_rag.types import CalculationResult, Evidence, FilterSpec, OperandSpec, QueryPlan
+ from campus_rag.tools.temporal import matches_period, question_periods
+ from campus_rag.ingest.navigation import navigation_table_ids
+@@ -35,19 +35,45 @@ def _legal_fields(columns):
+ 
+ def _excluded_object(value,question):
+     clauses = re.findall(r'除(?:了)?(.*?)(?:之外|以外)|(?:不含|不包括|不包含|排除)([^，。；？?]+)',compact(question))
+-    return any(compact(value) in text for parts in clauses for text in parts)
++    return any(_object_mentioned(value,text) for parts in clauses for text in parts)
+ 
+ 
+ def _object_key(value):
+     return re.sub(r'(?:工程)?实验教学中心|实验室|中心|学院|专业|场馆|组别','',compact(value))
+ 
+ 
++def _object_query(question):
++    query = compact(question)
++    return re.sub(r'([一二三四五六七八九十]+(?:[、和与及][一二三四五六七八九十]+)+)等奖',
++        lambda m:'、'.join(n+'等奖' for n in re.split('[、和与及]',m[1])),query)
++
++
++def _award_alias(value):
++    text = compact(value)
++    return text[:-2] if re.search(r'[一二三四五六七八九十]+等奖学金$',text) else text
++
++
++def _mentioned_objects(values,question,strict=False):
++    labels = list(dict.fromkeys(v for v in values if _object_mentioned(v,question)))
++    aliases = {}
++    for value in labels:
++        aliases.setdefault(_award_alias(value),set()).add(compact(value))
++    if any(len(names)>1 and not all(n in _object_query(question) for n in names) for names in aliases.values()):
++        if strict:
++            raise QuestionConstraintError('问题约束：对象简称对应多个真实名称，需明确统计对象')
++        return []
++    return labels
++
++
+ def _object_mentioned(value, question):
+-    text, query = compact(value), compact(question)
++    text, query = compact(value), _object_query(question)
+     if not text or text in {'合计','总计','小计'}:
+         return False
+     if text in query:
+         return True
++    alias = _award_alias(text)
++    if alias!=text and alias in query:
++        return True
+     suffix = re.search(r'((?:工程)?实验教学中心|实验室|中心|场馆)$',text)
+     if not suffix:
+         return False
+@@ -115,8 +141,8 @@ class StructuredQueryEngine:
+                 role = _field_role(dict(col),values)
+                 described.append({'field_id':col['id'],'name':col['original_name'],
+                     'type':col['data_type'],'unit':col['unit'],'role':role})
+-                labels = list(dict.fromkeys(v for v in values if _object_mentioned(v,question))) if role in {'entity','category'} else []
+-                labels.sort(key=lambda v:compact(question).find(compact(v)) if compact(v) in compact(question)
++                labels = _mentioned_objects(values,question) if role in {'entity','category'} else []
++                labels.sort(key=lambda v:_object_query(question).find(_award_alias(v)) if _award_alias(v) in _object_query(question)
+                     else compact(question).find(_object_key(v)))
+                 if labels:
+                     matched.append({'field_id':col['id'],'values':labels})
+@@ -166,7 +192,8 @@ class StructuredQueryEngine:
+                     operands = [self._step_input(v,values,question) for v in inputs]
+                     value,unit,expression = self._step_arithmetic(op,operands)
+                     value_record = {'value':value,'unit':unit,'expression':expression,
+-                                    'details':[d for v in operands for d in v['details']]}
++                                    'details':[d for v in operands for d in v['details']],
++                                    'question_inputs':[q for v in operands for q in v.get('question_inputs',[])]}
+                     kinds = [v.get('kind','value') for v in operands]
+                     value_record['kind'] = 'count' if op in {'add','sum'} and set(kinds)=={'count'} else op
+                     if op=='divide' and kinds==['sum','count'] and {
+@@ -267,7 +294,7 @@ class StructuredQueryEngine:
+             if needed!={step['id'] for step in plan.steps}:
+                 raise PlanError('存在未参与最终结果的步骤')
+             try:
+-                self._check_question_operation(plan,question,result)
++                self._check_question_operation(plan,question,result,facts)
+             except PlanError as exc:
+                 raise QuestionConstraintError('问题约束：'+str(exc)) from exc
+             # Include every executed source, including intermediate computations.
+@@ -367,8 +394,8 @@ class StructuredQueryEngine:
+         for fid,col in columns.items():
+             if col['data_type']!='text' or _field_role(col) in {'identifier','time'}:
+                 continue
+-            labels = {r['cells'][fid]['normalized_value'] for r in rows if not r['is_total']
+-                and _object_mentioned(r['cells'][fid]['normalized_value'],question)}
++            labels = set(_mentioned_objects([r['cells'][fid]['normalized_value'] for r in rows
++                if not r['is_total']],question,strict=True))
+             if labels:
+                 excluded = {v for v in labels if _excluded_object(v,question)}
+                 included = labels-excluded
+@@ -417,8 +444,8 @@ class StructuredQueryEngine:
+             raise ValueError('公共资料中的示例不能代替个人实际计算条件')
+ 
+     @staticmethod
+-    def _check_question_operation(plan,question,result):
+-        compare = bool(re.search(r'相差|差额|比.*(?:多|少|高|低).*多少|减去|相比.*还剩',question))
++    def _check_question_operation(plan,question,result,facts=None):
++        compare = bool(re.search(r'相差|差额|比.*(?:多|少|高|低).*多少|减去|还差|还剩',question))
+         final = next(s for s in plan.steps if s['id']==plan.output)
+         record_count = bool(re.search(r'(?:多少|几)(?:条|行)|共有几(?:个|项)|有多少个',question))
+         if record_count and not re.search(r'占|百分比|平均',question) and not compare and result.get('kind')!='count':
+@@ -434,14 +461,38 @@ class StructuredQueryEngine:
+                 raise PlanError('问题要求合计，不能返回平均值')
+         if compare and final['op']!='subtract':
+             raise PlanError('问题要求比较差额，最终步骤必须subtract，不能只返回一个lookup')
++        total = asks_total(question)
++        person_rates = [d for d in result['details'] if d.get('unit')=='元/人']
++        if total and person_rates:
++            people = question_quantities(question,'人')
++            if any(re.search(r'(?:约|大约|近|至少|至多|不少于|不超过|[-—–－～~至到])\s*$',question[:q['span'][0]])
++                    or re.match(r'\s*(?:左右|上下|以上|以下)',question[q['span'][1]:]) for q in people):
++                raise PlanError('人数仅有范围或近似值，无法确定实际总额')
++            from collections import Counter
++            requested = Counter(Decimal(q['literal']) for q in people)
++            used = Counter(Decimal(q['literal']) for q in result.get('question_inputs',[]) if q['unit']=='人')
++            monetary_total = not compare and not re.search(r'占|百分比|平均',question)
++            if requested-used or (monetary_total and (result['unit']!='元' or result.get('kind') not in {'multiply','add','sum'})):
++                raise PlanError('问题要求总额：必须使用问题明确的人数和人均费率，不能只返回单人金额')
++        def subject(fact):
++            return re.sub(r'\([^)]*\)','',compact(fact.get('subject','')))
++        named = {subject(f) for f in (facts or {}).values() if len(subject(f))>=2 and subject(f) in compact(question)}
++        actual = {subject(f) for f in result['details']}
++        if len(named)>1 and named-actual:
++            raise PlanError('未覆盖问题列举的正文对象：'+'、'.join(sorted(named-actual)))
++        if '上限' in question and '下限' in question:
++            available = {f.get('comparison') for f in (facts or {}).values()}
++            used_bounds = {f.get('comparison') for f in result['details']}
++            if {'gte','lte'}<=available and not {'gte','lte'}<=used_bounds:
++                raise PlanError('上限与下限必须分别使用对应的两条界限事实，不能重复同一边界')
+         required = 'multiply' if re.search(r'相乘|乘积|乘以|单价.*数量|标准乘',question) else 'divide' if '除以' in question else None
+         if required and final['op']!=required:
+             raise PlanError('问题明确要求'+required+'，不能只返回一个操作数，必须保留两个操作数和最终运算')
+         if not compare and re.search(r'百分比|占.*(?:比例|多少)',question) and final['op']!='ratio':
+             raise PlanError('问题要求百分比，最终步骤必须ratio，不能只返回计数或求和')
+-        if result['value']<0 and re.search(r'相差|高多少|多多少|还剩',question):
++        if result['value']<0 and re.search(r'相差|高多少|多多少|还剩|还差',question):
+             raise PlanError('差额方向与问题不符：请核对被比较对象顺序和周期，不能直接相减不同周期的上限')
+-        target = re.search(r'多少(元|小时|平方米)',compact(question))
++        target = re.search(r'多少(元|小时|平方米|学期|门)',compact(question))
+         if target and result['unit']!=target[1]:
+             raise PlanError('结果单位与问题要求不符：要求'+target[1]+'；请补齐费率、时长等必要运算')
+         periods = {d.get('scope',{}).get('period') for d in result['details'] if isinstance(d.get('scope'),dict)}
+@@ -534,16 +585,24 @@ class StructuredQueryEngine:
+         from campus_rag.tools.numbers import chinese_integer
+         tokens = re.findall(r'\d+(?:\.\d+)?|[一二两三四五六七八九十]+',question)
+         grounded = any((Decimal(t) if re.fullmatch(r'\d+(?:\.\d+)?',t) else Decimal(chinese_integer(t)))==value for t in tokens)
+-        if not grounded or item['unit'] not in {'','年','学年','学期','月','周','天','小时','分钟','次','个','台','人','元','平方米'}:
++        canonical_unit = '人' if item['unit'] in {'名','位'} else item['unit']
++        if not grounded or canonical_unit not in {'','年','学年','学期','月','周','天','小时','分钟','次','个','台','人','元','平方米','门'}:
+             raise PlanError('常数或单位没有问题原文支持')
+-        if item['unit']:
+-            paired = [t for t in tokens if (Decimal(t) if re.fullmatch(r'\d+(?:\.\d+)?',t) else Decimal(chinese_integer(t)))==value
+-                and re.search(re.escape(t)+r'\s*(?:个)?(?:学)?'+re.escape(item['unit']),question)]
++        if canonical_unit:
++            paired = [q for q in question_quantities(question,canonical_unit) if Decimal(q['literal'])==value]
+             if not paired:
+                 raise PlanError('常数的单位未紧邻对应数值出现在问题中')
++            source = paired[0]
++            periods = set(re.findall(r'(?:每|本)(学年|学期|年|月|周|天)',question))
++            completed = bool(re.search(r'已(?:经)?(?:完成|修读|修|使用|用)\s*$',question[:source['span'][0]]))
++            return {'value':value,'unit':canonical_unit,'expression':str(value),'details':[],
++                'question_inputs':[{'literal':str(value),'unit':canonical_unit}],
++                **({'within_period':next(iter(periods))} if completed and len(periods)==1 else {}),
++                'source':{'kind':'question','quote':source['quote'],'span':source['span']}}
+         token = next(t for t in tokens if (Decimal(t) if re.fullmatch(r'\d+(?:\.\d+)?',t) else Decimal(chinese_integer(t)))==value)
+         located = re.search(r'(?<!\d)'+re.escape(token)+r'(?!\d)'+(r'\s*(?:个)?(?:学)?'+re.escape(item['unit']) if item['unit'] else ''),question)
+         return {'value':value,'unit':item['unit'],'expression':str(value),'details':[],
++            'question_inputs':[{'literal':str(value),'unit':item['unit']}],
+             'source':{'kind':'question','quote':located.group(),'span':list(located.span())}}
+ 
+     @staticmethod
+@@ -559,7 +618,9 @@ class StructuredQueryEngine:
+             if len({x.get('per_unit') for x in operands})>1 and not (
+                     op=='subtract' and len(operands)==2 and
+                     sum(bool(x.get('per_unit')) for x in operands)==1 and
+-                    any(x.get('expanded_period') for x in operands)):
++                    (any(x.get('expanded_period') for x in operands) or any(
++                        x.get('within_period')==next(v['per_unit'] for v in operands if v.get('per_unit'))
++                        for x in operands))):
+                 raise QuestionConstraintError('问题约束：不同周期数或周期范围不能直接加减，需先用问题给定周期数计算实际用量')
+             value = numbers[0]-numbers[1] if op=='subtract' else sum(numbers,Decimal(0))
+             unit = units[0]
+diff --git a/src/campus_rag/rag/numeric.py b/src/campus_rag/rag/numeric.py
+index ee3df66..66af0e4 100644
+--- a/src/campus_rag/rag/numeric.py
++++ b/src/campus_rag/rag/numeric.py
+@@ -21,6 +21,18 @@ def number(value):
+     return format(value, 'f').rstrip('0').rstrip('.') if '.' in format(value, 'f') else format(value, 'f')
+ 
+ 
++def _fact_heading(text):
++    pattern = (r'(?:^|(?<=[。\n]))[ \t]*(?:\d+[.．、][ \t]*'
++        r'(?P<numbered>[^。；;\n，,：:（）()]{2,32})(?=[（(\n。:：])|'
++        r'(?P<caption>[^。；;\n，,：:（）()]{2,32})[（(][^。\n]{1,32}[）)](?=[ \t]*(?:\n|$)))')
++    headings = list(re.finditer(pattern,text))
++    if not headings:
++        return '',0
++    match = headings[-1]
++    field = 'numbered' if match['numbered'] is not None else 'caption'
++    return match[field].strip(),match.start(field)
++
++
+ @dataclass
+ class NumericOutcome:
+     handled: bool = False
+@@ -69,11 +81,12 @@ class NumericEngine:
+         """
+         from campus_rag.database.normalization import quantity
+         facts, seen = {}, set()
+-        units = r'万元|亿元|元|万人|千人|人|平方米|㎡|台|本|项|个|学年|学期|年|月|周|天|小时|分钟|%|％'
+-        amount = re.compile(r'(?<![\d.])(?P<number>\d[\d,]*(?:\.\d+)?)(?P<unit>'+units+r')?(?P<denominator>/(?:小时|分钟|天|周|月|学年|年|人|次|台|个))?')
++        units = r'万元|亿元|元|万人|千人|人|平方米|㎡|台|本|项|个|门|学年|学期|年|月|周|天|小时|分钟|%|％'
++        amount = re.compile(r'(?<![\d.])(?P<number>\d[\d,]*(?:\.\d+)?)(?:[-—–～~至到](?P<upper>\d[\d,]*(?:\.\d+)?))?(?P<unit>'+units+r')?(?P<denominator>/(?:小时|分钟|天|周|月|学年|年|人|次|台|个))?')
+         relations = {'不超过':'lte','不高于':'lte','至多':'lte','最多':'lte','上限为':'lte',
+             '不低于':'gte','不少于':'gte','至少':'gte','最低为':'gte','下限为':'gte',
+             '超过':'gt','高于':'gt','低于':'lt','小于':'lt','大于':'gt',
++            '能够完成':'eq','完成':'eq','共计':'eq','共':'eq','设置':'eq',
+             '为':'eq','有':'eq','是':'eq',':':'eq','：':'eq'}
+         connector = re.compile('('+'|'.join(sorted(relations,key=len,reverse=True))+r')(?:每(?:小时|分钟|天|周|月|年|人))?$')
+         for item in evidence:
+@@ -86,6 +99,9 @@ class NumericEngine:
+                 prefix = text[start:match.start()]
+                 # A nearby number alone is not a fact (page numbers, dates, codes).
+                 local = re.split('[，,]',prefix)[-1]
++                if match['unit'] in {'年','月'} and (re.match(r'\d+(?:月|日)',text[match.end():])
++                        or re.search(r'日期|公示|截止|评选时间',local)):
++                    continue
+                 relation = connector.search(local)
+                 suffix = re.match(r'(及以上|及以下|以上|以下)',text[match.end():])
+                 gpa = bool(re.search(r'(?:平均学分)?绩点(?:要求)?(?:为|不低于|不超过|高于|低于)?$',local))
+@@ -111,19 +127,6 @@ class NumericEngine:
+                 label = re.sub(r'^（[一二三四五六七八九十]+）','',label)
+                 if not label or not re.search(r'[\u4e00-\u9fffA-Za-z]',label):
+                     continue
+-                raw = match['number']+(match['unit'] or '')
+-                # A quantity-kind label distinguishes dimensionless GPA from an
+-                # unknown unit or an arbitrary scalar; it is not a physical unit.
+-                value,unit = quantity(raw) if match['unit'] else (Decimal(match['number']), '绩点')
+-                if value is None and match['unit'] in {'学年','学期','月','周','分钟'}:
+-                    value,unit = Decimal(match['number'].replace(',','')),match['unit']
+-                if value is None:
+-                    continue
+-                per = re.search(r'每(小时|分钟|天|周|月|年|人)$',prefix)
+-                if match['denominator']:
+-                    unit += match['denominator']
+-                elif per and unit=='元':
+-                    unit += '/'+per[1]
+                 periods = re.findall(r'每(?:人每年|学年|学期|小时|分钟|天|周|月|年|人)',prefix)
+                 period = periods[-1] if periods else ''
+                 clauses = re.findall(r'第[一二三四五六七八九十百\d]+条',text[:match.start()])
+@@ -131,18 +134,43 @@ class NumericEngine:
+                 subject = re.split(r'每|(?:平均学分)?绩点|额度|金额|预算|时长',label,maxsplit=1)[0] or label
+                 end = match.end()+(len(suffix[1]) if suffix else 0)
+                 original_start,original_end = offsets[start],offsets[end-1]+1
++                heading,heading_start = _fact_heading(item.text[:offsets[match.start()]])
++                if heading and (subject in {'奖励','金额','补贴','补助','时长','课程','标准','预算'}
++                        or re.fullmatch(r'每(?:学年|学期|年|月|周|天)',label)):
++                    subject = heading
++                    original_start = min(original_start,heading_start)
+                 boundary = re.search('[。；;！？]',text[end:])
+                 scope_end = end+boundary.start() if boundary else len(text)
+-                scope = {'clause':clause,'period':period,'context':text[start:scope_end]}
+-                key = (item.doc_id,subject,label,clause,period,comparison,str(value),unit)
+-                if key in seen:
+-                    continue
+-                seen.add(key)
+-                fid = 'f'+str(len(facts)+1)
+-                facts[fid] = {'fact_id':fid,'field':label,'subject':subject,'raw_value':raw,
+-                    'value':str(value),'unit':unit,'comparison':comparison,'scope':scope,
+-                    'quote':item.text[original_start:original_end],'span':[original_start,original_end],
+-                    'doc_id':item.doc_id,'evidence_id':item.evidence_id,'source_url':item.source_url,'evidence':item}
++                scope = {'clause':clause,'period':period,'context':compact(item.text[original_start:offsets[scope_end-1]+1])}
++                values = [(match['number'],comparison)]
++                if match['upper']:
++                    if Decimal(match['upper'].replace(',',''))<Decimal(match['number'].replace(',','')):
++                        continue
++                    values = [(match['number'],'gte'),(match['upper'],'lte')]
++                for token,comparison in values:
++                    raw = token+(match['unit'] or '')
++                    value,unit = quantity(raw) if match['unit'] else (Decimal(token),'绩点')
++                    if value is None and match['unit'] in {'学年','学期','月','周','分钟','门'}:
++                        value,unit = Decimal(token.replace(',','')),match['unit']
++                    if value is None:
++                        continue
++                    per = re.search(r'每(小时|分钟|天|周|月|年|人)$',prefix)
++                    if match['denominator']:
++                        unit += match['denominator']
++                    elif per and unit=='元':
++                        unit += '/'+per[1]
++                    elif unit=='元' and re.search(r'生均|人均',prefix):
++                        unit += '/人'
++                    key = (item.doc_id,subject,label,clause,period,comparison,str(value),unit)
++                    if key in seen:
++                        continue
++                    seen.add(key)
++                    fid = 'f'+str(len(facts)+1)
++                    facts[fid] = {'fact_id':fid,'field':label,'subject':subject,
++                        'raw_value':match.group() if match['upper'] else raw,
++                        'value':str(value),'unit':unit,'comparison':comparison,'scope':scope,
++                        'quote':item.text[original_start:original_end],'span':[original_start,original_end],
++                        'doc_id':item.doc_id,'evidence_id':item.evidence_id,'source_url':item.source_url,'evidence':item}
+         # Conflicts concern the same subject, clause, period and comparison, not
+         # unrelated objects that happen to have the same measure name.
+         groups = {}
+diff --git a/src/campus_rag/rag/planner.py b/src/campus_rag/rag/planner.py
+index da673c7..6038116 100644
+--- a/src/campus_rag/rag/planner.py
++++ b/src/campus_rag/rag/planner.py
+@@ -5,6 +5,7 @@ import re
+ from decimal import Decimal, InvalidOperation
+ 
+ from campus_rag.types import CalculationSpec, FilterSpec, OperandSpec, QueryPlan
++from campus_rag.tools.numbers import question_quantities, asks_total
+ 
+ 
+ PLAN_PROMPT = """你是校园资料查询规划器。只输出一个 JSON 对象，不要输出解释、Markdown 或 SQL。
+@@ -51,13 +52,14 @@ def text_plan_context(operation,payload):
+ def operation_hint(question):
+     if re.search(r'占|百分比',question):
+         return 'ratio'
+-    if re.search(r'相差|差额|比.*(?:多|少|高|低)|减去|相比.*还剩',question):
++    if re.search(r'相差|差额|比.*(?:多|少|高|低)|减去|还差|还剩',question):
+         return 'subtract'
+     if re.search(r'共有几|有几个|有多少个|多少(?:条|行)|数量.*共|按.*行.*计|行数',question):
+         return 'count'
+     if '平均' in question.replace('平均学分绩点','绩点'):
+         return 'average'
+-    if re.search(r'乘|单价.*数量|标准.*(?:小时|工时|数量).*(?:合计|总|多少)',question):
++    if re.search(r'乘|单价.*数量|标准.*(?:小时|工时|数量).*(?:合计|总|多少)',question) or (
++            re.search(r'人均|生均|每人',question) and question_quantities(question,'人') and asks_total(question)):
+         return 'multiply'
+     if re.search(r'除以|商为',question):
+         return 'divide'
+@@ -84,7 +86,7 @@ def step_example(operation,context='',question=''):
+     measures = lambda t:[c for c in t['columns'] if c.get('role')=='measure' and c['unit']]
+     # Text-only evidence, or a table with no measure suitable for arithmetic.
+     if text_plan_context(operation,payload):
+-        desired = re.search(r'多少\s*(元|小时|人|个|年)',question)
++        desired = re.search(r'多少\s*(元|小时|人|个|学期|门|年)',question)
+         candidates = [f for f in facts if f['unit'].startswith(desired[1])] if desired else facts
+         candidates = candidates or facts
+         if '上限' in question and '下限' not in question:
+@@ -100,6 +102,18 @@ def step_example(operation,context='',question=''):
+             return max((n for n in range(3,min(12,len(subject))+1)
+                 for i in range(len(subject)-n+1) if subject[i:i+n] in head),default=0)
+         candidates = sorted(candidates,key=subject_score,reverse=True)
++        named = [f for f in candidates if len(f.get('subject',''))>=2 and f['subject'] in question]
++        if len({f['subject'] for f in named})>1:
++            unique = {}
++            for fact in named:
++                unique.setdefault(fact['subject'],fact)
++            candidates = list(unique.values())
++            candidates.sort(key=lambda f:question.find(f['subject']))
++        if operation=='subtract' and '上限' in question and '下限' in question:
++            upper = next((f for f in candidates if f.get('comparison')=='lte'),None)
++            lower = next((f for f in candidates if f.get('comparison')=='gte'),None)
++            if upper and lower:
++                candidates = [upper,lower]
+         a = {'id':'a','op':'lookup','fact_id':candidates[0]['fact_id']}
+         steps = [a]
+         period = re.search(r'(?:连续|累计|为期|共计)(\d+|[一二两三四五六七八九十]+)(周|月|天|学期)',question)
+@@ -116,12 +130,16 @@ def step_example(operation,context='',question=''):
+                 {'id':'result','op':'subtract','inputs':['cap','used']}])
+         if operation=='multiply' and '/' in candidates[0]['unit']:
+             denominator = candidates[0]['unit'].rsplit('/',1)[1]
+-            constant = re.search(r'(\d+(?:\.\d+)?|[一二两三四五六七八九十]+)\s*'+re.escape(denominator),question)
+-            if constant:
+-                from campus_rag.tools.numbers import chinese_integer
+-                value = constant[1] if constant[1][0].isdigit() else str(chinese_integer(constant[1]))
+-                steps += [{'id':'b','op':'lookup','literal':value,'unit':denominator},
++            constants = question_quantities(question,denominator)
++            if len(constants)==1:
++                steps += [{'id':'b','op':'lookup','literal':constants[0]['literal'],'unit':denominator},
+                     {'id':'c','op':'multiply','inputs':['a','b']}]
++        elif operation=='subtract' and any(re.search(r'已(?:经)?(?:完成|修读|修|使用|用)\s*$',question[:q['span'][0]])
++                for q in question_quantities(question,candidates[0]['unit'])):
++            done = next(q for q in question_quantities(question,candidates[0]['unit'])
++                if re.search(r'已(?:经)?(?:完成|修读|修|使用|用)\s*$',question[:q['span'][0]]))
++            steps += [{'id':'b','op':'lookup','literal':done['literal'],'unit':done['unit']},
++                {'id':'c','op':'subtract','inputs':['a','b']}]
+         elif operation in {'subtract','add','divide','ratio','average','sum'} and len(candidates)>1 and candidates[0]['unit']==candidates[1]['unit']:
+             steps += [{'id':'b','op':'lookup','fact_id':candidates[1]['fact_id']},
+                 {'id':'c','op':operation,'inputs':['a','b']}]
+@@ -186,6 +204,9 @@ class QueryPlanner:
+             '\n上次完整计划：'+json.dumps(previous,ensure_ascii=False))
+         hint = operation_hint(question)
+         payload = json.loads(context) if context else {}
++        if hint in {'lookup','sum'} and asks_total(question) and question_quantities(question,'人') and any(
++                f['unit']=='元/人' for f in payload.get('facts',[])):
++            hint = 'multiply'
+         text_only = text_plan_context(hint,payload)
+         if text_only:
+             context = json.dumps({'facts':payload['facts']},ensure_ascii=False)
+diff --git a/src/campus_rag/rag/service.py b/src/campus_rag/rag/service.py
+index 8de1169..c5eb50b 100644
+--- a/src/campus_rag/rag/service.py
++++ b/src/campus_rag/rag/service.py
+@@ -70,8 +70,20 @@ class RAGService:
+             self.last_diagnostics['route'] = 'unsupported_personal_record'
+             reason = '本系统仅使用公开资料，无法查询你所问的个人记录或实时信息，也不能据此推断具体结果。'
+             return AnswerResult(question,reason,[],[],numeric_verification={'verified':False,'reason':reason})
++        personal_outcome = re.search(
++            r'(?:我|本人).*(?:能否|是否|会不会|能不能).*(?:获得|获奖|评上|批准|录取|通过)|'
++            r'(?:我|本人).*(?:最终|实际).*(?:到账|发放|获得|领取)',question)
++        public_conditions = re.search(r'哪些(?:申请)?条件|(?:申请|资格|评选)条件(?:是什么|有哪些)|如何申请|怎样申请',question)
++        actual_outcome = re.search(r'(?:最终|实际).*(?:到账|发放|获得|领取)',question)
++        if personal_outcome and (not public_conditions or actual_outcome):
++            self.last_diagnostics['route'] = 'unsupported_personal_outcome'
++            reason = '本系统仅使用公开资料，缺少你的个人资格及审批或评审结果，无法确定是否获批或最终到账金额。'
++            return AnswerResult(question,reason,[],[],numeric_verification={'verified':False,'reason':reason})
+         numeric_question = bool(re.search(
+             r'计算|求和|合计|总计|之和|占.*(?:比例|多少)|百分比|平均|相差|差额|多多少|少多少|乘|除以|复算|反推|生师比|折算|多少|几(?:人|个|名|本|元)|预收额',question))
++        membership = re.search(r'(?:是否|会不会|能否|计不计|算不算).*(?:计入|纳入)|(?:计入|纳入).*吗',question)
++        if membership and not re.search(r'多少|求和|合计|总计|之和|相差|差额|乘|除以',question):
++            numeric_question = False
+         if not numeric_question:
+             self.last_diagnostics['route'] = 'text'
+             evidence = self._text_evidence(question,evidence)
+diff --git a/src/campus_rag/tools/numbers.py b/src/campus_rag/tools/numbers.py
+index 73eb78e..23f5403 100644
+--- a/src/campus_rag/tools/numbers.py
++++ b/src/campus_rag/tools/numbers.py
+@@ -14,6 +14,23 @@ _UNIT_PATTERNS = (
+ )
+ 
+ 
++def question_quantities(question: str, unit: str) -> list[dict]:
++    """Explicit unit-adjacent question inputs, not years or arbitrary numbers."""
++    aliases = r'(?:人|名|位)' if unit=='人' else re.escape(unit)
++    pattern = r'(?<![\d.+-])(?P<value>\d+(?:\.\d+)?|[一二两三四五六七八九十百千]+)\s*(?:个)?'+aliases
++    output = []
++    for match in re.finditer(pattern,question):
++        token = match['value']
++        value = Decimal(token) if token[0].isdigit() else chinese_integer(token)
++        if value is not None:
++            output.append({'literal':str(value),'unit':unit,'quote':match.group(),'span':list(match.span())})
++    return output
++
++
++def asks_total(question: str) -> bool:
++    return bool(re.search(r'共需|共计|合计|总计|总额|总共|一共|总金额|共.*多少元',question))
++
++
+ def chinese_integer(text: str) -> int | None:
+     if not text or any(ch not in _DIGITS | _SMALL_UNITS | _BIG_UNITS for ch in text):
+         return None
+--- /dev/null
++++ b/tests/test_post_retrieval_reliability.py
+@@ -0,0 +1,223 @@
++import json
++from decimal import Decimal
++
++import pytest
++
++from campus_rag.config import Settings
++from campus_rag.database import Repository
++from campus_rag.database.query import StructuredQueryEngine, _object_mentioned
++from campus_rag.rag.numeric import NumericEngine
++from campus_rag.rag.planner import operation_hint, parse_plan, step_example
++from campus_rag.rag.service import RAGService
++from campus_rag.tools.numbers import normalize_cell
++from campus_rag.types import Evidence, ParsedTable, SourceDocument
++
++
++def evidence(text):
++    return Evidence('rule',text,1,1,'合成管理规则','https://example.edu/rule')
++
++
++@pytest.fixture
++def repo(tmp_path):
++    with Repository(tmp_path/'case.db') as active:
++        active.initialize()
++        yield active
++
++
++def execute_text(repo,text,question,steps):
++    facts=NumericEngine.text_facts([evidence(text)])
++    return StructuredQueryEngine(repo.connection).execute_steps(
++        parse_plan(json.dumps({'steps':steps})),[],question,facts)
++
++
++def test_generic_amounts_belong_to_their_real_heading():
++    text='资料维护费（完成登记后发放）\n审核后，奖励金额为17元。'
++    text+='2.外业补贴（完成核实后发放）\n登记后，奖励金额为29元。'
++    facts=list(NumericEngine.text_facts([evidence(text)]).values())
++    assert {(f['subject'],f['value']) for f in facts}=={('资料维护费','17'),('外业补贴','29')}
++    assert all(f['quote']==text[slice(*f['span'])] for f in facts)
++
++
++def test_real_same_subject_conflict_is_still_rejected():
++    facts=NumericEngine.text_facts([evidence('甲项目预算为27元。甲项目预算为39元。乙项目预算为11元。')])
++    assert [f['value'] for f in facts.values()]==['11']
++
++
++@pytest.mark.parametrize('text,expected',[
++    ('2.服务类。每学年能够完成93小时的服务时长。',[('93','小时','eq')]),
++    ('辅修课程共6学期。',[('6','学期','eq')]),
++    ('专业一般设置7至12门主要课程。',[('7','门','gte'),('12','门','lte')]),
++    ('专业一般设置7-12门主要课程。',[('7','门','gte'),('12','门','lte')]),
++])
++def test_explicit_completion_total_and_interval_facts(text,expected):
++    facts=list(NumericEngine.text_facts([evidence(text)]).values())
++    assert [(f['value'],f['unit'],f['comparison']) for f in facts]==expected
++    assert all(f['quote']==text[slice(*f['span'])] for f in facts)
++
++
++def test_calendar_date_is_not_a_duration_operand():
++    facts=NumericEngine.text_facts([evidence('公示期为6月12日到6月15日。培训时长为9小时。')])
++    assert [(f['value'],f['unit']) for f in facts.values()]==[('9','小时')]
++
++
++def test_person_rate_and_explicit_total_cannot_degrade_to_lookup(repo):
++    text='生均补助金额为17元。'
++    q='按生均补助标准，若有9名参与者，合计需要多少元？'
++    facts=NumericEngine.text_facts([evidence(text)])
++    assert facts['f1']['unit']=='元/人'
++    wrong=execute_text(repo,text,q,[{'id':'a','op':'lookup','fact_id':'f1'}])
++    assert not wrong.ok and wrong.repairable
++    good=execute_text(repo,text,q,[{'id':'a','op':'lookup','fact_id':'f1'},
++        {'id':'n','op':'lookup','literal':'9','unit':'人'},
++        {'id':'total','op':'multiply','inputs':['a','n']}])
++    assert good.ok and good.value==153 and good.unit=='元'
++    assert good.steps[1]['source']['quote']=='9名'
++
++
++def test_year_is_not_an_amount_operand(repo):
++    q='按2031年生均标准，若有7人，合计需要多少元？'
++    result=execute_text(repo,'人均补助金额为19元。',q,[
++        {'id':'a','op':'lookup','fact_id':'f1'},{'id':'n','op':'lookup','literal':'7','unit':'人'},
++        {'id':'total','op':'multiply','inputs':['a','n']}])
++    assert result.ok and result.value==133
++
++
++def test_annual_completed_amount_has_to_share_an_explicit_period(repo):
++    text='2.服务类。每学年能够完成93小时的服务时长。'
++    steps=[{'id':'cap','op':'lookup','fact_id':'f1'},
++        {'id':'done','op':'lookup','literal':'68','unit':'小时'},
++        {'id':'rest','op':'subtract','inputs':['cap','done']}]
++    good=execute_text(repo,text,'按每学年的服务要求，已完成68小时，还差多少小时？',steps)
++    assert good.ok and good.value==25
++    bad=execute_text(repo,text,'按每月的服务要求，已完成68小时，还差多少小时？',steps)
++    assert not bad.ok
++
++
++@pytest.fixture
++def awards(repo):
++    doc=repo.add_document(SourceDocument('合成资助标准','https://example.edu/awards',sha256='awards'))
++    table=ParsedTable('奖励标准',['奖项','金额（元）'],[
++        ['一等奖学金','260'],['二等奖学金','170'],['三等奖学金','90'],['专项支持','40～70']])
++    tid=repo.add_table(doc,table,[[normalize_cell(v) for v in row] for row in table.rows])
++    fields=[r['id'] for r in repo.connection.execute('SELECT id FROM table_columns WHERE table_id=? ORDER BY column_index',(tid,))]
++    return StructuredQueryEngine(repo.connection),tid,fields
++
++
++def test_short_award_names_bind_to_real_values_without_extra_range_row(awards):
++    engine,tid,(name,amount)=awards
++    q='综合一、二、三等奖各发一份，奖励金额合计多少元？'
++    schema=engine.schema_context([tid],[],q)
++    labels=schema[0]['question_matches'][0]['values']
++    assert labels==['一等奖学金','二等奖学金','三等奖学金']
++    step={'id':'a','op':'sum','field_id':amount,
++        'filters':[{'field_id':name,'op':'in','value':labels}]}
++    result=engine.execute_steps(parse_plan(json.dumps({'table_id':tid,'steps':[step]})),[tid],q)
++    assert result.ok and result.value==520
++    del step['filters']
++    assert not engine.execute_steps(parse_plan(json.dumps({'table_id':tid,'steps':[step]})),[tid],q).ok
++    assert not _object_mentioned('优秀一等奖学金','综合一等奖的奖励金额')
++
++
++def test_short_name_exclusion_cannot_be_reversed(awards):
++    engine,tid,(name,amount)=awards
++    q='除一等奖之外，共有多少条记录？'
++    def run(op,value):
++        plan=parse_plan(json.dumps({'table_id':tid,'steps':[{'id':'a','op':'count',
++            'filters':[{'field_id':name,'op':op,'value':value}]}]}))
++        return engine.execute_steps(plan,[tid],q)
++    assert not run('eq','一等奖学金').ok
++    good=run('not_in',['一等奖学金'])
++    assert good.ok and good.value==3
++
++
++def test_total_accepts_added_group_amounts_but_not_their_difference(repo):
++    text='人均补助金额为17元。'
++    q='两组分别有9名和7名参与者，补助金额合计多少元？'
++    steps=[{'id':'rate','op':'lookup','fact_id':'f1'},
++        {'id':'n1','op':'lookup','literal':'9','unit':'人'},
++        {'id':'n2','op':'lookup','literal':'7','unit':'人'},
++        {'id':'a','op':'multiply','inputs':['rate','n1']},
++        {'id':'b','op':'multiply','inputs':['rate','n2']},
++        {'id':'total','op':'add','inputs':['a','b']}]
++    good=execute_text(repo,text,q,steps)
++    assert good.ok and good.value==272
++    steps[-1]['op']='subtract'
++    assert not execute_text(repo,text,q,steps).ok
++
++
++def test_uncertain_people_range_is_not_silently_replaced_by_upper_bound(repo):
++    result=execute_text(repo,'生均补助金额为17元。','若有7—9名参与者，合计多少元？',[
++        {'id':'a','op':'lookup','fact_id':'f1'},
++        {'id':'n','op':'lookup','literal':'9','unit':'人'},
++        {'id':'total','op':'multiply','inputs':['a','n']}])
++    assert not result.ok
++
++
++def test_examples_use_question_constants_and_bounds_in_correct_order():
++    q='按人均标准，若有9名参与者，共需多少元？'
++    facts={'facts':[{'fact_id':'f4','subject':'人均补助','value':'17','unit':'元/人','comparison':'eq'}]}
++    assert operation_hint(q)=='multiply'
++    plan=json.loads(step_example('multiply',json.dumps(facts),q))
++    assert plan['steps'][1]['literal']=='9' and plan['steps'][1]['unit']=='人'
++    bounds={'facts':[{'fact_id':'low','subject':'课程','value':'7','unit':'门','comparison':'gte'},
++        {'fact_id':'high','subject':'课程','value':'12','unit':'门','comparison':'lte'}]}
++    plan=json.loads(step_example('subtract',json.dumps(bounds),'课程上限比下限多多少门？'))
++    assert [s['fact_id'] for s in plan['steps'][:2]]==['high','low']
++
++
++@pytest.mark.parametrize('question',[
++    '辅修成绩是否计入平均学分绩点？','这些补贴会计入平均工资吗？'])
++def test_membership_question_is_text_not_average_calculation(repo,tmp_path,question):
++    class Index:
++        def search(self,*a,**kw):return [evidence('这些成绩和补贴不计入相关平均值。')]
++    class Generator:
++        def generate(self,*a,**kw):return json.dumps({'sentence_ids':['S1']})
++    service=RAGService(Settings(tmp_path,tmp_path,tmp_path,tmp_path,tmp_path),Index(),Generator(),repo.connection)
++    result=service.answer(question)
++    assert service.last_diagnostics['route']=='text' and result.references
++
++
++@pytest.mark.parametrize('question',[
++    '我今年能否获得这项补助，最终会到账多少元？','按评选办法，我是否会获得这个奖？'])
++def test_personal_outcome_uses_qualification_boundary_not_unit_error(repo,tmp_path,question):
++    class Index:
++        def search(self,*a,**kw):return [evidence('人均奖励金额为19元。')]
++    class Generator:
++        def generate(self,*a,**kw):raise AssertionError('No personal assessment outcome is public evidence')
++    result=RAGService(Settings(tmp_path,tmp_path,tmp_path,tmp_path,tmp_path),Index(),Generator(),repo.connection).answer(question)
++    assert not result.references and '个人资格' in result.answer and '评审' in result.answer
++
++
++@pytest.mark.parametrize('question',[
++    '我能否获得补助，需要满足哪些条件？',
++    '我是否能获得补助，申请条件是什么？',
++])
++def test_public_application_conditions_remain_answerable(repo,tmp_path,question):
++    class Index:
++        def search(self,*a,**kw):return [evidence('申请条件是已完成登记且审核通过。')]
++    class Generator:
++        def generate(self,*a,**kw):return json.dumps({'sentence_ids':['S1']})
++    service=RAGService(Settings(tmp_path,tmp_path,tmp_path,tmp_path,tmp_path),Index(),Generator(),repo.connection)
++    result=service.answer(question)
++    assert service.last_diagnostics['route']=='text' and result.references
++
++
++def test_only_following_public_rules_cannot_predict_personal_outcome(repo,tmp_path):
++    class Index:
++        def search(self,*a,**kw):return [evidence('人均奖励金额为19元。')]
++    class Generator:
++        def generate(self,*a,**kw):raise AssertionError('Public rules cannot determine personal outcomes')
++    service=RAGService(Settings(tmp_path,tmp_path,tmp_path,tmp_path,tmp_path),Index(),Generator(),repo.connection)
++    result=service.answer('只按评选办法，我是否会获得这个奖，最终实际到账多少元？')
++    assert service.last_diagnostics['route']=='unsupported_personal_outcome' and not result.references
++
++
++def test_equal_sized_groups_cannot_be_counted_once(repo):
++    q='两组分别有9名和9名参与者，补助金额合计多少元？'
++    steps=[{'id':'rate','op':'lookup','fact_id':'f1'},
++        {'id':'n','op':'lookup','literal':'9','unit':'人'},
++        {'id':'a','op':'multiply','inputs':['rate','n']}]
++    assert not execute_text(repo,'人均补助金额为17元。',q,steps).ok
++    steps.append({'id':'total','op':'add','inputs':['a','a']})
++    result=execute_text(repo,'人均补助金额为17元。',q,steps)
++    assert result.ok and result.value==306

@@ -1,0 +1,18 @@
+{
+  "dev36": {
+    "rows": 36,
+    "three_column_csv": true,
+    "exceptions": 0,
+    "network_attempt_count": 0,
+    "gold_unchanged": true,
+    "run_completed_and_input_hashes_verified": true
+  },
+  "exposed_v2": {
+    "rows": 16,
+    "three_column_csv": true,
+    "exceptions": 0,
+    "network_attempt_count": 0,
+    "gold_unchanged": true,
+    "run_completed_and_input_hashes_verified": true
+  }
+}

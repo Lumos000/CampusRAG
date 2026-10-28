@@ -70,8 +70,20 @@ class RAGService:
             self.last_diagnostics['route'] = 'unsupported_personal_record'
             reason = '本系统仅使用公开资料，无法查询你所问的个人记录或实时信息，也不能据此推断具体结果。'
             return AnswerResult(question,reason,[],[],numeric_verification={'verified':False,'reason':reason})
+        personal_outcome = re.search(
+            r'(?:我|本人).*(?:能否|是否|会不会|能不能).*(?:获得|获奖|评上|批准|录取|通过)|'
+            r'(?:我|本人).*(?:最终|实际).*(?:到账|发放|获得|领取)',question)
+        public_conditions = re.search(r'哪些(?:申请)?条件|(?:申请|资格|评选)条件(?:是什么|有哪些)|如何申请|怎样申请',question)
+        actual_outcome = re.search(r'(?:最终|实际).*(?:到账|发放|获得|领取)',question)
+        if personal_outcome and (not public_conditions or actual_outcome):
+            self.last_diagnostics['route'] = 'unsupported_personal_outcome'
+            reason = '本系统仅使用公开资料，缺少你的个人资格及审批或评审结果，无法确定是否获批或最终到账金额。'
+            return AnswerResult(question,reason,[],[],numeric_verification={'verified':False,'reason':reason})
         numeric_question = bool(re.search(
             r'计算|求和|合计|总计|之和|占.*(?:比例|多少)|百分比|平均|相差|差额|多多少|少多少|乘|除以|复算|反推|生师比|折算|多少|几(?:人|个|名|本|元)|预收额',question))
+        membership = re.search(r'(?:是否|会不会|能否|计不计|算不算).*(?:计入|纳入)|(?:计入|纳入).*吗',question)
+        if membership and not re.search(r'多少|求和|合计|总计|之和|相差|差额|乘|除以',question):
+            numeric_question = False
         if not numeric_question:
             self.last_diagnostics['route'] = 'text'
             evidence = self._text_evidence(question,evidence)

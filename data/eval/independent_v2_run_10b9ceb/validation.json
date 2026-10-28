@@ -1,0 +1,31 @@
+{
+  "commit": "10b9ceb3ee8817fc954475dff228ce6096a23fc0",
+  "application_code_and_config_unchanged": true,
+  "frozen_files_verified_before_and_after": 95,
+  "original_sealed_dataset_verified": true,
+  "gold_byte_identical": true,
+  "question_count": 16,
+  "completed_unique_questions": 16,
+  "exceptions": 0,
+  "question_reruns": 0,
+  "network_attempts": 0,
+  "csv_columns": [
+    "问题",
+    "答案",
+    "参考资料"
+  ],
+  "csv_rows": 16,
+  "reviewer": "Codex, same assistant; not external or double blind",
+  "artifacts": {
+    "manifest.json": "85162b79214043b29116265b0c4e1f5f2d787c5b06cddce562e0c35e91c9e038",
+    "gold.json": "ea515004c8fb01d0c82d59421616d2fa8829a990ad76a4843022d4e0bd573fd0",
+    "review_protocol.md": "f2b53c28c1f901e928ab3e1c1bd89b4554b310666f4c8842b9dc411ce4f8cdb2",
+    "raw_source_audit.json": "8c3c840516bd14c6af2f355bef4c85e928dbbca908b2adb545f0507fcdd13f06",
+    "stage_analysis.json": "4efebbfbcb0982f4b88b7c8b2cfc53e5464b7326295a45a8cbfadac673e86f36",
+    "run1/results.json": "709681e2f69a8b12ad0cce43cc553d6e2282d42a65c6008fea106a8911d2c8e6",
+    "run1/results.csv": "b4826291900ef7a515b8a1c198847aa50a4ea0669c2a879cce935cc9f20aaa35",
+    "run1/reviews.json": "831ca0440201954b7b9614c2250d6ac62e146a20e945498389b4038618c2223b",
+    "run1/summary.json": "e4c49b1665af87a41e92657931d500af8bd985dfade29c3b25b1e8acff3ba1aa",
+    "run1/scores.csv": "75ef618a67a0c33a9fdf3d6cf2ba121a8fb3943567d8af44c4bac403d1905434"
+  }
+}
