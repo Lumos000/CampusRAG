@@ -190,6 +190,8 @@ class StructuredQueryEngine:
                     if set(step)-{'id','op','inputs'} or op not in {'add','subtract','multiply','divide','ratio','average','sum'}:
                         raise PlanError(sid+': 算术步骤字段不合法')
                     operands = [self._step_input(v,values,question) for v in inputs]
+                    if op=='multiply':
+                        self._check_person_rate_pair(operands,question)
                     value,unit,expression = self._step_arithmetic(op,operands)
                     value_record = {'value':value,'unit':unit,'expression':expression,
                                     'details':[d for v in operands for d in v['details']],
@@ -461,8 +463,8 @@ class StructuredQueryEngine:
 
     @staticmethod
     def _fact_source_labels(fact):
-        title = fact.get('source_title') or getattr(fact.get('evidence'),'title','')
-        return [title,fact.get('source_section','')]
+        title = fact.get('source_title') or fact.get('title') or getattr(fact.get('evidence'),'title','')
+        return [title,fact.get('source_section',''),fact.get('table_name','')]
 
     @staticmethod
     def requested_fact_sources(question,facts):
@@ -479,10 +481,11 @@ class StructuredQueryEngine:
 
     @staticmethod
     def _check_fact_sources(question,details,facts):
-        used = [d for d in details if 'fact_id' in d]
+        used = [d for d in details if 'fact_id' in d or 'table_id' in d]
         if not used:
             return
-        requested = StructuredQueryEngine.requested_fact_sources(question,facts)
+        requested = StructuredQueryEngine.requested_fact_sources(question,
+            {**facts,**{'used_'+str(i):d for i,d in enumerate(used)}})
         def normalized(value):
             return re.sub('[《》“”"\']','',compact(value))
         if not requested:
@@ -497,6 +500,32 @@ class StructuredQueryEngine:
             covered.update(matched)
         if requested-covered:
             raise PlanError('计算未覆盖问题明确列举的资料：'+'、'.join(sorted(requested-covered)))
+
+    @staticmethod
+    def _check_person_rate_pair(operands,question):
+        if len(operands)!=2 or {v['unit'] for v in operands}!={'人','元/人'}:
+            return
+        people = next(v for v in operands if v['unit']=='人')
+        rate = next(v for v in operands if v['unit']=='元/人')
+        # User quantities have no body subject. Do not invent one for them.
+        counts = [d for d in people['details'] if 'fact_id' in d]
+        rates = [d for d in rate['details'] if 'fact_id' in d]
+        for count in counts:
+            for fee in rates:
+                if (count.get('doc_id')!=fee.get('doc_id') or
+                    (count.get('source_section') and fee.get('source_section') and
+                     count['source_section']!=fee['source_section'])):
+                    raise QuestionConstraintError('问题约束：人数与费率来源配对不符，不能跨办法套用标准')
+                cg,rg = count.get('scope',{}).get('group'),fee.get('scope',{}).get('group')
+                if cg and rg and cg!=rg:
+                    raise QuestionConstraintError('问题约束：人数与费率分组配对不符')
+                def subject(fact):
+                    return re.sub(r'(?:人数|名额|(?:人均)?标准)$','',compact(fact.get('subject','')))
+                left,right = subject(count),subject(fee)
+                explicit_rate = right and re.search(r'(?:按|采用|使用)'+re.escape(right)+r'(?:的)?(?:人均)?标准',compact(question))
+                shared = re.search(r'统一|共同|通用',fee.get('field','')) and re.search(r'统一|共同|通用',question)
+                if left and right and left!=right and not ((explicit_rate or shared) and '各自' not in question):
+                    raise QuestionConstraintError('问题约束：人数与费率主体配对不符，请按各自主体匹配fact_id')
 
     @staticmethod
     def _check_question_operation(plan,question,result,facts=None):

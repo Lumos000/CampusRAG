@@ -1,0 +1,26 @@
+F..                                                                      [100%]
+================================== FAILURES ===================================
+________ test_repair_plan_is_an_object_not_a_json_encoded_string[True] ________
+
+as_string = True
+
+    @pytest.mark.parametrize('as_string', [True, False])
+    def test_repair_plan_is_an_object_not_a_json_encoded_string(as_string):
+        previous = {'steps': [{'id': 'left', 'op': 'lookup', 'fact_id': 'f11'},
+            {'id': 'result', 'op': 'multiply', 'inputs': ['left', 'right']}]}
+        raw = json.dumps(previous, ensure_ascii=False)
+        generator = Generator()
+        planner = QueryPlanner(generator)
+        planner.step_plan('��ʯԤ���Ƕ���Ԫ��', json.dumps({'facts': [
+            {'fact_id': 'f11', 'unit': 'Ԫ', 'subject': '��ʯ'}]}),
+            'rightδ����', raw if as_string else previous)
+        encoded = generator.calls[0].split('�ϴ������ƻ���', 1)[1]
+>       assert encoded.startswith(raw)
+E       assert False
+E        +  where False = <built-in method startswith of str object at 0x00000243EA5A6010>('{"steps": [{"id": "left", "op": "lookup", "fact_id": "f11"}, {"id": "result", "op": "multiply", "inputs": ["left", "right"]}]}')
+E        +    where <built-in method startswith of str object at 0x00000243EA5A6010> = '"{\\"steps\\": [{\\"id\\": \\"left\\", \\"op\\": \\"lookup\\", \\"fact_id\\": \\"f11\\"}, {\\"id\\": \\"result\\", \\"op\\": \\"multiply\\", \\"inputs\\": [\\"left\\", \\"right\\"]}]}"\n����JSON��table_id��steps��ϵͳ�̶�ȡ���һ����output��ʡ�ԣ���'.startswith
+
+.tmp\test_repair_input_candidate.py:28: AssertionError
+=========================== short test summary info ===========================
+FAILED .tmp/test_repair_input_candidate.py::test_repair_plan_is_an_object_not_a_json_encoded_string[True]
+1 failed, 2 passed in 0.86s

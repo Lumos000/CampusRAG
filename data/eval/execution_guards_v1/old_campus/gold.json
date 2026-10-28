@@ -1,0 +1,271 @@
+{
+  "description": "Sealed before LoRA training; newly authored source-checked campus questions, not external blind evaluation. Never used as training/validation/checkpoint selection.",
+  "cases": [
+    {
+      "id": "L3N01",
+      "category": "calculation",
+      "question": "按“共进电子奖学金”评选办法，研究生每人的奖学金标准比本科生高多少元？",
+      "points": [
+        "4000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 247,
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人；本科生：6 名，每学年奖学金标准为8000 元/人。"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 247,
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人；本科生：6 名，每学年奖学金标准为8000 元/人。",
+          "chunk_ids": [
+            "93d06975-8309-40b5-9691-bf21f117b7b4"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "4000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "4000元"
+    },
+    {
+      "id": "L3N02",
+      "category": "calculation",
+      "question": "按“共进电子奖学金”办法规定的研究生和本科生名额、每人标准，两类奖金合计多少元？",
+      "points": [
+        "96000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 247,
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人；本科生：6 名，每学年奖学金标准为8000 元/人。"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 247,
+          "quote": "研究生：4 名，每学年奖学金标准为12000 元/人；本科生：6 名，每学年奖学金标准为8000 元/人。",
+          "chunk_ids": [
+            "93d06975-8309-40b5-9691-bf21f117b7b4"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "96000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "96000元"
+    },
+    {
+      "id": "L3N03",
+      "category": "calculation",
+      "question": "按“华为奖学金”评选办法，研究生每人奖励比本科生每人奖励高多少元？",
+      "points": [
+        "3000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人",
+          "chunk_ids": [
+            "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "3000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "3000元"
+    },
+    {
+      "id": "L3N04",
+      "category": "calculation",
+      "question": "按“华为奖学金”办法，本科生与研究生的奖励名额合计多少人？",
+      "points": [
+        "12人"
+      ],
+      "sources": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人",
+          "chunk_ids": [
+            "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "12",
+      "unit": "人",
+      "tolerance": "0.000001",
+      "answer": "12人"
+    },
+    {
+      "id": "L3N05",
+      "category": "calculation",
+      "question": "按“华为奖学金”办法所列两类名额及每人标准，奖学金预算合计多少元？",
+      "points": [
+        "87000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人",
+          "chunk_ids": [
+            "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "87000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "87000元"
+    },
+    {
+      "id": "L3N06",
+      "category": "calculation",
+      "question": "按“烽火通信奖学金”办法列出的19人名额和每人标准，奖金合计多少元？",
+      "points": [
+        "95000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 262,
+          "quote": "本科生、硕士研究生：19 人，5000 元/人"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 262,
+          "quote": "本科生、硕士研究生：19 人，5000 元/人",
+          "chunk_ids": [
+            "993ebd12-f654-4501-898d-8c5134c41d8c"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "95000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "95000元"
+    },
+    {
+      "id": "L3F01",
+      "category": "fact",
+      "question": "按《考试规则》，具有通讯或存储功能的电子设备，仅作为计时工具是否允许？",
+      "points": [
+        "不允许，仅作计时工具也禁止"
+      ],
+      "sources": [
+        {
+          "doc_id": 190,
+          "quote": "禁止携带具有通讯、存储等功能的电子设备进入考场（作计时工具也不允许）"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 190,
+          "quote": "禁止携带具有通讯、存储等功能的电子设备进入考场（作计时工具也不允许）",
+          "chunk_ids": [
+            "898a30f2-130b-4537-97e1-44728642eef1"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "L3P01",
+      "category": "procedure",
+      "question": "已报名MOOC线上学习和线下考试，总评不及格时补考是否收费，平时成绩如何处理？",
+      "points": [
+        "一次免费补考",
+        "计入平时成绩，评定比例与线下考试相同"
+      ],
+      "sources": [
+        {
+          "doc_id": 316,
+          "quote": "学校提供一次免费“补考”机会。补考成绩计算平时成绩，评定比例与线下考试相同。"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 316,
+          "quote": "学校提供一次免费“补考”机会。补考成绩计算平时成绩，评定比例与线下考试相同。",
+          "chunk_ids": [
+            "44dd6fff-8990-41d8-8100-d52a2ec86390"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "L3T01",
+      "category": "temporal",
+      "question": "根据2026年10月8日起临时延长开放时间的通知，两校区图书馆阅览室晚上延长到几点？",
+      "points": [
+        "23:00"
+      ],
+      "sources": [
+        {
+          "doc_id": 195,
+          "quote": "阅览室晚上开放时间统一延长至23:00。"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 195,
+          "quote": "阅览室晚上开放时间统一延长至23:00。",
+          "chunk_ids": [
+            "7ef64315-1193-4f83-9aee-fb6e0472bd49"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    {
+      "id": "L3R01",
+      "category": "refusal",
+      "question": "我是否能拿到共进电子奖学金，最终实际到账多少元？",
+      "points": [
+        "缺少个人资格及评审结果，不能判断个人获奖或最终到账"
+      ],
+      "sources": [
+        {
+          "doc_id": 247,
+          "quote": "各学院具体奖励名额每年根据企业要求确定。"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 247,
+          "quote": "各学院具体奖励名额每年根据企业要求确定。",
+          "chunk_ids": [
+            "41356507-fe92-4b38-8b53-95c443fb4ffc"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "refuse": true
+    }
+  ]
+}

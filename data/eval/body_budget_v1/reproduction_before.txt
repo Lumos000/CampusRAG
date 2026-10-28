@@ -1,0 +1,64 @@
+FFF.                                                                     [100%]
+================================== FAILURES ===================================
+______ test_body_budget_example_does_not_use_an_unrelated_money_table[1] ______
+
+budget = (<campus_rag.database.query.StructuredQueryEngine object at 0x000001F034A2C510>, 1, [{'table_id': 1, 'name': '奖励名单', 'document': '普通奖励名单', 'periods': [], ...}])
+groups = 1
+
+    @pytest.mark.parametrize('groups', [1, 2])
+    def test_body_budget_example_does_not_use_an_unrelated_money_table(budget, groups):
+        engine, did, schema = budget
+        text = '技术组：4名，137元/人。' + ('研习组：6名，89元/人。' if groups == 2 else '')
+        facts = NumericEngine.text_facts([Evidence('body', text, 1, did,
+            '青石补助办法', 'https://example.edu/body')])
+        payload = {'tables': schema, 'facts': [{k: v for k, v in f.items() if k != 'evidence'} for f in facts.values()]}
+        question = '按《青石补助办法》所列名额及每人标准，预算合计多少元？'
+        plan = parse_plan(step_example(operation_hint(question), json.dumps(payload), question))
+        result = engine.execute_steps(plan, [schema[0]['table_id']], question, facts)
+>       assert result.ok and result.value == (548 if groups == 1 else 1082)
+E       AssertionError: assert (False)
+E        +  where False = CalculationResult(ok=False, value=None, unit='', expression='', details=[], error='问题约束：操作数来源与问题指定资料不符；要求：青石补助办法；当前来源：...itle': '普通奖励名单', 'source_url': 'https://example.edu/list', 'department': '', 'published_at': None}]}], repairable=True).ok
+
+.tmp\test_body_budget_candidate.py:36: AssertionError
+______ test_body_budget_example_does_not_use_an_unrelated_money_table[2] ______
+
+budget = (<campus_rag.database.query.StructuredQueryEngine object at 0x000001F05CBAB690>, 1, [{'table_id': 1, 'name': '奖励名单', 'document': '普通奖励名单', 'periods': [], ...}])
+groups = 2
+
+    @pytest.mark.parametrize('groups', [1, 2])
+    def test_body_budget_example_does_not_use_an_unrelated_money_table(budget, groups):
+        engine, did, schema = budget
+        text = '技术组：4名，137元/人。' + ('研习组：6名，89元/人。' if groups == 2 else '')
+        facts = NumericEngine.text_facts([Evidence('body', text, 1, did,
+            '青石补助办法', 'https://example.edu/body')])
+        payload = {'tables': schema, 'facts': [{k: v for k, v in f.items() if k != 'evidence'} for f in facts.values()]}
+        question = '按《青石补助办法》所列名额及每人标准，预算合计多少元？'
+        plan = parse_plan(step_example(operation_hint(question), json.dumps(payload), question))
+        result = engine.execute_steps(plan, [schema[0]['table_id']], question, facts)
+>       assert result.ok and result.value == (548 if groups == 1 else 1082)
+E       AssertionError: assert (False)
+E        +  where False = CalculationResult(ok=False, value=None, unit='', expression='', details=[], error='问题约束：操作数来源与问题指定资料不符；要求：青石补助办法；当前来源：...itle': '普通奖励名单', 'source_url': 'https://example.edu/list', 'department': '', 'published_at': None}]}], repairable=True).ok
+
+.tmp\test_body_budget_candidate.py:36: AssertionError
+_________ test_body_budget_example_preserves_a_matching_user_quantity _________
+
+budget = (<campus_rag.database.query.StructuredQueryEngine object at 0x000001F036666750>, 1, [{'table_id': 1, 'name': '奖励名单', 'document': '普通奖励名单', 'periods': [], ...}])
+
+    def test_body_budget_example_preserves_a_matching_user_quantity(budget):
+        engine, did, schema = budget
+        facts = NumericEngine.text_facts([Evidence('body', '技术组：4名，137元/人。', 1, did,
+            '青石补助办法', 'https://example.edu/body')])
+        payload = {'tables': schema, 'facts': [{k: v for k, v in f.items() if k != 'evidence'} for f in facts.values()]}
+        question = '按《青石补助办法》列出的4人名额及每人标准，预算合计多少元？'
+        raw = step_example(operation_hint(question), json.dumps(payload), question)
+        result = engine.execute_steps(parse_plan(raw), [schema[0]['table_id']], question, facts)
+>       assert result.ok and result.value == 548
+E       AssertionError: assert (False)
+E        +  where False = CalculationResult(ok=False, value=None, unit='', expression='', details=[], error='问题约束：操作数来源与问题指定资料不符；要求：青石补助办法；当前来源：...itle': '普通奖励名单', 'source_url': 'https://example.edu/list', 'department': '', 'published_at': None}]}], repairable=True).ok
+
+.tmp\test_body_budget_candidate.py:49: AssertionError
+=========================== short test summary info ===========================
+FAILED .tmp/test_body_budget_candidate.py::test_body_budget_example_does_not_use_an_unrelated_money_table[1]
+FAILED .tmp/test_body_budget_candidate.py::test_body_budget_example_does_not_use_an_unrelated_money_table[2]
+FAILED .tmp/test_body_budget_candidate.py::test_body_budget_example_preserves_a_matching_user_quantity
+3 failed, 1 passed in 1.24s

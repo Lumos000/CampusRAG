@@ -1,0 +1,40 @@
+{
+  "stage": "body_budget_v1",
+  "heldout_opened": false,
+  "code_matches_frozen_snapshot": true,
+  "runs": {
+    "dev36": {
+      "count": 36,
+      "csv_verified": true,
+      "network_attempts": 0,
+      "gold_unchanged": true,
+      "first_prompt_changed": []
+    },
+    "exposed_v2": {
+      "count": 16,
+      "csv_verified": true,
+      "network_attempts": 0,
+      "gold_unchanged": true,
+      "first_prompt_changed": []
+    },
+    "old_campus": {
+      "count": 10,
+      "csv_verified": true,
+      "network_attempts": 0,
+      "gold_unchanged": true,
+      "first_prompt_changed": [
+        "L3N02",
+        "L3N05",
+        "L3N06"
+      ]
+    }
+  },
+  "temp_dir": "E:\\CampusRAG\\.tmp\\runtime",
+  "numeric_regression": {
+    "correct": 12,
+    "total": 12,
+    "accuracy": 1.0
+  },
+  "automatic_tests": 236,
+  "checkpoint_resume_without_regeneration": true
+}

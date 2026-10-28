@@ -24,3 +24,8 @@ data/eval/fact_scope_v1/regression_stdout.txt -whitespace
 data/eval/fact_scope_v1/reproduction.txt -whitespace
 data/eval/planning_scope_v1/focused_tests.txt -whitespace
 data/eval/text_facts_v1/reproduction.txt -whitespace
+# Preserve this round's frozen source snapshots and original diagnostic output.
+data/eval/execution_guards_v1/** -text -whitespace
+data/eval/repair_input_v1/** -text -whitespace
+data/eval/body_budget_v1/** -text -whitespace
+data/eval/reliability_audit_3ce4b7f/** -text -whitespace

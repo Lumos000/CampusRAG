@@ -1,0 +1,395 @@
+diff --git a/src/campus_rag/__init__.py b/src/campus_rag/__init__.py
+index 6baa517..b89a02e 100644
+--- a/src/campus_rag/__init__.py
++++ b/src/campus_rag/__init__.py
+@@ -1,4 +1,15 @@
+ """Offline campus retrieval-augmented question answering."""
+ 
++import os
++from pathlib import Path
++import tempfile
++
++# Keep process-local temporary files beside the project, including libraries
++# that consult TEMP/TMP instead of Python's cached temporary directory.
++_TEMP_DIR = Path(__file__).resolve().parents[2] / '.tmp' / 'runtime'
++_TEMP_DIR.mkdir(parents=True, exist_ok=True)
++os.environ.update(dict.fromkeys(('TEMP', 'TMP', 'TMPDIR'), str(_TEMP_DIR)))
++tempfile.tempdir = str(_TEMP_DIR)
++
+ __version__ = "0.1.0"
+ 
+diff --git a/src/campus_rag/database/query.py b/src/campus_rag/database/query.py
+index 410cfa8..94626bf 100644
+--- a/src/campus_rag/database/query.py
++++ b/src/campus_rag/database/query.py
+@@ -190,6 +190,8 @@ class StructuredQueryEngine:
+                     if set(step)-{'id','op','inputs'} or op not in {'add','subtract','multiply','divide','ratio','average','sum'}:
+                         raise PlanError(sid+': 算术步骤字段不合法')
+                     operands = [self._step_input(v,values,question) for v in inputs]
++                    if op=='multiply':
++                        self._check_person_rate_pair(operands,question)
+                     value,unit,expression = self._step_arithmetic(op,operands)
+                     value_record = {'value':value,'unit':unit,'expression':expression,
+                                     'details':[d for v in operands for d in v['details']],
+@@ -461,8 +463,8 @@ class StructuredQueryEngine:
+ 
+     @staticmethod
+     def _fact_source_labels(fact):
+-        title = fact.get('source_title') or getattr(fact.get('evidence'),'title','')
+-        return [title,fact.get('source_section','')]
++        title = fact.get('source_title') or fact.get('title') or getattr(fact.get('evidence'),'title','')
++        return [title,fact.get('source_section',''),fact.get('table_name','')]
+ 
+     @staticmethod
+     def requested_fact_sources(question,facts):
+@@ -479,10 +481,11 @@ class StructuredQueryEngine:
+ 
+     @staticmethod
+     def _check_fact_sources(question,details,facts):
+-        used = [d for d in details if 'fact_id' in d]
++        used = [d for d in details if 'fact_id' in d or 'table_id' in d]
+         if not used:
+             return
+-        requested = StructuredQueryEngine.requested_fact_sources(question,facts)
++        requested = StructuredQueryEngine.requested_fact_sources(question,
++            {**facts,**{'used_'+str(i):d for i,d in enumerate(used)}})
+         def normalized(value):
+             return re.sub('[《》“”"\']','',compact(value))
+         if not requested:
+@@ -498,6 +501,32 @@ class StructuredQueryEngine:
+         if requested-covered:
+             raise PlanError('计算未覆盖问题明确列举的资料：'+'、'.join(sorted(requested-covered)))
+ 
++    @staticmethod
++    def _check_person_rate_pair(operands,question):
++        if len(operands)!=2 or {v['unit'] for v in operands}!={'人','元/人'}:
++            return
++        people = next(v for v in operands if v['unit']=='人')
++        rate = next(v for v in operands if v['unit']=='元/人')
++        # User quantities have no body subject. Do not invent one for them.
++        counts = [d for d in people['details'] if 'fact_id' in d]
++        rates = [d for d in rate['details'] if 'fact_id' in d]
++        for count in counts:
++            for fee in rates:
++                if (count.get('doc_id')!=fee.get('doc_id') or
++                    (count.get('source_section') and fee.get('source_section') and
++                     count['source_section']!=fee['source_section'])):
++                    raise QuestionConstraintError('问题约束：人数与费率来源配对不符，不能跨办法套用标准')
++                cg,rg = count.get('scope',{}).get('group'),fee.get('scope',{}).get('group')
++                if cg and rg and cg!=rg:
++                    raise QuestionConstraintError('问题约束：人数与费率分组配对不符')
++                def subject(fact):
++                    return re.sub(r'(?:人数|名额|(?:人均)?标准)$','',compact(fact.get('subject','')))
++                left,right = subject(count),subject(fee)
++                explicit_rate = right and re.search(r'(?:按|采用|使用)'+re.escape(right)+r'(?:的)?(?:人均)?标准',compact(question))
++                shared = re.search(r'统一|共同|通用',fee.get('field','')) and re.search(r'统一|共同|通用',question)
++                if left and right and left!=right and not ((explicit_rate or shared) and '各自' not in question):
++                    raise QuestionConstraintError('问题约束：人数与费率主体配对不符，请按各自主体匹配fact_id')
++
+     @staticmethod
+     def _check_question_operation(plan,question,result,facts=None):
+         StructuredQueryEngine._check_fact_sources(question,result['details'],facts or {})
+diff --git a/src/campus_rag/rag/planner.py b/src/campus_rag/rag/planner.py
+index 82c29d9..e0cd61c 100644
+--- a/src/campus_rag/rag/planner.py
++++ b/src/campus_rag/rag/planner.py
+@@ -80,8 +80,64 @@ def _example_json(table_id, steps):
+     return json.dumps({'table_id':table_id,'steps':output},ensure_ascii=False)
+ 
+ 
++def _body_budget_example(operation,payload,question):
++    """Show complete body count/rate pairs without dropping retrieved tables."""
++    if (operation not in {'sum','multiply'} or not asks_total(question)
++            or not re.search(r'名额|人数',question) or not re.search(r'每人|人均|生均',question)
++            or not re.search(r'多少\s*元|预算|总金额',question)):
++        return None
++    from campus_rag.database.query import StructuredQueryEngine
++    facts = payload.get('facts',[])
++    requested = StructuredQueryEngine.requested_fact_sources(question,{str(i):f for i,f in enumerate(facts)})
++    if len(requested)!=1:
++        return None
++    name = next(iter(requested))
++    def matches(labels):
++        return any(name in re.sub('[《》“”"\']','',compact_label) for compact_label in
++            (re.sub(r'\s+','',label) for label in labels))
++    if any(matches([t['document'],t['name']]) for t in payload.get('tables',[])):
++        return None  # A table from the requested policy still competes normally.
++    paired = {}
++    for fact in facts:
++        if fact.get('unit') not in {'人','元/人'} or not matches(StructuredQueryEngine._fact_source_labels(fact)):
++            continue
++        if fact.get('comparison')!='eq':
++            return None
++        scope = fact.get('scope',{})
++        if scope.get('group') and scope['group'] not in question:
++            return None
++        subject = re.sub(r'(?:人数|名额|(?:人均)?标准)$','',fact.get('subject',''))
++        if not subject:
++            return None
++        key = (fact.get('doc_id'),fact.get('source_section',''),scope.get('group',''),subject)
++        pair = paired.setdefault(key,{})
++        if fact['unit'] in pair:
++            return None
++        pair[fact['unit']] = fact
++    if not 1<=len(paired)<=2 or any(set(pair)!={'人','元/人'} for pair in paired.values()):
++        return None
++    constants = question_quantities(question,'人')
++    if constants and (len(paired)!=1 or len(constants)!=1 or
++            Decimal(constants[0]['literal'])!=Decimal(next(iter(paired.values()))['人']['value'])):
++        return None
++    steps,totals = [],[]
++    for i,pair in enumerate(paired.values(),1):
++        people,rate,total = 'people_'+str(i),'rate_'+str(i),'cost_'+str(i)
++        count = {'literal':constants[0]['literal'],'unit':'人'} if constants else {'fact_id':pair['人']['fact_id']}
++        steps.extend([{'id':people,'op':'lookup',**count},
++            {'id':rate,'op':'lookup','fact_id':pair['元/人']['fact_id']},
++            {'id':total,'op':'multiply','inputs':[people,rate]}])
++        totals.append(total)
++    if len(totals)>1:
++        steps.append({'id':'result','op':'add','inputs':totals})
++    return _example_json(None,steps)
++
++
+ def step_example(operation,context='',question=''):
+     payload = json.loads(context) if context else {}
++    budget = _body_budget_example(operation,payload,question)
++    if budget is not None:
++        return budget
+     tables, facts = payload.get('tables',[]), payload.get('facts',[])
+     measures = lambda t:[c for c in t['columns'] if c.get('role')=='measure' and c['unit']]
+     # Text-only evidence, or a table with no measure suitable for arithmetic.
+--- /dev/null
++++ b/tests/conftest.py
+@@ -0,0 +1,2 @@
++# Configure project-local temporary files before pytest creates tmp_path.
++import campus_rag  # noqa: F401
+--- /dev/null
++++ b/tests/test_body_budget_example.py
+@@ -0,0 +1,94 @@
++import json
++
++import pytest
++
++from campus_rag.database import Repository
++from campus_rag.database.query import StructuredQueryEngine
++from campus_rag.rag.numeric import NumericEngine
++from campus_rag.rag.planner import QueryPlanner, operation_hint, parse_plan, step_example
++from campus_rag.tools.numbers import normalize_cell
++from campus_rag.types import Evidence, ParsedTable, SourceDocument
++
++
++@pytest.fixture
++def budget(tmp_path):
++    with Repository(tmp_path/'budget.db') as repo:
++        repo.initialize()
++        did = repo.add_document(SourceDocument('青石补助办法', 'https://example.edu/body', sha256='body'))
++        other = repo.add_document(SourceDocument('普通奖励名单', 'https://example.edu/list', sha256='table'))
++        table = ParsedTable('奖励名单', ['类别', '金额（元）'], [['其他项目', '71']])
++        tid = repo.add_table(other, table, [[normalize_cell(v) for v in row] for row in table.rows])
++        engine = StructuredQueryEngine(repo.connection)
++        schema = engine.schema_context([tid], [])
++        yield engine, did, schema
++
++
++@pytest.mark.parametrize('groups', [1, 2])
++def test_body_budget_example_does_not_use_an_unrelated_money_table(budget, groups):
++    engine, did, schema = budget
++    text = '技术组：4名，137元/人。' + ('研习组：6名，89元/人。' if groups == 2 else '')
++    facts = NumericEngine.text_facts([Evidence('body', text, 1, did,
++        '青石补助办法', 'https://example.edu/body')])
++    payload = {'tables': schema, 'facts': [{k: v for k, v in f.items() if k != 'evidence'} for f in facts.values()]}
++    question = '按《青石补助办法》所列名额及每人标准，预算合计多少元？'
++    plan = parse_plan(step_example(operation_hint(question), json.dumps(payload), question))
++    result = engine.execute_steps(plan, [schema[0]['table_id']], question, facts)
++    assert result.ok and result.value == (548 if groups == 1 else 1082)
++    assert plan.table_id is None
++    assert all('field_id' not in s for s in plan.steps)
++
++
++def test_body_budget_example_preserves_a_matching_user_quantity(budget):
++    engine, did, schema = budget
++    facts = NumericEngine.text_facts([Evidence('body', '技术组：4名，137元/人。', 1, did,
++        '青石补助办法', 'https://example.edu/body')])
++    payload = {'tables': schema, 'facts': [{k: v for k, v in f.items() if k != 'evidence'} for f in facts.values()]}
++    question = '按《青石补助办法》列出的4人名额及每人标准，预算合计多少元？'
++    raw = step_example(operation_hint(question), json.dumps(payload), question)
++    result = engine.execute_steps(parse_plan(raw), [schema[0]['table_id']], question, facts)
++    assert result.ok and result.value == 548
++    assert any(s.get('literal') == '4' and s.get('unit') == '人' for s in json.loads(raw)['steps'])
++
++
++def test_competition_example_keeps_all_model_evidence(budget):
++    _, did, schema = budget
++    facts = NumericEngine.text_facts([Evidence('body', '技术组：4名，137元/人。', 1, did,
++        '青石补助办法', 'https://example.edu/body')])
++    payload = {'tables': schema, 'facts': [{k: v for k, v in f.items() if k != 'evidence'} for f in facts.values()]}
++    class Generator:
++        def generate(self, prompt, **kwargs):
++            self.prompt = prompt
++            return '{"steps":[{"id":"result","op":"lookup","fact_id":"f1"}]}'
++    generator = Generator()
++    QueryPlanner(generator).step_plan('按《青石补助办法》所列名额及每人标准，预算合计多少元？', json.dumps(payload))
++    visible = generator.prompt.split('真实Schema和正文facts：', 1)[1].split('\n问题：', 1)[0]
++    assert json.loads(visible) == json.loads(json.dumps(payload))
++
++
++@pytest.mark.parametrize('missing_rate', [False, True])
++def test_incomplete_or_mismatched_headcounts_are_not_filled_in(budget, missing_rate):
++    engine, did, schema = budget
++    text = '技术组：4名，137元/人。研习组人数为6人。' if missing_rate else '技术组：4名，137元/人。'
++    facts = NumericEngine.text_facts([Evidence('body', text, 1, did,
++        '青石补助办法', 'https://example.edu/body')])
++    payload = {'tables': schema, 'facts': [{k: v for k, v in f.items() if k != 'evidence'} for f in facts.values()]}
++    question = ('按《青石补助办法》所列两类名额及每人标准，预算合计多少元？' if missing_rate else
++        '按《青石补助办法》列出的6人名额及每人标准，预算合计多少元？')
++    plan = parse_plan(step_example(operation_hint(question), json.dumps(payload), question))
++    result = engine.execute_steps(plan, [schema[0]['table_id']], question, facts)
++    assert not result.ok
++
++
++def test_a_direct_table_total_keeps_the_table_path(budget):
++    engine, did, schema = budget
++    tid = schema[0]['table_id']
++    engine.connection.execute('UPDATE documents SET title=? WHERE id=(SELECT doc_id FROM tables WHERE id=?)',
++        ('青石补助办法', tid))
++    schema = engine.schema_context([tid], [], '其他项目')
++    facts = NumericEngine.text_facts([Evidence('body', '技术组：4名，137元/人。', 1, did,
++        '青石补助办法', 'https://example.edu/body')])
++    payload = {'tables': schema, 'facts': [{k: v for k, v in f.items() if k != 'evidence'} for f in facts.values()]}
++    question = '按《青石补助办法》，其他项目金额合计多少元？'
++    plan = parse_plan(step_example(operation_hint(question), json.dumps(payload), question))
++    result = engine.execute_steps(plan, [tid], question, facts)
++    assert plan.table_id == tid and result.ok and result.value == 71
+--- /dev/null
++++ b/tests/test_operand_scope_guards.py
+@@ -0,0 +1,110 @@
++import json
++
++import pytest
++
++from campus_rag.database import Repository
++from campus_rag.database.query import StructuredQueryEngine
++from campus_rag.rag.numeric import NumericEngine
++from campus_rag.rag.planner import parse_plan
++from campus_rag.tools.numbers import normalize_cell
++from campus_rag.types import Evidence, ParsedTable, SourceDocument
++
++
++@pytest.fixture
++def engine(tmp_path):
++    with Repository(tmp_path/'scope.db') as repo:
++        repo.initialize()
++        yield repo, StructuredQueryEngine(repo.connection)
++
++
++@pytest.mark.parametrize('crossed', [False, True])
++@pytest.mark.parametrize('reverse', [False, True])
++def test_each_headcount_uses_its_own_rate(engine, crossed, reverse):
++    _, query = engine
++    facts = NumericEngine.text_facts([Evidence('policy',
++        '技术组：4名，137元/人；研习组：6名，89元/人。',
++        1, 1, '公开补助办法', 'https://example.edu/policy')])
++    ids = {(f['subject'], f['unit']): fid for fid, f in facts.items()}
++    steps = []
++    for i, subject in enumerate(['技术组', '研习组']):
++        rate_subject = ['研习组', '技术组'][i] if crossed else subject
++        inputs = [f'n{i}', f'r{i}']
++        steps.extend([{'id': inputs[0], 'op': 'lookup', 'fact_id': ids[subject, '人']},
++            {'id': inputs[1], 'op': 'lookup', 'fact_id': ids[rate_subject, '元/人']},
++            {'id': f't{i}', 'op': 'multiply', 'inputs': inputs[::-1] if reverse else inputs}])
++    steps.append({'id': 'result', 'op': 'add', 'inputs': ['t0', 't1']})
++    result = query.execute_steps(parse_plan(json.dumps({'steps': steps})), [],
++        '技术组和研习组按各自人数和人均标准计算，预算合计多少元？', facts)
++    assert result.ok is not crossed
++    if not crossed:
++        assert result.value == 1082 and result.unit == '元'
++    else:
++        assert result.repairable and '配对' in result.error
++
++
++@pytest.mark.parametrize('same_source', [False, True])
++def test_headcount_rate_pair_keeps_policy_scope(engine, same_source):
++    _, query = engine
++    facts = NumericEngine.text_facts([
++        Evidence('a', '技术组人数为4人。', 1, 1, '青石补助办法', 'https://example.edu/a'),
++        Evidence('b', '技术组标准为137元/人。', 1, 1 if same_source else 2,
++            '青石补助办法' if same_source else '白湖补助办法', 'https://example.edu/a' if same_source else 'https://example.edu/b')])
++    steps = [{'id': f['fact_id'], 'op': 'lookup', 'fact_id': f['fact_id']} for f in facts.values()]
++    steps.append({'id': 'result', 'op': 'multiply', 'inputs': list(facts)})
++    result = query.execute_steps(parse_plan(json.dumps({'steps': steps})), [],
++        '技术组按人数和人均标准计算，预算合计多少元？', facts)
++    assert result.ok is same_source
++
++
++def test_question_headcount_can_use_a_public_rate(engine):
++    _, query = engine
++    facts = NumericEngine.text_facts([Evidence('a', '技术组标准为137元/人。',
++        1, 1, '公开补助办法', 'https://example.edu/a')])
++    plan = {'steps': [{'id': 'n', 'op': 'lookup', 'literal': '4', 'unit': '人'},
++        {'id': 'rate', 'op': 'lookup', 'fact_id': next(iter(facts))},
++        {'id': 'result', 'op': 'multiply', 'inputs': ['n', 'rate']}]}
++    result = query.execute_steps(parse_plan(json.dumps(plan)), [],
++        '按技术组标准，4人共需多少元？', facts)
++    assert result.ok and result.value == 548
++
++
++@pytest.mark.parametrize('shared', [False, True])
++def test_explicit_shared_standard_is_not_an_accidental_cross_pair(engine, shared):
++    _, query = engine
++    facts = NumericEngine.text_facts([Evidence('a', '技术组人数为4人。研习组标准为89元/人。',
++        1, 1, '公开补助办法', 'https://example.edu/a')])
++    steps = [{'id': fid, 'op': 'lookup', 'fact_id': fid} for fid in facts]
++    steps.append({'id': 'result', 'op': 'multiply', 'inputs': list(facts)})
++    question = ('假设技术组按研习组标准计算，预算合计多少元？' if shared else
++        '技术组按各自人数和标准计算，预算合计多少元？')
++    result = query.execute_steps(parse_plan(json.dumps({'steps': steps})), [], question, facts)
++    assert result.ok is shared
++
++
++def test_shared_body_rate_remains_usable(engine):
++    _, query = engine
++    facts = NumericEngine.text_facts([Evidence('a', '技术组人数为4人。统一标准为89元/人。',
++        1, 1, '公开补助办法', 'https://example.edu/a')])
++    steps = [{'id': fid, 'op': 'lookup', 'fact_id': fid} for fid in facts]
++    steps.append({'id': 'result', 'op': 'multiply', 'inputs': list(facts)})
++    result = query.execute_steps(parse_plan(json.dumps({'steps': steps})), [],
++        '技术组按统一标准计算，预算合计多少元？', facts)
++    assert result.ok and result.value == 356
++
++
++@pytest.mark.parametrize('correct_source', [False, True])
++def test_single_table_must_match_explicit_policy(engine, correct_source):
++    repo, query = engine
++    title = '青石补助办法' if correct_source else '白湖补助办法'
++    did = repo.add_document(SourceDocument(title, 'https://example.edu/policy', sha256=title))
++    table = ParsedTable('补助标准', ['类别', '金额（元）'], [['技术组', '137']])
++    tid = repo.add_table(did, table, [[normalize_cell(v) for v in row] for row in table.rows])
++    name, amount = [r['id'] for r in repo.connection.execute(
++        'SELECT id FROM table_columns WHERE table_id=? ORDER BY column_index', (tid,))]
++    plan = {'table_id': tid, 'steps': [{'id': 'result', 'op': 'lookup', 'field_id': amount,
++        'filters': [{'field_id': name, 'op': 'eq', 'value': '技术组'}]}]}
++    result = query.execute_steps(parse_plan(json.dumps(plan)), [tid],
++        '按《青石补助办法》，技术组金额是多少元？')
++    assert result.ok is correct_source
++    if not correct_source:
++        assert result.repairable and '来源' in result.error
+--- /dev/null
++++ b/tests/test_project_temp.py
+@@ -0,0 +1,17 @@
++import os
++from pathlib import Path
++import tempfile
++
++from campus_rag.config import ROOT
++
++
++def test_python_and_library_temp_files_stay_in_project():
++    expected = (ROOT/'.tmp/runtime').resolve()
++    assert Path(tempfile.gettempdir()).resolve() == expected
++    assert all(Path(os.environ[key]).resolve() == expected for key in ('TEMP', 'TMP', 'TMPDIR'))
++    with tempfile.TemporaryDirectory() as directory:
++        assert Path(directory).resolve().is_relative_to(expected)
++
++
++def test_pytest_database_directory_stays_in_project(tmp_path):
++    assert tmp_path.resolve().is_relative_to((ROOT/'.tmp').resolve())

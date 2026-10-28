@@ -1,0 +1,479 @@
+[
+  {
+    "id": "C03",
+    "group": "dev36",
+    "question": "按2025版生源地贷款指南，全日制研究生每年贷款额度上限比全日制本专科学生高多少元？",
+    "gold": {
+      "id": "C03",
+      "category": "calculation",
+      "question": "按2025版生源地贷款指南，全日制研究生每年贷款额度上限比全日制本专科学生高多少元？",
+      "answer": "25000−20000=5000元。",
+      "expected": "5000",
+      "unit": "元",
+      "points": [
+        "研究生25000、本专科20000",
+        "差额5000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 257,
+          "quote": "每人每年申请贷款额度不超过20000元"
+        },
+        {
+          "doc_id": 257,
+          "quote": "每人每年申请贷款额度不超过25000元"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 257,
+          "quote": "每人每年申请贷款额度不超过20000元",
+          "raw_verified": true,
+          "chunk_ids": [
+            "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd"
+          ]
+        },
+        {
+          "doc_id": 257,
+          "quote": "每人每年申请贷款额度不超过25000元",
+          "raw_verified": true,
+          "chunk_ids": [
+            "f3e780ba-d3ee-4cc5-92ec-6cfd25b41efd"
+          ]
+        }
+      ]
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：问题约束：差额方向与问题不符：请核对被比较对象顺序和周期，不能直接相减不同周期的上限",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：Expecting ',' delimiter: line 1 column 192 (char 191)",
+    "calculation": null,
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2025"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": true,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [],
+      "output": ""
+    },
+    "references": []
+  },
+  {
+    "id": "C04",
+    "group": "dev36",
+    "question": "按2026年学士学位授予办法第二条，一般学生与高水平运动员的平均学分绩点门槛相差多少？仅比较一般门槛，不考虑第五条例外。",
+    "gold": {
+      "id": "C04",
+      "category": "calculation",
+      "question": "按2026年学士学位授予办法第二条，一般学生与高水平运动员的平均学分绩点门槛相差多少？仅比较一般门槛，不考虑第五条例外。",
+      "answer": "1.8−1.5=0.3，毕业设计或论文成绩不计入该平均绩点口径。",
+      "expected": "0.3",
+      "unit": "绩点",
+      "points": [
+        "1.8与1.5",
+        "差0.3"
+      ],
+      "sources": [
+        {
+          "doc_id": 87,
+          "quote": "平均学分绩点为1.8及以上"
+        },
+        {
+          "doc_id": 87,
+          "quote": "高水平运动员平均学分绩点要求为1.5及以上"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 87,
+          "quote": "平均学分绩点为1.8及以上",
+          "raw_verified": true,
+          "chunk_ids": [
+            "21a133e6-5892-492c-84b6-56f67c72cf0a"
+          ]
+        },
+        {
+          "doc_id": 87,
+          "quote": "高水平运动员平均学分绩点要求为1.5及以上",
+          "raw_verified": true,
+          "chunk_ids": [
+            "21a133e6-5892-492c-84b6-56f67c72cf0a"
+          ]
+        }
+      ]
+    },
+    "before": "按下限标准计算，结果为0.3绩点。算式：(1.8) - (1.5)。",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：Expecting ',' delimiter: line 1 column 192 (char 191)",
+    "calculation": null,
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2026"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": true,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [],
+      "output": ""
+    },
+    "references": []
+  },
+  {
+    "id": "V2C06",
+    "group": "exposed_v2",
+    "question": "按2025年甘霖励志奖学金志愿服务类每学年120小时的要求，已完成85小时，还差多少小时？",
+    "gold": {
+      "id": "V2C06",
+      "category": "calculation",
+      "question": "按2025年甘霖励志奖学金志愿服务类每学年120小时的要求，已完成85小时，还差多少小时？",
+      "answer": "35小时",
+      "points": [
+        "35小时"
+      ],
+      "expected": "35",
+      "unit": "小时",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 259,
+          "quote": "每学年能够完成120小时的志愿服务时长"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 259,
+          "quote": "每学年能够完成120小时的志愿服务时长",
+          "chunk_ids": [
+            "57fc1472-8f6f-43b2-bbb1-aec43dfbb23e"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：result: 输入步骤right未先定义或引用自身；合法前序id：left。必须保留每个操作数步骤，问题常数也须先lookup，返回完整JSON",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：问题约束：问题要求比较差额，最终步骤必须subtract，不能只返回一个lookup",
+    "calculation": {
+      "ok": false,
+      "value": null,
+      "unit": "",
+      "expression": "",
+      "details": [],
+      "error": "问题约束：问题要求比较差额，最终步骤必须subtract，不能只返回一个lookup",
+      "evidence": [],
+      "steps": [
+        {
+          "id": "right",
+          "op": "lookup",
+          "operands": [],
+          "value": "85",
+          "unit": "小时",
+          "expression": "85",
+          "details": [],
+          "source": {
+            "kind": "question",
+            "quote": "85小时",
+            "span": [
+              33,
+              37
+            ]
+          }
+        }
+      ],
+      "repairable": true
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [
+        "2025"
+      ],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "right",
+          "op": "lookup",
+          "literal": "85",
+          "unit": "小时"
+        }
+      ],
+      "output": "right"
+    },
+    "references": []
+  },
+  {
+    "id": "V2C08",
+    "group": "exposed_v2",
+    "question": "按《学生修读辅修专业管理办法》，一般设置8至10门主干课程，上限比下限多多少门？",
+    "gold": {
+      "id": "V2C08",
+      "category": "calculation",
+      "question": "按《学生修读辅修专业管理办法》，一般设置8至10门主干课程，上限比下限多多少门？",
+      "answer": "2门",
+      "points": [
+        "2门"
+      ],
+      "expected": "2",
+      "unit": "门",
+      "tolerance": "0.000001",
+      "sources": [
+        {
+          "doc_id": 261,
+          "quote": "一般设置8-10门该专业的主要课程"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 261,
+          "quote": "一般设置8-10门该专业的主要课程",
+          "chunk_ids": [
+            "7d5644a7-3023-499e-a982-bb4f03f3938e"
+          ],
+          "raw_verified": true
+        }
+      ]
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：result: 输入步骤right未先定义或引用自身；合法前序id：left。必须保留每个操作数步骤，问题常数也须先lookup，返回完整JSON",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：问题约束：问题要求比较差额，最终步骤必须subtract，不能只返回一个lookup",
+    "calculation": {
+      "ok": false,
+      "value": null,
+      "unit": "",
+      "expression": "",
+      "details": [],
+      "error": "问题约束：问题要求比较差额，最终步骤必须subtract，不能只返回一个lookup",
+      "evidence": [],
+      "steps": [
+        {
+          "id": "right",
+          "op": "lookup",
+          "operands": [],
+          "value": "10",
+          "unit": "门",
+          "expression": "10",
+          "details": [
+            {
+              "fact_id": "f2",
+              "field": "一般",
+              "subject": "一般",
+              "raw_value": "8-10门",
+              "value": "10",
+              "unit": "门",
+              "comparison": "lte",
+              "scope": {
+                "clause": "第三条",
+                "period": "",
+                "context": "一般设置8-10门该专业的主要课程,总计20学分左右"
+              },
+              "quote": "一般设置8-10 门",
+              "span": [
+                243,
+                253
+              ],
+              "doc_id": 261,
+              "source_title": "学生修读辅修专业管理办法",
+              "source_section": "学生修读辅修专业管理办法",
+              "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+              "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+              "evidence": {
+                "evidence_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+                "text": "学生修读辅修专业管理办法\n总\n则\n第一条\n为适应社会发展需求，培养复合型人才，充分发挥学生的学习主动性和积极性，\n鼓励学有余力的学生学到更多的知识，拓宽知识面，提高就业竞争力，学校实行主辅修制，\n学生可以在学习主修专业的同时，修读辅修专业。为规范学生修读辅修专业的管理，特制定\n本办法。培养目标\n第二条\n根据学生自愿的原则，在较好地完成主修专业课程学习的基础上，培养掌握主\n修专业与辅修专业基本知识技能的复合型人才。专业设置\n第三条\n辅修专业是指不同于学生主修专业所属学科的跨学科专业。一般设置8-10 门\n该专业的主要课程，总计20 学分左右。第四条\n根据学校的办学资源，由学院申报新开设辅修专业。各学院在每学年第二学期\n第12 周前将下一学年度新开设辅修专业开设计划和已开设辅修专业课程设置计划向教务处\n申报。教务处审批后于第14 周公布全校辅修专业计划，于第16 周公布各学院名额分配计划。",
+                "score": 0.9991323351860046,
+                "doc_id": 261,
+                "title": "学生修读辅修专业管理办法",
+                "source_url": "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf",
+                "department": "学生工作部（处）",
+                "published_at": "2024-03-01",
+                "chunk_id": "7d5644a7-3023-499e-a982-bb4f03f3938e",
+                "table_id": null,
+                "row_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "repairable": true
+    },
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": false,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [
+        {
+          "id": "right",
+          "op": "lookup",
+          "fact_id": "f2"
+        }
+      ],
+      "output": "right"
+    },
+    "references": []
+  },
+  {
+    "id": "L3N03",
+    "group": "old_campus",
+    "question": "按“华为奖学金”评选办法，研究生每人奖励比本科生每人奖励高多少元？",
+    "gold": {
+      "id": "L3N03",
+      "category": "calculation",
+      "question": "按“华为奖学金”评选办法，研究生每人奖励比本科生每人奖励高多少元？",
+      "points": [
+        "3000元"
+      ],
+      "sources": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人",
+          "chunk_ids": [
+            "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "3000",
+      "unit": "元",
+      "tolerance": "0.000001",
+      "answer": "3000元"
+    },
+    "before": "现有证据或计算条件不足，无法可靠给出数值：问题约束：操作数来源与问题指定资料不符；要求：华为奖学金；当前来源：校学发〔2023〕37号“共进电子奖学金”评选办法",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：Expecting ',' delimiter: line 1 column 193 (char 192)",
+    "calculation": null,
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": true,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [],
+      "output": ""
+    },
+    "references": []
+  },
+  {
+    "id": "L3N04",
+    "group": "old_campus",
+    "question": "按“华为奖学金”办法，本科生与研究生的奖励名额合计多少人？",
+    "gold": {
+      "id": "L3N04",
+      "category": "calculation",
+      "question": "按“华为奖学金”办法，本科生与研究生的奖励名额合计多少人？",
+      "points": [
+        "12人"
+      ],
+      "sources": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人"
+        }
+      ],
+      "evidence_groups": [
+        {
+          "doc_id": 258,
+          "quote": "本科生：3 人，5000 元／人研究生：9 人，8000 元／人",
+          "chunk_ids": [
+            "b9a718bb-a2ba-4610-bc13-d59b2cad0dfc"
+          ],
+          "raw_verified": true
+        }
+      ],
+      "expected": "12",
+      "unit": "人",
+      "tolerance": "0.000001",
+      "answer": "12人"
+    },
+    "before": "结果为12人。算式：(3) + (9)。",
+    "after": "现有证据或计算条件不足，无法可靠给出数值：计划校验失败：Expecting ',' delimiter: line 1 column 187 (char 186)",
+    "calculation": null,
+    "plan": {
+      "question_type": "fact",
+      "time_range": [],
+      "keywords": [],
+      "entities": [],
+      "fields": [],
+      "filters": [],
+      "group_by": [],
+      "unit": "",
+      "needs_text": true,
+      "needs_table": false,
+      "calculation": {
+        "operation": "none",
+        "operands": [],
+        "multiplier": null,
+        "output_unit": ""
+      },
+      "table_id": null,
+      "steps": [],
+      "output": ""
+    },
+    "references": []
+  }
+]

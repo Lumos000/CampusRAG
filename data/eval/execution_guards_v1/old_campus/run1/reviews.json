@@ -1,0 +1,156 @@
+{
+  "reviewer": "Codex; unchanged answers/references inherit frozen source reviews. Every changed answer receives explicit operand/source/scope review. Not external blind grading.",
+  "cases": {
+    "L3N01": {
+      "verdict": "correct",
+      "points_met": [
+        true
+      ],
+      "citation_complete": true,
+      "citations": [
+        {
+          "reference": "校学发〔2023〕37号“共进电子奖学金”评选办法｜学生工作部（处）｜2024-02-29｜https://xsc.njupt.edu.cn/_upload/article/files/17/8a/bd95174145239ed7fd22a478dfb1/9de6d487-0775-4184-ab74-a4d1c5abec19.pdf",
+          "relevant": true,
+          "reason": "Same policy and annual per-person basis:12000yuan/person minus8000yuan/person equals4000yuan/person. Question explicitly asks per-person standard difference, not a total. Gold expected unit yuan unchanged; literal unit-matching score remains false and is reported separately."
+        }
+      ],
+      "reason": "Same policy and annual per-person basis:12000yuan/person minus8000yuan/person equals4000yuan/person. Question explicitly asks per-person standard difference, not a total. Gold expected unit yuan unchanged; literal unit-matching score remains false and is reported separately.",
+      "failure_stage": "",
+      "refusal_correct": false,
+      "safe_abstention": false
+    },
+    "L3N02": {
+      "verdict": "refusal",
+      "points_met": [
+        false
+      ],
+      "citation_complete": false,
+      "citations": [],
+      "reason": "Previously failed answer remains a refusal; no correctness change.",
+      "failure_stage": "plan_generation",
+      "refusal_correct": false,
+      "safe_abstention": false
+    },
+    "L3N03": {
+      "verdict": "refusal",
+      "points_met": [
+        false
+      ],
+      "citation_complete": false,
+      "citations": [],
+      "reason": "Planner still mixes a different policy; source validation refuses.",
+      "failure_stage": "plan_generation",
+      "refusal_correct": false,
+      "safe_abstention": false
+    },
+    "L3N04": {
+      "verdict": "correct",
+      "points_met": [
+        true
+      ],
+      "citation_complete": true,
+      "citations": [
+        {
+          "reference": "校学发〔2023〕18号“华为奖学金”评选办法｜学生工作部（处）｜2024-02-29｜https://xsc.njupt.edu.cn/_upload/article/files/77/5b/34723bd64172a76fb758881585a4/1d11816d-8144-4822-a482-7b4cf44d4404.pdf",
+          "relevant": true,
+          "reason": "Original Huawei policy: undergraduate3 plus postgraduate9 equals12 people. Explicit person subjects and same source verified."
+        }
+      ],
+      "reason": "Original Huawei policy: undergraduate3 plus postgraduate9 equals12 people. Explicit person subjects and same source verified.",
+      "failure_stage": "",
+      "refusal_correct": false,
+      "safe_abstention": false
+    },
+    "L3N05": {
+      "verdict": "refusal",
+      "points_met": [
+        false
+      ],
+      "citation_complete": false,
+      "citations": [],
+      "reason": "实际拒答，未满足可计算的来源/对象/运算要点：现有证据或计算条件不足，无法可靠给出数值：a: 参与计算的记录存在缺失或非确定数值",
+      "failure_stage": "planning_or_evidence",
+      "refusal_correct": false,
+      "safe_abstention": false
+    },
+    "L3N06": {
+      "verdict": "refusal",
+      "points_met": [
+        false
+      ],
+      "citation_complete": false,
+      "citations": [],
+      "reason": "实际拒答，未满足可计算的来源/对象/运算要点：现有证据或计算条件不足，无法可靠给出数值：a: 参与计算的记录存在缺失或非确定数值",
+      "failure_stage": "planning_or_evidence",
+      "refusal_correct": false,
+      "safe_abstention": false
+    },
+    "L3F01": {
+      "verdict": "correct",
+      "points_met": [
+        true
+      ],
+      "citation_complete": true,
+      "citations": [
+        {
+          "reference": "南京邮电大学考试管理规定｜本科生院｜2024-05-06｜https://jwc.njupt.edu.cn/_upload/article/files/0f/f9/84b028f4429b92d8fcbe2e64254b/24f8036e-9538-4e84-b430-79eb49f5ff98.pdf",
+          "relevant": true,
+          "reason": "原始文档支持完整条件和结论。"
+        }
+      ],
+      "reason": "原始考试管理规定同样明确电子设备仅作计时也禁止；已独立核对替代来源doc110原文，允许真实支持来源。",
+      "failure_stage": "",
+      "refusal_correct": false,
+      "safe_abstention": false
+    },
+    "L3P01": {
+      "verdict": "correct",
+      "points_met": [
+        true,
+        true
+      ],
+      "citation_complete": true,
+      "citations": [
+        {
+          "reference": "在线课程（MOOC）如何进行补考？｜本科生院｜2018-10-16｜http://jwc.njupt.edu.cn/2018/1016/c1768a135387/page.htm",
+          "relevant": true,
+          "reason": "原始文档支持完整条件和结论。"
+        }
+      ],
+      "reason": "保留MOOC线上学习且报名线下考试、总评不及格条件；一次免费补考并计入平时成绩及同样比例。",
+      "failure_stage": "",
+      "refusal_correct": false,
+      "safe_abstention": false
+    },
+    "L3T01": {
+      "verdict": "correct",
+      "points_met": [
+        true
+      ],
+      "citation_complete": true,
+      "citations": [
+        {
+          "reference": "关于临时延长图书馆开放时间的通知｜图书馆｜2026-09-22｜https://lib.njupt.edu.cn/2026/0922/c1429a309000/page.htm",
+          "relevant": true,
+          "reason": "原始文档支持完整条件和结论。"
+        }
+      ],
+      "reason": "2026临时通知明确两校区阅览室延长至23:00，适用时间及主体保留。",
+      "failure_stage": "",
+      "refusal_correct": false,
+      "safe_abstention": false
+    },
+    "L3R01": {
+      "verdict": "refusal",
+      "points_met": [
+        true
+      ],
+      "citation_complete": false,
+      "citations": [],
+      "reason": "明确缺少个人资格及审批评审结果，不预测个人获奖或最终到账。",
+      "failure_stage": "",
+      "refusal_correct": true,
+      "safe_abstention": true
+    }
+  }
+}

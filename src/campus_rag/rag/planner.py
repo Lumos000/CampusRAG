@@ -80,8 +80,64 @@ def _example_json(table_id, steps):
     return json.dumps({'table_id':table_id,'steps':output},ensure_ascii=False)
 
 
+def _body_budget_example(operation,payload,question):
+    """Show complete body count/rate pairs without dropping retrieved tables."""
+    if (operation not in {'sum','multiply'} or not asks_total(question)
+            or not re.search(r'名额|人数',question) or not re.search(r'每人|人均|生均',question)
+            or not re.search(r'多少\s*元|预算|总金额',question)):
+        return None
+    from campus_rag.database.query import StructuredQueryEngine
+    facts = payload.get('facts',[])
+    requested = StructuredQueryEngine.requested_fact_sources(question,{str(i):f for i,f in enumerate(facts)})
+    if len(requested)!=1:
+        return None
+    name = next(iter(requested))
+    def matches(labels):
+        return any(name in re.sub('[《》“”"\']','',compact_label) for compact_label in
+            (re.sub(r'\s+','',label) for label in labels))
+    if any(matches([t['document'],t['name']]) for t in payload.get('tables',[])):
+        return None  # A table from the requested policy still competes normally.
+    paired = {}
+    for fact in facts:
+        if fact.get('unit') not in {'人','元/人'} or not matches(StructuredQueryEngine._fact_source_labels(fact)):
+            continue
+        if fact.get('comparison')!='eq':
+            return None
+        scope = fact.get('scope',{})
+        if scope.get('group') and scope['group'] not in question:
+            return None
+        subject = re.sub(r'(?:人数|名额|(?:人均)?标准)$','',fact.get('subject',''))
+        if not subject:
+            return None
+        key = (fact.get('doc_id'),fact.get('source_section',''),scope.get('group',''),subject)
+        pair = paired.setdefault(key,{})
+        if fact['unit'] in pair:
+            return None
+        pair[fact['unit']] = fact
+    if not 1<=len(paired)<=2 or any(set(pair)!={'人','元/人'} for pair in paired.values()):
+        return None
+    constants = question_quantities(question,'人')
+    if constants and (len(paired)!=1 or len(constants)!=1 or
+            Decimal(constants[0]['literal'])!=Decimal(next(iter(paired.values()))['人']['value'])):
+        return None
+    steps,totals = [],[]
+    for i,pair in enumerate(paired.values(),1):
+        people,rate,total = 'people_'+str(i),'rate_'+str(i),'cost_'+str(i)
+        count = {'literal':constants[0]['literal'],'unit':'人'} if constants else {'fact_id':pair['人']['fact_id']}
+        steps.extend([{'id':people,'op':'lookup',**count},
+            {'id':rate,'op':'lookup','fact_id':pair['元/人']['fact_id']},
+            {'id':total,'op':'multiply','inputs':[people,rate]}])
+        totals.append(total)
+    if len(totals)>1:
+        steps.append({'id':'result','op':'add','inputs':totals})
+    return _example_json(None,steps)
+
+
 def step_example(operation,context='',question=''):
     payload = json.loads(context) if context else {}
+    budget = _body_budget_example(operation,payload,question)
+    if budget is not None:
+        return budget
     tables, facts = payload.get('tables',[]), payload.get('facts',[])
     measures = lambda t:[c for c in t['columns'] if c.get('role')=='measure' and c['unit']]
     # Text-only evidence, or a table with no measure suitable for arithmetic.

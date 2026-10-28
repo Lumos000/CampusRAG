@@ -1,0 +1,6 @@
+{
+  "retained": false,
+  "reason": "C04 and L3N04 regress; no newly correct answers",
+  "source_restored_from": "data/eval/execution_guards_v1/candidate_files/src/campus_rag/rag/planner.py",
+  "candidate_test_archived": true
+}
