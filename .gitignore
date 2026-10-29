@@ -8,6 +8,7 @@ downloads/
 data/raw/*
 data/processed/*
 data/index/*
+data/collections/
 models/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep

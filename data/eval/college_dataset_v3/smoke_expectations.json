@@ -1,0 +1,62 @@
+{
+  "method": "运行前固定的要点检查；需结合引用和完整答案人工复核，不能作为总体准确率。",
+  "cases": [
+    {
+      "id": "QA01",
+      "points": [
+        "战邮干训班"
+      ],
+      "references_required": true
+    },
+    {
+      "id": "QA02",
+      "points": [
+        "人工智能",
+        "数据科学与大数据技术",
+        "机器人工程"
+      ],
+      "references_required": true
+    },
+    {
+      "id": "QA03",
+      "points": [
+        "10",
+        "学分"
+      ],
+      "references_required": true
+    },
+    {
+      "id": "QA04",
+      "points": [
+        "一般事务申请表",
+        "体育部"
+      ],
+      "references_required": true
+    },
+    {
+      "id": "QA05",
+      "points": [
+        "续借",
+        "网上",
+        "服务总台"
+      ],
+      "references_required": true
+    },
+    {
+      "id": "QA06",
+      "points": [
+        "6380",
+        "1500"
+      ],
+      "references_required": true
+    },
+    {
+      "id": "QA07",
+      "refusal_required": true
+    },
+    {
+      "id": "QA08",
+      "refusal_required": true
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import sqlite3
 import sys
 from pathlib import Path
@@ -15,7 +16,10 @@ from campus_rag.rag.generator import TransformersGenerator
 
 
 def main() -> None:
-    settings = load_settings()
+    parser = argparse.ArgumentParser(description='南邮离线校园问答')
+    parser.add_argument('--config', type=Path, help='指定数据库和索引配置，默认使用原配置')
+    args = parser.parse_args()
+    settings = load_settings(args.config)
     index = HybridIndex.load(settings.index_dir, settings.embedding_model, settings.reranker_model)
     generator = TransformersGenerator(settings.generator_model)
     connection = sqlite3.connect(settings.database_path)

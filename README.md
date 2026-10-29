@@ -54,6 +54,8 @@ models/bge-reranker-base/
 
 ## 数据准备
 
+518 篇 v3 的独立构建、原库保护、学院来源及固定题集复测见 [v3 数据集说明](docs/college_database.md)。固定构建配置为 [config/dataset_v3.json](config/dataset_v3.json)，本地数据库和原始资料不随代码提交。
+
 采集完成后按 [数据清洗与可靠入库](docs/cleaning.md) 执行 clean_data.py、清洗清单导入和数据库校验；不建议把原始网页清单直接全量入库。
 
 爬虫参数、采集清单字段和试运行步骤见 [采集操作说明](docs/crawling.md)。

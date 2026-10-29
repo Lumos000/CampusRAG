@@ -3,6 +3,7 @@ import argparse
 import json
 import sqlite3
 import time
+from contextlib import closing
 from dataclasses import asdict
 from pathlib import Path
 
@@ -27,18 +28,24 @@ QUESTIONS = [
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path, default=Path('data/eval/smoke_qa.json'))
-    parser.add_argument('--limit', type=int, default=len(QUESTIONS))
+    parser.add_argument('--limit', type=int, help='最多检查的问题数，默认检查问题列表中的全部剩余问题')
     parser.add_argument('--start', type=int, default=0, help='从第几个问题开始（0起算）')
+    parser.add_argument('--config', type=Path, help='指定独立数据库和索引配置')
+    parser.add_argument('--questions-file', type=Path, help='JSON 字符串数组，用于定向问答检查')
     args = parser.parse_args()
-    if args.start < 0 or args.limit < 1:
+    if args.start < 0 or (args.limit is not None and args.limit < 1):
         parser.error('--start 不能小于0，--limit 必须大于0')
-    settings = load_settings()
+    questions = json.loads(args.questions_file.read_text(encoding='utf-8')) if args.questions_file else QUESTIONS
+    if not isinstance(questions, list) or not questions or any(not isinstance(q, str) or not q.strip() for q in questions):
+        parser.error('问题文件必须为非空字符串数组')
+    settings = load_settings(args.config)
     index = HybridIndex.load(settings.index_dir, settings.embedding_model, settings.reranker_model)
     generator = TransformersGenerator(settings.generator_model)
     report = []
-    with sqlite3.connect(settings.database_path) as connection:
+    with closing(sqlite3.connect(settings.database_path.resolve().as_uri() + '?mode=ro', uri=True)) as connection:
         service = RAGService(settings, index, generator, connection)
-        for question in QUESTIONS[args.start:args.start + args.limit]:
+        end = args.start + args.limit if args.limit is not None else None
+        for question in questions[args.start:end]:
             started = time.perf_counter()
             try:
                 result = service.answer(question)

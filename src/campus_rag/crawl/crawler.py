@@ -167,7 +167,7 @@ class CampusCrawler:
                 links = []
                 for href, label in discover_links(soup):
                     link = self._canonical(urljoin(response.url, href.strip()))
-                    if link and self._allowed(link) and link not in queued and depth < self.max_depth:
+                    if link and self._allowed(link) and link not in queued and depth < self.max_depth and self._follow_link(link, label, record['title']):
                         priority = sum(1 for word in self.config.get('priority_keywords', []) if word in label)
                         if Path(urlparse(link).path).suffix.lower() in {'.pdf', '.docx', '.xlsx'}:
                             priority += 10
@@ -213,6 +213,17 @@ class CampusCrawler:
             if host == domain or host.endswith('.' + domain):
                 return name
         return '南京邮电大学'
+
+    def _follow_link(self, url, label, parent_title=''):
+        keywords = self.config.get('follow_keywords', [])
+        if not keywords:
+            return True
+        # Unlabelled attachments need a relevant parent, not just an official host.
+        if Path(urlparse(url).path).suffix.lower() in {'.pdf', '.doc', '.docx', '.xls', '.xlsx', '.xlsm', '.txt'}:
+            return any(word in label or word in parent_title for word in keywords)
+        if label.strip() in {'下一页', '下页', '上一页', '上页', '首页', '尾页'}:
+            return True
+        return any(word in label for word in keywords)
 
     def _allowed(self, url: str) -> bool:
         host = (urlparse(url).hostname or "").lower()

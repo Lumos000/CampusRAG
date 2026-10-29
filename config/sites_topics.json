@@ -1,0 +1,338 @@
+{
+  "allowed_domains": [
+    "zs.njupt.edu.cn",
+    "jwc.njupt.edu.cn",
+    "xsc.njupt.edu.cn",
+    "lib.njupt.edu.cn",
+    "cwc.njupt.edu.cn",
+    "www.njupt.edu.cn",
+    "scie.njupt.edu.cn",
+    "cs.njupt.edu.cn",
+    "coa.njupt.edu.cn",
+    "ai.njupt.edu.cn"
+  ],
+  "seed_urls": [
+    "https://ai.njupt.edu.cn/xyjj/list.htm",
+    "https://ai.njupt.edu.cn/18870/list.htm",
+    "https://ai.njupt.edu.cn/lxwm/list.htm",
+    "https://ai.njupt.edu.cn/2026/0105/c18870a297647/page.htm",
+    "https://ai.njupt.edu.cn/2026/0105/c18870a295937/page.htm",
+    "https://ai.njupt.edu.cn/2026/0105/c18870a297650/page.htm",
+    "https://ai.njupt.edu.cn/2026/0924/c18808a309166/page.htm",
+    "https://cs.njupt.edu.cn/18753/list.htm",
+    "https://cs.njupt.edu.cn/18773/list.htm",
+    "https://cs.njupt.edu.cn/18818/list.htm",
+    "https://cs.njupt.edu.cn/18817/list.htm",
+    "https://cs.njupt.edu.cn/2020/0604/c18773a166475/page.htm",
+    "https://cs.njupt.edu.cn/2010/0517/c18773a110586/page.htm",
+    "https://cs.njupt.edu.cn/2010/0517/c18773a110587/page.htm",
+    "https://cs.njupt.edu.cn/2010/0517/c18773a110588/page.htm",
+    "https://cs.njupt.edu.cn/2012/0529/c18773a110590/page.htm",
+    "https://cs.njupt.edu.cn/2023/0306/c18818a234841/page.htm",
+    "https://cs.njupt.edu.cn/2021/0421/c18817a190709/page.htm",
+    "https://cs.njupt.edu.cn/2021/0421/c18817a190707/page.htm",
+    "https://cs.njupt.edu.cn/2021/0421/c18817a190706/page.htm",
+    "https://cs.njupt.edu.cn/2021/0421/c18817a190705/page.htm",
+    "https://cs.njupt.edu.cn/2026/0924/c18731a309122/page.htm",
+    "https://scie.njupt.edu.cn/2009/0723/c2801a297984/page.htm",
+    "https://scie.njupt.edu.cn/2009/0723/c2801a297985/page.htm",
+    "https://scie.njupt.edu.cn/2009/0723/c2801a190936/page.htm",
+    "https://coa.njupt.edu.cn/2026/1016/c14084a309872/page.htm",
+    "https://scie.njupt.edu.cn/2761/list.htm",
+    "https://coa.njupt.edu.cn/2206/list.htm",
+    "https://scie.njupt.edu.cn/2801/list.htm",
+    "https://coa.njupt.edu.cn/zyjs/list.htm",
+    "https://scie.njupt.edu.cn/2865/list.htm",
+    "https://cs.njupt.edu.cn/18770/list.htm",
+    "https://coa.njupt.edu.cn/pyjh/list.htm",
+    "https://www.njupt.edu.cn/17220/list.htm",
+    "https://www.njupt.edu.cn/17221/list.htm",
+    "https://zs.njupt.edu.cn/2026/0521/c2562a302356/pagem.htm",
+    "https://jwc.njupt.edu.cn/2025/1229/c1770a295517/page.htm",
+    "https://zs.njupt.edu.cn/2562/list.htm",
+    "https://zs.njupt.edu.cn/2563/list.htm",
+    "https://zs.njupt.edu.cn/2578/list.htm",
+    "https://zs.njupt.edu.cn/2026/0428/c2578a301108/page.htm",
+    "https://jwc.njupt.edu.cn/1770/list.psp",
+    "https://jwc.njupt.edu.cn/1746/list.htm",
+    "https://jwc.njupt.edu.cn/1502/list.htm",
+    "https://jwc.njupt.edu.cn/1535/list.htm",
+    "https://xsc.njupt.edu.cn/",
+    "https://xsc.njupt.edu.cn/1154/list.htm",
+    "https://xsc.njupt.edu.cn/1158/list.htm",
+    "https://xsc.njupt.edu.cn/fwzn/list.htm",
+    "http://lib.njupt.edu.cn/",
+    "http://lib.njupt.edu.cn/1381/list.htm",
+    "http://lib.njupt.edu.cn/1385/list.htm",
+    "http://lib.njupt.edu.cn/1395/list.htm",
+    "http://lib.njupt.edu.cn/1400/list.htm",
+    "https://cwc.njupt.edu.cn/",
+    "https://www.njupt.edu.cn/111/list.htm"
+  ],
+  "departments": {
+    "zs.njupt.edu.cn": "本科招生办公室",
+    "jwc.njupt.edu.cn": "本科生院",
+    "xsc.njupt.edu.cn": "学生工作部（处）",
+    "lib.njupt.edu.cn": "图书馆",
+    "cwc.njupt.edu.cn": "财务处",
+    "www.njupt.edu.cn": "南京邮电大学",
+    "scie.njupt.edu.cn": "通信与信息工程学院",
+    "cs.njupt.edu.cn": "计算机学院、软件学院、网络空间安全学院",
+    "coa.njupt.edu.cn": "自动化学院",
+    "ai.njupt.edu.cn": "人工智能学院"
+  },
+  "priority_keywords": [
+    "综合评价",
+    "招生计划",
+    "招生章程",
+    "教学质量报告",
+    "办事指南",
+    "服务指南",
+    "收费",
+    "学费",
+    "住宿费",
+    "学生手册",
+    "规章制度",
+    "借阅规则",
+    "入馆",
+    "开放时间",
+    "奖学金",
+    "资助",
+    "学籍",
+    "转专业",
+    "毕业",
+    "选课",
+    "补办",
+    "学校简介",
+    "学校概况",
+    "学校章程",
+    "学院简介",
+    "本科教学质量报告",
+    "学籍管理",
+    "培养方案",
+    "培养计划",
+    "本科专业",
+    "专业介绍",
+    "本科教育",
+    "本科生教育",
+    "本科教学",
+    "借书",
+    "还书",
+    "续借",
+    "入馆须知",
+    "新读者",
+    "奖助学金",
+    "助学金",
+    "学生资助",
+    "资助政策",
+    "办事流程",
+    "学生证"
+  ],
+  "max_pages": 120,
+  "max_depth": 2,
+  "max_file_mb": 40,
+  "retries": 2,
+  "request_interval_seconds": 0.8,
+  "timeout_seconds": 20,
+  "college_hosts": [
+    "scie.njupt.edu.cn",
+    "cs.njupt.edu.cn",
+    "coa.njupt.edu.cn",
+    "ai.njupt.edu.cn"
+  ],
+  "coverage": {
+    "学校概况": {
+      "学校简介": [
+        "学校简介",
+        "学校概况"
+      ],
+      "学校章程": [
+        "学校章程"
+      ],
+      "学院简介": [
+        "学院简介"
+      ],
+      "学院联系方式": [
+        "联系我们",
+        "联系方式"
+      ]
+    },
+    "本科教学": {
+      "教学质量报告": [
+        "本科教学质量报告"
+      ],
+      "学籍与转专业": [
+        "学籍管理",
+        "转专业",
+        "选课"
+      ],
+      "本科培养与专业": [
+        "培养方案",
+        "培养计划",
+        "本科专业",
+        "专业介绍",
+        "本科教育",
+        "本科生教育",
+        "本科教学",
+        "专业"
+      ]
+    },
+    "招生": {
+      "招生章程": [
+        "招生章程",
+        "招生简章"
+      ],
+      "招生计划": [
+        "招生计划"
+      ],
+      "综合评价": [
+        "综合评价"
+      ]
+    },
+    "图书馆服务": {
+      "借阅规则": [
+        "借阅规则",
+        "借书",
+        "还书",
+        "续借"
+      ],
+      "入馆须知": [
+        "入馆须知",
+        "新读者"
+      ],
+      "开放时间": [
+        "开放时间"
+      ]
+    },
+    "学生事务": {
+      "学生手册": [
+        "学生手册"
+      ],
+      "奖助学金": [
+        "奖学金",
+        "奖助学金",
+        "助学金",
+        "学生资助",
+        "资助政策"
+      ],
+      "办事流程": [
+        "办事指南",
+        "办事流程",
+        "服务指南",
+        "学生证",
+        "补办",
+        "住宿费",
+        "学费",
+        "勤工助学",
+        "宿舍入住",
+        "在校住宿",
+        "工作流程"
+      ]
+    }
+  },
+  "college_coverage": {
+    "学院简介": [
+      "学院简介"
+    ],
+    "本科培养": [
+      "培养方案",
+      "培养计划",
+      "本科专业",
+      "专业介绍",
+      "本科教育",
+      "本科生教育",
+      "本科教学",
+      "专业"
+    ],
+    "学生服务": [
+      "奖学金",
+      "奖助学金",
+      "助学金",
+      "办事流程",
+      "办事指南",
+      "学生证",
+      "学生资助",
+      "勤工助学",
+      "宿舍入住",
+      "在校住宿",
+      "工作流程"
+    ]
+  },
+  "follow_keywords": [
+    "综合评价",
+    "招生计划",
+    "招生章程",
+    "教学质量报告",
+    "办事指南",
+    "服务指南",
+    "收费",
+    "学费",
+    "住宿费",
+    "学生手册",
+    "规章制度",
+    "借阅规则",
+    "入馆",
+    "开放时间",
+    "奖学金",
+    "资助",
+    "学籍",
+    "转专业",
+    "毕业",
+    "选课",
+    "补办",
+    "学校简介",
+    "学校概况",
+    "学校章程",
+    "学院简介",
+    "本科教学质量报告",
+    "学籍管理",
+    "培养方案",
+    "培养计划",
+    "本科专业",
+    "专业介绍",
+    "本科教育",
+    "本科生教育",
+    "本科教学",
+    "借书",
+    "还书",
+    "续借",
+    "入馆须知",
+    "新读者",
+    "奖助学金",
+    "助学金",
+    "学生资助",
+    "资助政策",
+    "办事流程",
+    "学生证",
+    "学院概况",
+    "人才培养",
+    "学生工作",
+    "本科",
+    "招生",
+    "读者服务",
+    "服务流程",
+    "学生事务",
+    "图书",
+    "专业",
+    "勤工助学",
+    "宿舍入住",
+    "在校住宿",
+    "工作流程",
+    "联系我们",
+    "联系方式"
+  ],
+  "excluded_title_keywords": [
+    "研究生",
+    "博士",
+    "硕士",
+    "继续教育",
+    "成人教育",
+    "自考"
+  ],
+  "news_title_keywords": [
+    "宣讲会",
+    "座谈会",
+    "学术讲座",
+    "表彰大会"
+  ]
+}

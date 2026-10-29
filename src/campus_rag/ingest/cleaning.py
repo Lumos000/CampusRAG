@@ -36,13 +36,14 @@ def content_key(parsed):
     return hashlib.sha256(json.dumps(data, ensure_ascii=False, sort_keys=True).encode('utf-8')).hexdigest()
 
 
-def prepare_item(item):
+def prepare_item(item, scope=None):
     path = Path(item['local_path'])
     if path.suffix.lower() in {'.doc', '.xls'}:
         return 'review', 'legacy_office_requires_conversion', None
     if path.suffix.lower() not in SUPPORTED:
         return 'exclude', 'unsupported_format', None
-    if urlparse(item['url']).hostname not in CORE_HOSTS:
+    trusted_hosts = set(scope['departments']) if scope else CORE_HOSTS
+    if any(urlparse(url).hostname not in trusted_hosts for url in (item['url'], item.get('final_url') or item['url'])):
         return 'review', 'extended_site_scope_check', None
     raw = path.read_bytes()
     if hashlib.sha256(raw).hexdigest() != item.get('sha256'):
@@ -50,6 +51,12 @@ def prepare_item(item):
     if is_error_page(item.get('title', '')):
         return 'exclude', 'error_page', None
     title = item.get('title', '')
+    if scope and '本科' not in title and any(word in title for word in scope.get('excluded_title_keywords', [])):
+        return 'review', 'excluded_title_scope_check', None
+    if scope and not any(word in title for groups in scope['coverage'].values() for words in groups.values() for word in words):
+        return 'review', 'topic_scope_check', None
+    if scope and any(word in title for word in scope.get('news_title_keywords', [])):
+        return 'review', 'news_or_activity_scope_check', None
     if re.search(r'党日|党委|支部|来我校|来校|调研交流|召开|举办|喜报|获奖|纪念馆|读书班', title) and not re.search(r'办法|规定|指南|流程|章程|实施细则|收费标准', title):
         return 'review', 'news_or_activity_scope_check', None
     if path.suffix.lower() in {'.html', '.htm'}:
@@ -57,6 +64,8 @@ def prepare_item(item):
         article = soup.select_one('.wp_articlecontent, .Article_Content, .article-content, article')
         if article is None:
             return 'review', 'no_reliable_article_selector', None
+        if not article.get_text(' ', strip=True) and article.select('img'):
+            return 'review', 'image_content_requires_ocr', None
         if not article.get_text(' ', strip=True) and article.select('[pdfsrc], iframe, embed, object'):
             return 'exclude', 'attachment_container', None
     parsed = parse_file(path, item.get('final_url') or item['url'], item.get('department', ''), item.get('published_at'))
@@ -76,7 +85,7 @@ def prepare_item(item):
     return 'accept', 'parsed_with_provenance', parsed
 
 
-def prepare_manifest(manifest, output, limit=None):
+def prepare_manifest(manifest, output, limit=None, scope=None):
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     latest = {}
@@ -97,7 +106,7 @@ def prepare_manifest(manifest, output, limit=None):
             break
         examined += 1
         try:
-            decision, reason, parsed = prepare_item(item)
+            decision, reason, parsed = prepare_item(item, scope)
         except Exception as exc:
             decision, reason, parsed = 'review', 'parse_failed_' + type(exc).__name__, None
         record = {'url': item['url'], 'title': item.get('title'), 'local_path': item.get('local_path'),

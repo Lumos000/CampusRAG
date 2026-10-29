@@ -61,3 +61,58 @@ def test_same_body_different_year_not_merged():
     a = ParsedDocument(SourceDocument('2025规定', 'a'), [('正文','一样的条款')])
     b = ParsedDocument(SourceDocument('2026规定', 'b'), [('正文','一样的条款')])
     assert content_key(a) != content_key(b)
+
+
+def test_scoped_college_cleaning_and_coverage(tmp_path):
+    import hashlib
+    from campus_rag.config import ROOT
+    from campus_rag.crawl.coverage import coverage_report
+    from campus_rag.ingest.cleaning import prepare_item
+
+    config = json.loads((ROOT / 'config/sites_topics.json').read_text(encoding='utf-8'))
+    path = tmp_path / 'college.html'
+    path.write_text('<div class="wp_articlecontent">' + '学院本科培养计划。' * 20 + '</div>', encoding='utf-8')
+    record = {'status': 'ok', 'url': 'https://scie.njupt.edu.cn/a.htm',
+              'title': '本科培养计划', 'local_path': str(path),
+              'published_at': '2026-08-01',
+              'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+    assert prepare_item(record)[1] == 'extended_site_scope_check'
+    assert prepare_item(record, config)[0] == 'accept'
+    assert prepare_item(dict(record, title='科研项目申报通知'), config)[1] == 'topic_scope_check'
+    assert prepare_item(dict(record, title='研究生专业培养方案'), config)[1] == 'excluded_title_scope_check'
+    assert prepare_item(dict(record, title='学生资助政策宣讲会'), config)[1] == 'news_or_activity_scope_check'
+    assert prepare_item(dict(record, final_url='https://pg.njupt.edu.cn/a.htm'), config)[1] == 'extended_site_scope_check'
+    manifest = tmp_path / 'manifest.jsonl'
+    alias = dict(record, url='https://jwc.njupt.edu.cn/b.htm', published_at='2026-09-01')
+    manifest.write_text('\n'.join(json.dumps(r) for r in [alias, record]), encoding='utf-8')
+    prepare_manifest(manifest, tmp_path / 'clean', scope=config)
+    report = coverage_report(tmp_path / 'clean', config)
+    assert report['accepted_unique_documents'] == 1
+    assert report['colleges']['scie.njupt.edu.cn']['coverage']['本科培养']['accepted_documents'] == 1
+    assert report['colleges']['scie.njupt.edu.cn']['coverage']['本科培养']['examples'][0]['published_at'] == '2026-08-01'
+    assert report['topics']['招生']['招生计划']['status'] == 'missing'
+
+
+def test_image_only_article_is_reviewed_for_ocr(tmp_path):
+    import hashlib
+    from campus_rag.ingest.cleaning import prepare_item
+
+    path = tmp_path / 'image.html'
+    path.write_text('<div class="wp_articlecontent"><img src="intro.jpg"><iframe src="blank.htm"></iframe></div>', encoding='utf-8')
+    record = {'url': 'https://jwc.njupt.edu.cn/a.htm', 'title': '本科专业介绍',
+              'local_path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+    assert prepare_item(record)[:2] == ('review', 'image_content_requires_ocr')
+
+
+def test_collection_refuses_existing_output(tmp_path):
+    import subprocess
+    import sys
+    from campus_rag.config import ROOT
+
+    marker = tmp_path / 'keep.txt'
+    marker.write_text('original', encoding='utf-8')
+    result = subprocess.run([sys.executable, str(ROOT / 'scripts/collect_topics.py'),
+                             '--skip-crawl', '--output', str(tmp_path)], capture_output=True)
+    assert result.returncode != 0
+    assert marker.read_text(encoding='utf-8') == 'original'
+    assert not (tmp_path / 'sites.json').exists()

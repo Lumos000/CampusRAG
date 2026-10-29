@@ -1,0 +1,513 @@
+{
+  "description": "检索运行前固定；原有14道有来源留出题+10道主题题+17道学院定向题。拒答题未纳入来源命中指标。同一助手编写，非外部盲测。",
+  "cases": [
+    {
+      "id": "V2C01",
+      "group": "original_holdout",
+      "question": "按《本科学生奖学金评定办法》，综合一等奖与二等奖的奖励金额相差多少元？",
+      "relevant_content_keys": [
+        "f9323ed33d647fb9bf36eb2d8cbff0766f101b2132d41a0be868449db89aeb6f"
+      ],
+      "source_urls": [
+        "https://xsc.njupt.edu.cn/_upload/article/files/1d/13/fbabbf3d4aa7a2a1bb42d180bf4b/17b0bd86-db75-4284-a4eb-99892784be09.pdf"
+      ]
+    },
+    {
+      "id": "V2C02",
+      "group": "original_holdout",
+      "question": "按《本科学生奖学金评定办法》，综合一、二、三等奖各发一份，奖励金额合计多少元？",
+      "relevant_content_keys": [
+        "f9323ed33d647fb9bf36eb2d8cbff0766f101b2132d41a0be868449db89aeb6f"
+      ],
+      "source_urls": [
+        "https://xsc.njupt.edu.cn/_upload/article/files/1d/13/fbabbf3d4aa7a2a1bb42d180bf4b/17b0bd86-db75-4284-a4eb-99892784be09.pdf"
+      ]
+    },
+    {
+      "id": "V2C03",
+      "group": "original_holdout",
+      "question": "按《本科学生奖学金评定办法》，综合三等奖金额占一等奖金额的百分比是多少？",
+      "relevant_content_keys": [
+        "f9323ed33d647fb9bf36eb2d8cbff0766f101b2132d41a0be868449db89aeb6f"
+      ],
+      "source_urls": [
+        "https://xsc.njupt.edu.cn/_upload/article/files/1d/13/fbabbf3d4aa7a2a1bb42d180bf4b/17b0bd86-db75-4284-a4eb-99892784be09.pdf"
+      ]
+    },
+    {
+      "id": "V2C04",
+      "group": "original_holdout",
+      "question": "按《本科学生奖学金评定办法》，精神文明奖200元与示范宿舍长奖100元金额之和是多少？",
+      "relevant_content_keys": [
+        "f9323ed33d647fb9bf36eb2d8cbff0766f101b2132d41a0be868449db89aeb6f"
+      ],
+      "source_urls": [
+        "https://xsc.njupt.edu.cn/_upload/article/files/1d/13/fbabbf3d4aa7a2a1bb42d180bf4b/17b0bd86-db75-4284-a4eb-99892784be09.pdf"
+      ]
+    },
+    {
+      "id": "V2C05",
+      "group": "original_holdout",
+      "question": "按2025年甘霖励志奖学金的生均金额，若有13名学生获奖，共需多少元？",
+      "relevant_content_keys": [
+        "754886cbcfc92f44123838f843e32500bd0026b21b438fa93b506e1b8a89c3a5"
+      ],
+      "source_urls": [
+        "https://xsc.njupt.edu.cn/_upload/article/files/8b/02/564d3df247e0978ebfeb6e91f977/abd249cf-3755-4320-9974-2306fd0594c1.pdf"
+      ]
+    },
+    {
+      "id": "V2C06",
+      "group": "original_holdout",
+      "question": "按2025年甘霖励志奖学金志愿服务类每学年120小时的要求，已完成85小时，还差多少小时？",
+      "relevant_content_keys": [
+        "754886cbcfc92f44123838f843e32500bd0026b21b438fa93b506e1b8a89c3a5"
+      ],
+      "source_urls": [
+        "https://xsc.njupt.edu.cn/_upload/article/files/8b/02/564d3df247e0978ebfeb6e91f977/abd249cf-3755-4320-9974-2306fd0594c1.pdf"
+      ]
+    },
+    {
+      "id": "V2C07",
+      "group": "original_holdout",
+      "question": "按《学生修读辅修专业管理办法》，辅修课程共4学期。如果已完成1学期，还剩多少学期？",
+      "relevant_content_keys": [
+        "363ecb5d8940102b3408c2abf2afeae7e7d6e139375c38af9b439416f60bf0f6"
+      ],
+      "source_urls": [
+        "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf"
+      ]
+    },
+    {
+      "id": "V2C08",
+      "group": "original_holdout",
+      "question": "按《学生修读辅修专业管理办法》，一般设置8至10门主干课程，上限比下限多多少门？",
+      "relevant_content_keys": [
+        "363ecb5d8940102b3408c2abf2afeae7e7d6e139375c38af9b439416f60bf0f6"
+      ],
+      "source_urls": [
+        "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf"
+      ]
+    },
+    {
+      "id": "V2F01",
+      "group": "original_holdout",
+      "question": "按《本科学生临时困难补助实施办法》，对申请学生的国籍有什么要求？",
+      "relevant_content_keys": [
+        "3daa0ef0ab2589b4e761912d31f316986033955a6ca1acb1c18bc3e95afbb639"
+      ],
+      "source_urls": [
+        "https://xsc.njupt.edu.cn/_upload/article/files/56/61/e9c12aec4aeab361734e156df70a/ca55c2c3-bbfe-48b7-b800-94a0228127b6.pdf"
+      ]
+    },
+    {
+      "id": "V2F02",
+      "group": "original_holdout",
+      "question": "按《学生修读辅修专业管理办法》，辅修成绩是否计入平均学分绩点？",
+      "relevant_content_keys": [
+        "363ecb5d8940102b3408c2abf2afeae7e7d6e139375c38af9b439416f60bf0f6"
+      ],
+      "source_urls": [
+        "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf"
+      ]
+    },
+    {
+      "id": "V2P01",
+      "group": "original_holdout",
+      "question": "院级临时困难补助明细应在每年什么时候前报学生工作处备案？",
+      "relevant_content_keys": [
+        "3daa0ef0ab2589b4e761912d31f316986033955a6ca1acb1c18bc3e95afbb639"
+      ],
+      "source_urls": [
+        "https://xsc.njupt.edu.cn/_upload/article/files/56/61/e9c12aec4aeab361734e156df70a/ca55c2c3-bbfe-48b7-b800-94a0228127b6.pdf"
+      ]
+    },
+    {
+      "id": "V2L01",
+      "group": "original_holdout",
+      "question": "按《学生修读辅修专业管理办法》，哪些情形会被终止辅修学习？",
+      "relevant_content_keys": [
+        "363ecb5d8940102b3408c2abf2afeae7e7d6e139375c38af9b439416f60bf0f6"
+      ],
+      "source_urls": [
+        "https://xsc.njupt.edu.cn/_upload/article/files/98/7e/f27c28d34794908c6d5e34d7d478/35a33831-1e0f-4bb9-a43b-d319f68777db.pdf"
+      ]
+    },
+    {
+      "id": "V2T01",
+      "group": "original_holdout",
+      "question": "2026年端午节当天南京邮电大学图书馆开放吗？",
+      "relevant_content_keys": [
+        "fe68f47069c3db310dd8d8156ae3eab9ca06260f6b82b6ebc6b04a80cf8c87cd"
+      ],
+      "source_urls": [
+        "http://lib.njupt.edu.cn/2026/0615/c1429a304778/page.htm"
+      ]
+    },
+    {
+      "id": "V2T02",
+      "group": "original_holdout",
+      "question": "2026年端午假期6月20日至21日图书馆几点开放、几点关闭？",
+      "relevant_content_keys": [
+        "fe68f47069c3db310dd8d8156ae3eab9ca06260f6b82b6ebc6b04a80cf8c87cd"
+      ],
+      "source_urls": [
+        "http://lib.njupt.edu.cn/2026/0615/c1429a304778/page.htm"
+      ]
+    },
+    {
+      "id": "CORE01",
+      "group": "original_topics",
+      "question": "南京邮电大学的前身是什么？",
+      "relevant_content_keys": [
+        "4446469888c6b5766a74a70b7baa4a7c1b607d80de9cfd690f2879bc3ef07e41",
+        "6dce17e5f96f1b6bb2231707d0b4552c27e9d1e888271e3342aec768b4336cdd"
+      ],
+      "source_urls": [
+        "https://www.njupt.edu.cn/17220/list.htm",
+        "http://www.njupt.edu.cn/9/list.htm"
+      ]
+    },
+    {
+      "id": "CORE02",
+      "group": "original_topics",
+      "question": "南京邮电大学学校章程规定学校实行什么领导体制？",
+      "relevant_content_keys": [
+        "0ba1bc1aa4e0fee4732063d70b9e86047f4b324fb6dc9397f6e792edb46466d8",
+        "ef96ed7a3e3d67e76e07d47747f95cfe321a6d02dba54732a94122cfbf5c3227"
+      ],
+      "source_urls": [
+        "https://www.njupt.edu.cn/17221/list.htm",
+        "http://www.njupt.edu.cn/10/list.htm"
+      ]
+    },
+    {
+      "id": "CORE03",
+      "group": "original_topics",
+      "question": "2025年修订的南京邮电大学本科生转专业管理办法有哪些规定？",
+      "relevant_content_keys": [
+        "d1dff4d7c8b362e39e6ec96ca515b6a7ac3c3b4dfb3dd1adc29816eb4a1f5959"
+      ],
+      "source_urls": [
+        "https://jwc.njupt.edu.cn/2025/0926/c1746a289496/page.psp"
+      ]
+    },
+    {
+      "id": "CORE04",
+      "group": "original_topics",
+      "question": "本科生如何办理休学和复学？",
+      "relevant_content_keys": [
+        "3ee9f3a315fa21b568508af9f56c8ab77219aace86252ebaa1fdd23263379dc5",
+        "9f98a94f42ab2cde924ca737ad442bc9a0a1b3d2187d1eb72322605458361d95"
+      ],
+      "source_urls": [
+        "https://jwc.njupt.edu.cn/_t278/2024/0430/c1535a261606/page.htm",
+        "https://xsc.njupt.edu.cn/_upload/article/files/a7/03/cdd268c94c8aa9ac722289c6147e/05ac8e0b-41e5-4f1d-a916-068abec8cb6b.pdf"
+      ]
+    },
+    {
+      "id": "CORE05",
+      "group": "original_topics",
+      "question": "南京邮电大学2026年普通本科招生章程规定的录取原则是什么？",
+      "relevant_content_keys": [
+        "43eabec58169c18cbe86f2ee15739fefe196faf1ba15134359deec5c7c3a2f14"
+      ],
+      "source_urls": [
+        "https://zs.njupt.edu.cn/2026/0521/c2562a302356/page.htm"
+      ]
+    },
+    {
+      "id": "CORE06",
+      "group": "original_topics",
+      "question": "南京邮电大学2026年招生计划有哪些专业？",
+      "relevant_content_keys": [
+        "ee57202e632f1ebe3931762a7f0ccabd383a116d973b9668b0a4db9934722585"
+      ],
+      "source_urls": [
+        "https://zs.njupt.edu.cn/2026/0707/c2563a306107/page.htm"
+      ]
+    },
+    {
+      "id": "CORE07",
+      "group": "original_topics",
+      "question": "图书馆借阅规则对借书期限和续借有什么规定？",
+      "relevant_content_keys": [
+        "d3d7952eae6e3e12a9204495bc63218c2144ce8aca7f1923840395a34b88d6d2"
+      ],
+      "source_urls": [
+        "http://lib.njupt.edu.cn/2011/0531/c1385a15816/page.htm"
+      ]
+    },
+    {
+      "id": "CORE08",
+      "group": "original_topics",
+      "question": "进入南京邮电大学图书馆需要遵守哪些规定？",
+      "relevant_content_keys": [
+        "df6cafb2ad3dcec35cefb1674cbd2c77cbdc3634a43290b339ba1ccc300dba10"
+      ],
+      "source_urls": [
+        "http://lib.njupt.edu.cn/2011/0531/c1383a15823/page.htm"
+      ]
+    },
+    {
+      "id": "CORE09",
+      "group": "original_topics",
+      "question": "南邮图书馆的开放时间是什么？",
+      "relevant_content_keys": [
+        "a795c8afca5c76c97a0786c33920891fc4a95afa2d09a8fa7681aab7ad268d86"
+      ],
+      "source_urls": [
+        "https://lib.njupt.edu.cn/1384/list.htm"
+      ]
+    },
+    {
+      "id": "CORE10",
+      "group": "original_topics",
+      "question": "南京邮电大学2026版学生手册有哪些学生管理规定？",
+      "relevant_content_keys": [
+        "396f46268230dc98b2eceded4854857cf68dc3ee5a020bc313749ff5316e211b"
+      ],
+      "source_urls": [
+        "https://xsc.njupt.edu.cn/_upload/article/files/16/7a/75132f5b4fee8149bfa51df2abb2/bb906988-b1b4-42ce-97ba-27918520a804.pdf"
+      ]
+    },
+    {
+      "id": "COL01",
+      "group": "college_new",
+      "question": "人工智能学院设有哪些本科专业？",
+      "relevant_content_keys": [
+        "a8a203dd6315f1cc12bee6bd47b84a2c0b0913908c100dbd478b36fd4827cd80"
+      ],
+      "source_urls": [
+        "https://ai.njupt.edu.cn/18799/list.htm"
+      ],
+      "raw_sha256": [
+        "24892bc18467948e37d1d62359e5af32edcc60b8861f40dd6595570db60dd8d9"
+      ]
+    },
+    {
+      "id": "COL02",
+      "group": "college_new",
+      "question": "人工智能学院何时开始独立运行？",
+      "relevant_content_keys": [
+        "a8a203dd6315f1cc12bee6bd47b84a2c0b0913908c100dbd478b36fd4827cd80"
+      ],
+      "source_urls": [
+        "https://ai.njupt.edu.cn/18799/list.htm"
+      ],
+      "raw_sha256": [
+        "24892bc18467948e37d1d62359e5af32edcc60b8861f40dd6595570db60dd8d9"
+      ]
+    },
+    {
+      "id": "COL03",
+      "group": "college_new",
+      "question": "人工智能学院人工智能专业有哪些核心课程？",
+      "relevant_content_keys": [
+        "b54617307c472b221789543e4a84f08ec4651df6664511f5e1f7ef4c5e3e9137"
+      ],
+      "source_urls": [
+        "https://ai.njupt.edu.cn/2026/0105/c18870a295937/page.htm"
+      ],
+      "raw_sha256": [
+        "5b7f496c5015f816726c67e7c6cbbba0a31872958dac282a6342fe5ce97303c6"
+      ]
+    },
+    {
+      "id": "COL04",
+      "group": "college_new",
+      "question": "人工智能学院数据科学与大数据技术专业的特色是什么？",
+      "relevant_content_keys": [
+        "0d58387d66633313baa1aa8d0580270ce04805815c550ed6fe0fb0f39a4c4fbc"
+      ],
+      "source_urls": [
+        "https://ai.njupt.edu.cn/2026/0105/c18870a297647/page.htm"
+      ],
+      "raw_sha256": [
+        "6c03a33a882cc3275b199dd4c5ef6c63b69229a936543445d5780d0f08e2acdf"
+      ]
+    },
+    {
+      "id": "COL05",
+      "group": "college_new",
+      "question": "人工智能学院机器人工程专业哪年开始招生？",
+      "relevant_content_keys": [
+        "5d452691a2bb81daee3cdee5b3b539c4ffd59ac2d191eebeed10d5bbbb6d9a82"
+      ],
+      "source_urls": [
+        "https://ai.njupt.edu.cn/2026/0105/c18870a297650/page.htm"
+      ],
+      "raw_sha256": [
+        "d661b85496da340830b98666952bd583cf2f47b31201e425a8bfc16d443f9104"
+      ]
+    },
+    {
+      "id": "COL06",
+      "group": "college_new",
+      "question": "人工智能学院机器人工程专业学习哪些课程？",
+      "relevant_content_keys": [
+        "5d452691a2bb81daee3cdee5b3b539c4ffd59ac2d191eebeed10d5bbbb6d9a82"
+      ],
+      "source_urls": [
+        "https://ai.njupt.edu.cn/2026/0105/c18870a297650/page.htm"
+      ],
+      "raw_sha256": [
+        "d661b85496da340830b98666952bd583cf2f47b31201e425a8bfc16d443f9104"
+      ]
+    },
+    {
+      "id": "COL07",
+      "group": "college_new",
+      "question": "人工智能学院红枫科技园办公地点和联系电话是什么？",
+      "relevant_content_keys": [
+        "73a40bc8f143430dcfe8cb2bb082baa5fdab76ae26c6cb24c468a396b250d843"
+      ],
+      "source_urls": [
+        "https://ai.njupt.edu.cn/lxwm/list.htm"
+      ],
+      "raw_sha256": [
+        "5a088df7c4bb3ff9de0592416c931834bb5d96086a3707e8ad18a75d187a92d5"
+      ]
+    },
+    {
+      "id": "COL08",
+      "group": "college_new",
+      "question": "人工智能学院2026年人工智能微专业面向哪些学生招生？",
+      "relevant_content_keys": [
+        "d049d76c545d7d379c2b43b4a59eaafaec82e2e3211047d58a361ef76d352725"
+      ],
+      "source_urls": [
+        "https://ai.njupt.edu.cn/_upload/article/files/52/8d/ccb1a8a94b79869aac37a41ba876/4114f2d0-ca56-4cb5-a566-bc3f56405e55.pdf"
+      ],
+      "raw_sha256": [
+        "bad0512fbb874b9973a82feb599f016e1dff4bfcfde4b34c226afcec8633187c"
+      ]
+    },
+    {
+      "id": "COL09",
+      "group": "college_new",
+      "question": "人工智能学院2026年人工智能微专业课程共多少学分？",
+      "relevant_content_keys": [
+        "d049d76c545d7d379c2b43b4a59eaafaec82e2e3211047d58a361ef76d352725"
+      ],
+      "source_urls": [
+        "https://ai.njupt.edu.cn/_upload/article/files/52/8d/ccb1a8a94b79869aac37a41ba876/4114f2d0-ca56-4cb5-a566-bc3f56405e55.pdf"
+      ],
+      "raw_sha256": [
+        "bad0512fbb874b9973a82feb599f016e1dff4bfcfde4b34c226afcec8633187c"
+      ]
+    },
+    {
+      "id": "COL10",
+      "group": "college_new",
+      "question": "计算机学院、软件学院、网络空间安全学院设有哪些系和教学中心？",
+      "relevant_content_keys": [
+        "a8ce79f45fc222d62f0d6f6201c890902b615886dfdf5de72eca8cffd6e8f18e"
+      ],
+      "source_urls": [
+        "https://cs.njupt.edu.cn/18728/list.htm"
+      ],
+      "raw_sha256": [
+        "0cb1394266971aa175c508ba02f7e55573bcbb19fb890a52ce97757513be6c55"
+      ]
+    },
+    {
+      "id": "COL11",
+      "group": "college_new",
+      "question": "计算机学院计算机科学与技术专业的培养目标是什么？",
+      "relevant_content_keys": [
+        "82eec7d755f1bbd441418e62fc5c96899462d342d89b793fa6dc304848ed36e9"
+      ],
+      "source_urls": [
+        "https://cs.njupt.edu.cn/2010/0517/c18773a110586/page.htm"
+      ],
+      "raw_sha256": [
+        "df7d174f5de51c082af7d866da2410489654a51ae8f317427ee553e2cf27111f"
+      ]
+    },
+    {
+      "id": "COL12",
+      "group": "college_new",
+      "question": "计算机学院信息安全专业的培养目标是什么？",
+      "relevant_content_keys": [
+        "76189fbf38798e240d98f5dbebb2d5af28d5c59d150726855a151618cef382ff"
+      ],
+      "source_urls": [
+        "https://cs.njupt.edu.cn/2010/0517/c18773a110587/page.htm"
+      ],
+      "raw_sha256": [
+        "3467f034e04cbc31be2a8c6906f2cac97d049d48a2644284d05573f7e5528d48"
+      ]
+    },
+    {
+      "id": "COL13",
+      "group": "college_new",
+      "question": "计算机学院软件工程专业毕业生可以从事哪些工作？",
+      "relevant_content_keys": [
+        "e368768b5476bd2237dd6e28a6f42873e2875f70a32ab06fc29241af4982d8c7"
+      ],
+      "source_urls": [
+        "https://cs.njupt.edu.cn/2010/0517/c18773a110588/page.htm"
+      ],
+      "raw_sha256": [
+        "f1c01d182da734b90e36ad4da54657274211e084ab83eaf684b16211ea6d5fac"
+      ]
+    },
+    {
+      "id": "COL14",
+      "group": "college_new",
+      "question": "计算机学院软件工程嵌入式培养专业有哪些特色？",
+      "relevant_content_keys": [
+        "1607e623a6d5df90ca3b9601f10c3b053a0b9289b7baeca35f00139631dd5402"
+      ],
+      "source_urls": [
+        "https://cs.njupt.edu.cn/2012/0529/c18773a110590/page.htm"
+      ],
+      "raw_sha256": [
+        "e2c91bab002eac80893c7b96a26981bbca8f22af47a7d2528c71b9424d53a432"
+      ]
+    },
+    {
+      "id": "COL15",
+      "group": "college_new",
+      "question": "按计算机学院2023年发布的选课常见问题解答，体育课选不上应该怎么办？",
+      "relevant_content_keys": [
+        "c6af4c0a04161ac4a8084c75db78de5371b26a502d684b395103e10f42bd1db8"
+      ],
+      "source_urls": [
+        "https://cs.njupt.edu.cn/_upload/article/files/4c/85/c20fcfe942c6ade1287eb88ef8b6/5830ec88-097b-4972-b33d-8c163d918e7a.pdf"
+      ],
+      "raw_sha256": [
+        "33975d6b51860c43efb030022389ffdd702b6b65d32bb953f8880eb968f8d7e8"
+      ]
+    },
+    {
+      "id": "COL16",
+      "group": "college_new",
+      "question": "按计算机学院2021年发布的学生宿舍入住申请表，表格应报送哪个办公室？",
+      "relevant_content_keys": [
+        "396ed9621e745402c5b5a2640e6e182a3af0e70d0f66e0d15db2e1e9bcd4bc54"
+      ],
+      "source_urls": [
+        "https://cs.njupt.edu.cn/_upload/article/files/6f/7d/5b03e86e41d79b55bdee23b12891/8c94fe4d-038a-4533-830b-d96d0393bfeb.docx"
+      ],
+      "raw_sha256": [
+        "15dd256e49c010df669af8ea77cf4787b47e3da1693bafe442acbda2d6f9271a"
+      ]
+    },
+    {
+      "id": "COL17",
+      "group": "college_new",
+      "question": "计算机学院2026年生成式人工智能软件技术微专业的招生对象是什么？",
+      "relevant_content_keys": [
+        "732eb1a6c018ec6aca4df0d93b482cc262aa012fcf18e7432f6f5359df20b7c1"
+      ],
+      "source_urls": [
+        "https://cs.njupt.edu.cn/2026/0924/c18731a309122/page.htm"
+      ],
+      "raw_sha256": [
+        "545385a26136ea9fa1217d8d064e0376bff3259a784454dd512a84bbaa324c9d"
+      ]
+    }
+  ]
+}

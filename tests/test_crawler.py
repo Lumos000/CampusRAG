@@ -75,3 +75,27 @@ def test_resume_does_not_repeat_completed_seed(tmp_path, monkeypatch):
     monkeypatch.setattr(again, '_get', get)
     assert again.run() == 1
     assert requested == ['https://jwc.njupt.edu.cn/report.pdf']
+
+
+def test_topic_config_restricts_sites_and_keeps_downloads(tmp_path):
+    from campus_rag.config import ROOT
+    crawler = CampusCrawler(ROOT / 'config/sites_topics.json', tmp_path / 'raw')
+    assert crawler._allowed('https://scie.njupt.edu.cn/2761/list.htm')
+    assert crawler._department('https://cs.njupt.edu.cn/a.htm').startswith('计算机学院')
+    assert not crawler._allowed('https://pg.njupt.edu.cn/a.htm')
+    assert not crawler._allowed('https://cs.njupt.edu.cn.evil.com/a.htm')
+    assert crawler._follow_link('https://scie.njupt.edu.cn/a.htm', '本科培养方案')
+    assert crawler._follow_link('https://scie.njupt.edu.cn/a.pdf', '附件1', '本科培养方案')
+    assert not crawler._follow_link('https://cwc.njupt.edu.cn/a.pdf', '科研项目经费管理办法', '财务处')
+    assert crawler._follow_link('https://scie.njupt.edu.cn/list2.htm', '下一页')
+    assert not crawler._follow_link('https://scie.njupt.edu.cn/a.htm', '学术讲座')
+
+
+def test_college_supplement_includes_computer_and_independent_ai(tmp_path):
+    from campus_rag.config import ROOT
+    crawler = CampusCrawler(ROOT / 'config/sites_colleges.json', tmp_path / 'raw')
+    assert crawler._allowed('https://cs.njupt.edu.cn/18753/list.htm')
+    assert crawler._allowed('https://ai.njupt.edu.cn/xyjj/list.htm')
+    assert crawler._department('https://ai.njupt.edu.cn/xyjj/list.htm') == '人工智能学院'
+    assert 'https://ai.njupt.edu.cn/xyjj/list.htm' in crawler.config['seed_urls']
+    assert not crawler._allowed('https://coa.njupt.edu.cn/2206/list.htm')
