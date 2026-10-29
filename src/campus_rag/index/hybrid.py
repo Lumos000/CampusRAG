@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import sqlite3
+from contextlib import closing
 from pathlib import Path
 
 import numpy as np
@@ -9,6 +11,18 @@ from campus_rag.index.bm25 import BM25Index
 from campus_rag.types import Evidence
 from campus_rag.tools.temporal import matches_period, question_periods
 from campus_rag.ingest.navigation import navigation_chunk
+
+
+def validate_records(records, connection):
+    fields = ('text', 'kind', 'doc_id', 'table_id', 'heading_path', 'title',
+              'source_url', 'department', 'published_at')
+    chunks = {row[0]: tuple(row[1:]) for row in connection.execute(
+        'SELECT c.id,c.text,c.kind,c.doc_id,c.table_id,c.heading_path,'
+        'd.title,d.source_url,d.department,d.published_at '
+        'FROM chunks c JOIN documents d ON d.id=c.doc_id')}
+    if (len(chunks) != len(records) or {r['id'] for r in records} != set(chunks)
+            or any(tuple(r.get(k) for k in fields) != chunks[r['id']] for r in records)):
+        raise ValueError('索引与数据库分块不一致，请使用配套数据库和索引')
 
 
 class HybridIndex:
@@ -21,13 +35,17 @@ class HybridIndex:
         self.navigation_tables = {r.get('table_id') for r in records if r.get('table_id') is not None and navigation_chunk(r['text'])}
 
     @classmethod
-    def load(cls, index_dir: str | Path, embedding_model: str | Path, reranker_model: str | Path | None = None):
+    def load(cls, index_dir: str | Path, embedding_model: str | Path, reranker_model: str | Path | None = None,
+             database_path: str | Path | None = None):
         directory = Path(index_dir)
         with (directory / 'records.jsonl').open(encoding='utf-8') as handle:
             records = [json.loads(line) for line in handle if line.strip()]
         vectors = np.load(directory / "vectors.npy")
         if vectors.shape != (len(records), 512) or not np.isfinite(vectors).all():
             raise ValueError('索引记录与 BGE 向量不匹配，请重建索引')
+        if database_path is not None:
+            with closing(sqlite3.connect(Path(database_path).resolve().as_uri() + '?mode=ro', uri=True)) as connection:
+                validate_records(records, connection)
         embedder = LocalEmbedder(embedding_model)
         reranker = LocalReranker(reranker_model) if reranker_model and Path(reranker_model).exists() else None
         return cls(records, vectors, embedder, reranker)

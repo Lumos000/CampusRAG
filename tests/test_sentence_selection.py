@@ -104,3 +104,67 @@ def test_numbered_exception_cannot_be_selected_away(tmp_path):
     text='一、工作人员完成登记后可以借用。\n二、但停用账户不得借用。'
     result,_=answer(tmp_path,text,'工作人员可以借用吗？',['S1'])
     assert result.answer==text
+
+
+@pytest.mark.parametrize('question', [
+    '《青石办法》和《白湖办法》分别要求哪些申请材料？',
+    '青石办法与白湖办法的申请材料是什么？',
+])
+def test_cross_document_materials_reach_sentence_selection(tmp_path,question):
+    evidence = [Evidence(f'e{i}', f'申请须提交材料{label}。', 1, i,
+        title, f'https://example.edu/{i}') for i, (label, title) in enumerate([
+            ('甲', '青石办法'), ('乙', '白湖办法')], 1)]
+    class Index:
+        def search(self, *args, **kwargs): return evidence
+    class Generator:
+        def generate(self, prompt, **kwargs):
+            assert '材料甲' in prompt and '材料乙' in prompt
+            return json.dumps({'sentence_ids': ['S1', 'S2']})
+    with Repository(tmp_path/'multi.db') as repo:
+        repo.initialize()
+        service = RAGService(Settings(tmp_path,tmp_path,tmp_path,tmp_path,tmp_path),
+            Index(), Generator(), repo.connection)
+        result = service.answer(question)
+        assert '材料甲' in result.answer and '材料乙' in result.answer
+        assert len(result.references) == 2
+
+
+def test_separate_requirements_in_one_named_policy_do_not_expand_to_other_sources(tmp_path):
+    with Repository(tmp_path/'single_named.db') as repo:
+        repo.initialize()
+        service = RAGService(Settings(tmp_path,tmp_path,tmp_path,tmp_path,tmp_path),None,None,repo.connection)
+        service.last_diagnostics = {}
+        evidence = [Evidence('a','申请文件须采用PDF格式且不得加密。',1,1,'青石办法','https://example.edu/a'),
+            Evidence('b','另一办法要求提交完整的纸本文件。',.9,2,'白湖办法','https://example.edu/b')]
+        selected = service._text_evidence('《青石办法》对文件格式和加密分别有什么要求？',evidence)
+        assert {e.doc_id for e in selected} == {1}
+
+
+def test_generic_portal_title_is_not_a_named_policy_constraint(tmp_path):
+    with Repository(tmp_path/'portal.db') as repo:
+        repo.initialize()
+        service = RAGService(Settings(tmp_path,tmp_path,tmp_path,tmp_path,tmp_path),None,None,repo.connection)
+        service.last_diagnostics = {}
+        evidence = [Evidence('a','委托他人办理时须提交签名委托书和双方证件复印件。',1,1,
+            '本科成绩办理规定（修订）','https://example.edu/a'),
+            Evidence('b','请登录栏目入口提交线上申请。',.9,2,'课程申请','https://example.edu/b')]
+        selected = service._text_evidence('按本科成绩办理规定，课程申请需要什么委托材料？',evidence)
+        assert {e.doc_id for e in selected} == {1}
+
+
+def test_requested_clauses_are_not_limited_to_three(tmp_path):
+    text = '\n'.join(f'第{i}条 申请须提交材料{i}。' for i in range(1, 6))
+    result, _ = answer(tmp_path, text, '第1条、第2条、第3条、第4条、第5条分别要求什么材料？',
+        ['S1', 'S2', 'S3', 'S4', 'S5'])
+    assert all(f'材料{i}' in result.answer for i in range(1, 6))
+
+
+def test_identical_clauses_from_different_sources_keep_both_identities(tmp_path):
+    with Repository(tmp_path/'identical.db') as repo:
+        repo.initialize()
+        service = RAGService(Settings(tmp_path,tmp_path,tmp_path,tmp_path,tmp_path),None,None,repo.connection)
+        service.last_diagnostics = {}
+        evidence = [Evidence(str(i), '申请须提交完整的登记材料。', 1, i,
+            title, f'https://example.edu/{i}') for i,title in enumerate(['青石办法','白湖办法'],1)]
+        selected = service._text_evidence('《青石办法》和《白湖办法》分别要求什么？', evidence)
+        assert {e.doc_id for e in selected} == {1, 2}

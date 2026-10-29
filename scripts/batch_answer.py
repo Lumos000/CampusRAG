@@ -29,11 +29,12 @@ def main() -> None:
     parser.add_argument("--input", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument('--audit-output', type=Path, help='另存原文数值、计算过程和答案核对日志')
+    parser.add_argument('--config', type=Path, help='指定数据库和索引配置，默认使用校园公开资料库')
     args = parser.parse_args()
-    settings = load_settings()
-    index = HybridIndex.load(settings.index_dir, settings.embedding_model, settings.reranker_model)
-    generator = TransformersGenerator(settings.generator_model)
-    connection = sqlite3.connect(settings.database_path)
+    settings = load_settings(args.config)
+    index = HybridIndex.load(settings.index_dir, settings.embedding_model, settings.reranker_model, settings.database_path)
+    generator = TransformersGenerator(settings.generator_model, settings.max_context_tokens)
+    connection = sqlite3.connect(settings.database_path.resolve().as_uri() + '?mode=ro', uri=True)
     try:
         service = RAGService(settings, index, generator, connection)
         rows = []

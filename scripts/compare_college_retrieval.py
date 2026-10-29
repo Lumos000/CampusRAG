@@ -5,11 +5,12 @@ import argparse
 import json
 import sqlite3
 from contextlib import closing
+from dataclasses import replace
 from pathlib import Path
 
 import _bootstrap  # noqa: F401
 import numpy as np
-from campus_rag.config import load_settings
+from campus_rag.config import ROOT, load_settings
 from campus_rag.index.hybrid import HybridIndex, LocalEmbedder, LocalReranker
 from rebuild_college_database import digest
 
@@ -58,7 +59,11 @@ def main():
     parser.add_argument('--output', type=Path, required=True, help='必须为不存在的新目录')
     parser.add_argument('--modes', nargs='+', choices=['bm25', 'hybrid', 'rerank'], default=['bm25', 'hybrid', 'rerank'])
     args = parser.parse_args()
-    baseline, candidate = load_settings(args.baseline_config), load_settings(args.candidate_config)
+    baseline = load_settings(args.baseline_config) if args.baseline_config else replace(
+        load_settings(), database_path=ROOT/'data/processed/campus.db', index_dir=ROOT/'data/index')
+    candidate = load_settings(args.candidate_config)
+    if baseline.database_path.resolve()==candidate.database_path.resolve() or baseline.index_dir.resolve()==candidate.index_dir.resolve():
+        parser.error('基线与候选必须使用各自独立的数据库和配套索引')
     if baseline.embedding_model != candidate.embedding_model or baseline.reranker_model != candidate.reranker_model:
         parser.error('比较要求使用相同模型')
     cases = json.loads(args.cases.read_text(encoding='utf-8'))['cases']

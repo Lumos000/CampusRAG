@@ -54,7 +54,9 @@ def merge_corpus(baseline, additional):
 
 
 def rebuild(baseline_db, baseline_clean, additional_clean, output, build_vectors=False, excluded_urls=(),
-            expected_documents=None, required_hosts=()):
+            expected_documents=None, required_hosts=(), database_name='campus_colleges.db'):
+    if Path(database_name).name != database_name or not database_name.endswith('.db'):
+        raise ValueError('数据库名称必须是以 .db 结尾的文件名')
     baseline_db, output = Path(baseline_db).resolve(), Path(output).resolve()
     before = digest(baseline_db)
     groups, variants = merge_corpus(baseline_clean, additional_clean)
@@ -86,7 +88,7 @@ def rebuild(baseline_db, baseline_clean, additional_clean, output, build_vectors
         raise ValueError('缺少必需学院官网资料，停止重建')
     # This also protects every preexisting database/index below the destination.
     output.mkdir(parents=True, exist_ok=False)
-    settings = replace(load_settings(), database_path=output / 'campus_colleges.db', index_dir=output / 'index')
+    settings = replace(load_settings(), database_path=output / database_name, index_dir=output / 'index')
     with (output / 'clean_documents.jsonl').open('w', encoding='utf-8') as handle:
         for item in groups.values():
             handle.write(json.dumps(item, ensure_ascii=False) + '\n')
@@ -135,7 +137,7 @@ def rebuild(baseline_db, baseline_clean, additional_clean, output, build_vectors
 
 def main():
     parser = argparse.ArgumentParser(description='保留原资料，在全新目录重建独立学院扩充数据库')
-    parser.add_argument('--recipe', type=Path, help='读取版本构建配置，例如 config/dataset_v3.json；命令行路径参数可覆盖配置')
+    parser.add_argument('--recipe', type=Path, help='读取构建配置，例如 config/dataset_campus_public.json；命令行路径参数可覆盖配置')
     parser.add_argument('--baseline-db', type=Path)
     parser.add_argument('--baseline-clean', type=Path)
     parser.add_argument('--additional-clean', type=Path)
@@ -157,7 +159,8 @@ def main():
         path_value('baseline_clean', 'data/processed/clean/clean_documents.jsonl'),
         path_value('additional_clean'), path_value('output'), args.build_index,
         recipe.get('excluded_urls', []) + args.exclude_url,
-        recipe.get('expected_documents'), recipe.get('required_hosts', [])), ensure_ascii=False, indent=2))
+        recipe.get('expected_documents'), recipe.get('required_hosts', []),
+        recipe.get('database_name', 'campus_colleges.db')), ensure_ascii=False, indent=2))
 
 
 if __name__ == '__main__':

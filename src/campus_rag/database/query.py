@@ -191,7 +191,7 @@ class StructuredQueryEngine:
                         raise PlanError(sid+': 算术步骤字段不合法')
                     operands = [self._step_input(v,values,question) for v in inputs]
                     if op=='multiply':
-                        self._check_person_rate_pair(operands,question)
+                        self._check_person_rate_pair(operands,question,facts)
                     value,unit,expression = self._step_arithmetic(op,operands)
                     value_record = {'value':value,'unit':unit,'expression':expression,
                                     'details':[d for v in operands for d in v['details']],
@@ -502,14 +502,50 @@ class StructuredQueryEngine:
             raise PlanError('计算未覆盖问题明确列举的资料：'+'、'.join(sorted(requested-covered)))
 
     @staticmethod
-    def _check_person_rate_pair(operands,question):
+    def _check_person_rate_pair(operands,question,facts=None):
         if len(operands)!=2 or {v['unit'] for v in operands}!={'人','元/人'}:
             return
         people = next(v for v in operands if v['unit']=='人')
         rate = next(v for v in operands if v['unit']=='元/人')
-        # User quantities have no body subject. Do not invent one for them.
         counts = [d for d in people['details'] if 'fact_id' in d]
-        rates = [d for d in rate['details'] if 'fact_id' in d]
+        rates = [d for d in rate['details'] if 'fact_id' in d or 'table_id' in d]
+        def subject(fact):
+            return re.sub(r'(?:人数|名额|(?:人均)?标准)$','',compact(fact.get('subject') or fact.get('row_label','')))
+        # Keep every matching occurrence: equal quantities can legitimately
+        # belong to different groups without changing the public plan format.
+        labels = {label for fact in [*(facts or {}).values(),*rates]
+            for label in [subject(fact),compact(fact.get('scope',{}).get('group',''))] if label}
+        for fee in rates:
+            right = compact(fee.get('scope',{}).get('group','')) or subject(fee)
+            if not fee.get('scope',{}).get('group') and re.match(r'^(?:人均|生均|每人|统一|共同|通用)',right):
+                continue
+            explicit = right and re.search(r'(?:按|采用|使用|参照)'+re.escape(right)+r'(?:的)?(?:人均)?标准',compact(question))
+            shared = re.search(r'统一|共同|通用',fee.get('field','')) and re.search(r'统一|共同|通用',question)
+            if (explicit or shared) and '各自' not in question:
+                continue
+            for item in people.get('question_inputs',[]):
+                bindings = []
+                for source in item.get('occurrences',[]):
+                    prefix = question[:source['span'][0]]
+                    clause = re.split(r'[，,。；;、：:]',prefix)[-1]
+                    matches = [(m.end(),len(label),label) for label in labels
+                        for m in re.finditer(re.escape(label),compact(clause))]
+                    # Object names absent from the supplied facts still must
+                    # not silently inherit a different group's rate.
+                    local = re.search(r'([\u4e00-\u9fffA-Za-z]{2,20}(?:组|项目|人员))\s*(?:有|共|为)?$',clause)
+                    if local and not matches:
+                        matches.append((len(compact(clause)),len(local[1]),local[1]))
+                    if matches:
+                        binding = max(matches)[2]
+                        source['subject'] = binding
+                        bindings.append(binding)
+                if right and bindings and right not in bindings:
+                    raise QuestionConstraintError('问题约束：问题人数与费率对象配对不符')
+                if not bindings and len(question_quantities(question,'人'))>1:
+                    raise QuestionConstraintError('问题约束：问题人数所属对象不明确，无法确认费率配对')
+                matched = next((source for source in item.get('occurrences',[]) if source.get('subject')==right),None)
+                if matched and 'source' in people:
+                    people['source'].update(matched)
         for count in counts:
             for fee in rates:
                 if (count.get('doc_id')!=fee.get('doc_id') or
@@ -519,8 +555,6 @@ class StructuredQueryEngine:
                 cg,rg = count.get('scope',{}).get('group'),fee.get('scope',{}).get('group')
                 if cg and rg and cg!=rg:
                     raise QuestionConstraintError('问题约束：人数与费率分组配对不符')
-                def subject(fact):
-                    return re.sub(r'(?:人数|名额|(?:人均)?标准)$','',compact(fact.get('subject','')))
                 left,right = subject(count),subject(fee)
                 explicit_rate = right and re.search(r'(?:按|采用|使用)'+re.escape(right)+r'(?:的)?(?:人均)?标准',compact(question))
                 shared = re.search(r'统一|共同|通用',fee.get('field','')) and re.search(r'统一|共同|通用',question)
@@ -598,7 +632,7 @@ class StructuredQueryEngine:
             raise PlanError('问题要求百分比，最终步骤必须ratio，不能只返回计数或求和')
         if result['value']<0 and re.search(r'相差|高多少|多多少|还剩|还差',question):
             raise PlanError('差额方向与问题不符：请核对被比较对象顺序和周期，不能直接相减不同周期的上限')
-        target = re.search(r'多少(元|小时|平方米|学期|门)',compact(question))
+        target = re.search(r'多少(元|小时|平方米|学期|学分|学时|门)',compact(question))
         person_basis = (question.count('每人')>=2 or re.search(r'人均|生均',question)
             or ('每人' in question and '标准' in question))
         rate_difference = (compare and person_basis and result['unit']=='元/人'
@@ -707,7 +741,7 @@ class StructuredQueryEngine:
             periods = set(re.findall(r'(?:每|本)(学年|学期|年|月|周|天)',question))
             completed = bool(re.search(r'已(?:经)?(?:完成|修读|修|使用|用)\s*$',question[:source['span'][0]]))
             return {'value':value,'unit':canonical_unit,'expression':str(value),'details':[],
-                'question_inputs':[{'literal':str(value),'unit':canonical_unit}],
+                'question_inputs':[{'literal':str(value),'unit':canonical_unit,'occurrences':paired}],
                 **({'within_period':next(iter(periods))} if completed and len(periods)==1 else {}),
                 'source':{'kind':'question','quote':source['quote'],'span':source['span']}}
         token = next(t for t in tokens if (Decimal(t) if re.fullmatch(r'\d+(?:\.\d+)?',t) else Decimal(chinese_integer(t)))==value)

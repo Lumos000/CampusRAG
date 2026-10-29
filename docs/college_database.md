@@ -1,6 +1,6 @@
-# 518 篇 v3 数据集构建与验收
+# 校园公开资料库构建与验收
 
-当前数据集由原库 497 篇文档和计算机学院 15 篇、人工智能学院 6 篇补采文档组成。构建仅创建新数据库和索引，默认应用配置仍保留原库。
+当前数据集名为“校园公开资料库”，由原库497篇文档和计算机学院15篇、人工智能学院6篇补采文档组成，已设为默认数据库。数据库为 `data/processed/campus_public/campus_public.db`，索引为同目录的 `index/`；原库和旧快照保留供历史对照。当前问答验证见 [适配验收说明](campus_public_acceptance.md)。
 
 ## 代码入口
 
@@ -8,7 +8,7 @@
 | --- | --- |
 | `config/sites_colleges.json` | 只跟踪计算机学院与人工智能学院官网的定向补采 |
 | `config/sites_topics.json` | 五类主题与学院站点的通用探索配置 |
-| `config/dataset_v3.json` | v3 固定输入、排除名单、518 篇数量及必需学院来源检查 |
+| `config/dataset_campus_public.json` | 固定输入、正式数据库名称、排除名单、518篇数量及必需学院来源检查 |
 | `scripts/collect_topics.py` | 独立采集、只读复用原始资料、清洗与覆盖报告 |
 | `scripts/rebuild_college_database.py` | 合并去重、保护原库、排除指定资料、独立重建与索引 |
 | `scripts/compare_college_retrieval.py` | 固定题集和模型的来源检索对比 |
@@ -22,7 +22,7 @@
 
 518 是已验收快照的数量，不承诺实时重爬仍得到相同数量。重建配置会检查预期数量及计算机、人工智能学院来源；数据变化时会在创建输出目录前停止，应先审核新数据，再建立新的版本配置。
 
-v3 排除通信学院《学院简介》以及自动化学院《学院简介》《本科专业介绍》。这三篇的精确 URL 固定在构建配置中，避免遗漏命令行参数后重新加入。该流程不允许排除原库文档。
+本资料库排除通信学院《学院简介》以及自动化学院《学院简介》《本科专业介绍》。这三篇的精确 URL 固定在构建配置中，避免遗漏命令行参数后重新加入。该流程不允许排除原库文档。`config/dataset_v3.json` 与名称带v3的评测文件仅保留历史记录，不是当前默认配置。
 
 ## 构建与启动
 
@@ -30,16 +30,17 @@ v3 排除通信学院《学院简介》以及自动化学院《学院简介》�
 
 ```powershell
 conda activate rag
-python scripts/rebuild_college_database.py --recipe config/dataset_v3.json --build-index
-python scripts/check_database.py --database data/processed/colleges_20261029_v3/campus_colleges.db
-python app.py --config data/processed/colleges_20261029_v3/settings.json
+python scripts/rebuild_college_database.py --recipe config/dataset_campus_public.json --build-index
+python scripts/check_database.py
+python scripts/check_offline.py
+python app.py
 ```
 
-目标目录必须不存在。已有 v3 时可用 `--output data/processed/colleges_v3_review` 指定全新的验证目录；不要删除原库来重跑。输入路径按项目根目录解析，命令行路径可覆盖配置。
+目标目录必须不存在。已有默认库时可用 `--output data/processed/campus_public_review` 指定全新的验证目录；不要删除原库来重跑。输入路径按项目根目录解析，命令行路径可覆盖配置。独立构建后的问答用 `--config data/processed/campus_public_review/settings.json`。
 
 重建先核对原库内容键与原清洗清单一致，再合并补采资料。同一原始 URL、哈希出现不同解析结果时，保留原库表示并合并来源别名。每篇文档沿用原有事务导入，表格规范化只作用于新库。
 
-输出包含 `campus_colleges.db`、`clean_documents.jsonl`、`settings.json`、`rebuild_report.json`，以及启用 `--build-index` 时的 `index/`。报告记录输入清单哈希、原库前后哈希、排除项、来源分布和结构检查；导入或索引失败的目录不能作为已完成版本使用。
+输出包含 `campus_public.db`、`clean_documents.jsonl`、`settings.json`、`rebuild_report.json`，以及启用 `--build-index` 时的 `index/`。报告记录输入清单哈希、原库前后哈希、排除项、来源分布和结构检查；导入或索引失败的目录不能作为已完成版本使用。
 
 学院补采仍使用独立新目录：
 
@@ -55,12 +56,17 @@ python scripts/collect_topics.py --config config/sites_colleges.json --max-pages
 检索按文档内容键标注来源，避免依赖每次重建变化的分块 UUID；加载时核对全部分块 ID、正文及来源元数据，防止索引和数据库混用。
 
 ```powershell
-python scripts/compare_college_retrieval.py --candidate-config data/processed/colleges_20261029_v3/settings.json --cases data/eval/college_dataset_v3/cases.json --output data/collections/v3_retrieval_review
-python scripts/smoke_qa.py --config data/processed/colleges_20261029_v3/settings.json --questions-file data/eval/college_dataset_v3/smoke_questions.json --output data/collections/v3_smoke_review.json
+python scripts/smoke_qa.py --questions-file data/eval/college_dataset_v3/smoke_questions.json --output data/collections/campus_public_smoke_review.json
 python -m pytest tests/test_college_rebuild.py tests/test_crawler.py tests/test_clean_ingest.py tests/test_table_parser.py tests/test_database_calculation.py tests/test_numeric.py -q
 ```
 
 历史本地快照摘要见 `data/eval/college_dataset_v3/verified_snapshot.json`；它不是本次提交的端到端正确率保证。原始数据和模型版本发生变化后必须重新评测。
+
+`compare_college_retrieval.py` 默认基线仍固定为原497篇库 `data/processed/campus.db` 与 `data/index/`，不随应用默认库改变。也可用 `--baseline-config` 显式选择其他基线。脚本拒绝共用数据库或索引的对比，避免把相同配置误当成扩充前后实验：
+
+```powershell
+python scripts/compare_college_retrieval.py --candidate-config config/settings.json --cases data/eval/college_dataset_v3/cases.json --output data/collections/campus_public_retrieval_review
+```
 
 | 历史检查项 | v3 结果 |
 | --- | --- |

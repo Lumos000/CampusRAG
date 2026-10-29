@@ -1,6 +1,6 @@
 {
-  "database_path": "data/processed/campus.db",
-  "index_dir": "data/index",
+  "database_path": "data/processed/campus_public/campus_public.db",
+  "index_dir": "data/processed/campus_public/index",
   "embedding_model": "models/bge-small-zh-v1.5",
   "reranker_model": "models/bge-reranker-base",
   "generator_model": "models/Qwen3-0.6B",

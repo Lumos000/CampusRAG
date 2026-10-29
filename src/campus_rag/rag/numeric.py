@@ -84,7 +84,7 @@ class NumericEngine:
         return output
 
     @staticmethod
-    def text_facts(evidence):
+    def text_facts(evidence, academic_units=False):
         """Extract explicit quantities, preserving bounds, scope and original offsets.
 
         Whitespace (including PDF line breaks) is ignored for matching only. Quotes
@@ -93,6 +93,8 @@ class NumericEngine:
         from campus_rag.database.normalization import quantity
         facts, seen = {}, set()
         units = r'万元|亿元|元|万人|千人|人|名|平方米|㎡|台|本|项|个|门|学年|学期|年|月|周|天|小时|分钟|%|％'
+        if academic_units:
+            units = '学分|学时|'+units
         amount = re.compile(r'(?<![\d.])(?P<number>\d[\d,]*(?:\.\d+)?)(?:[-—–～~至到](?P<upper>\d[\d,]*(?:\.\d+)?))?(?P<unit>'+units+r')?(?P<denominator>/(?:小时|分钟|天|周|月|学年|年|人|次|台|个))?')
         relations = {'不超过':'lte','不高于':'lte','至多':'lte','最多':'lte','上限为':'lte',
             '不低于':'gte','不少于':'gte','至少':'gte','最低为':'gte','下限为':'gte',

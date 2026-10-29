@@ -1,0 +1,14 @@
+{
+  "baseline_db": "data/processed/campus.db",
+  "baseline_clean": "data/processed/clean/clean_documents.jsonl",
+  "additional_clean": "data/collections/colleges_20261029_v1/clean/clean_documents.jsonl",
+  "output": "data/processed/campus_public",
+  "database_name": "campus_public.db",
+  "expected_documents": 518,
+  "required_hosts": ["cs.njupt.edu.cn", "ai.njupt.edu.cn"],
+  "excluded_urls": [
+    "https://scie.njupt.edu.cn/2761/list.htm",
+    "https://coa.njupt.edu.cn/2206/list.htm",
+    "https://coa.njupt.edu.cn/zyjs/list.htm"
+  ]
+}

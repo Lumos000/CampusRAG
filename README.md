@@ -2,6 +2,8 @@
 
 这是《大数据项目实践》的离线 RAG 实现。系统将公开校园资料解析为正文块和结构化 SQLite 表格，通过 BM25、BGE 向量检索、RRF 和小型 Reranker 找到证据。Qwen3-0.6B 只负责查询规划和回答组织；Python 负责参数化筛选、单位验证、Decimal 计算以及参考资料生成。
 
+当前默认使用 **校园公开资料库**（518篇），数据库为 `data/processed/campus_public/campus_public.db`，配套索引为同目录下的 `index/`。交互问答、批量 CSV 和离线检查共用此默认配置；原497篇库保留用于历史对照。最新适配及验证见 [校园公开资料库验收说明](docs/campus_public_acceptance.md)。
+
 版本与评测入口见 [代码与版本核对记录（2026-10-27）](docs/current_code_status.md)，包括本地与 GitHub 提交差异、模块职责及当前可用边界。
 
 上一轮可靠性优化见 [修改与验证报告](docs/reliability_optimization_v1.md)及 [36 题逐题对照](docs/reliability_case_comparison.md)。冻结开发诊断的核心要点评分由 24/36 增至 33/36；文字回答主要依赖保守原文回退，平均长度明显增加，数值规划仍为 5/8；当时独立 v2 尚未评测。
@@ -54,7 +56,17 @@ models/bge-reranker-base/
 
 ## 数据准备
 
-518 篇 v3 的独立构建、原库保护、学院来源及固定题集复测见 [v3 数据集说明](docs/college_database.md)。固定构建配置为 [config/dataset_v3.json](config/dataset_v3.json)，本地数据库和原始资料不随代码提交。
+校园公开资料库的独立构建、原库保护、学院来源及历史复测见 [数据集说明](docs/college_database.md)。固定构建配置为 [config/dataset_campus_public.json](config/dataset_campus_public.json)，本地数据库和原始资料不随代码提交。
+
+已有本地资料及模型时，确认目标目录不存在后构建：
+
+```powershell
+python scripts/rebuild_college_database.py --recipe config/dataset_campus_public.json --build-index
+python scripts/check_database.py
+python scripts/check_offline.py
+```
+
+当前机器已完成默认库切换，无须重建。新检出代码还需要原始资料、两份清洗清单和原497篇基线库；固定配置不能代替数据文件。以下采集、导入命令用于准备或更新资料，更新默认库后必须重新建索引并检查，不能继续沿用原快照的评测成绩。
 
 采集完成后按 [数据清洗与可靠入库](docs/cleaning.md) 执行 clean_data.py、清洗清单导入和数据库校验；不建议把原始网页清单直接全量入库。
 
@@ -78,7 +90,7 @@ python scripts/ingest_data.py "data/raw/example.pdf" "data/raw/example.xlsx"
 
 支持 HTML、PDF、DOCX、XLSX、TXT 和 Markdown。正文使用本地 BGE tokenizer 分块，目标 280～420 tokens，硬上限 480 tokens。HTML/XLSX 合并单元格会展开；重复的上层表头与下一行组合为多级表头。PDF 扫描页或表格解析失败会写入 `audit_issues`，需要人工检查。
 
-SQLite 位于 `data/processed/campus.db`，其中原始单元格值、规范化值、数值、单位及来源位置分别保存。表格描述块只参与召回，最终筛选和计算从结构化表中读取。
+默认 SQLite 位于 `data/processed/campus_public/campus_public.db`，其中原始单元格值、规范化值、数值、单位及来源位置分别保存。表格描述块只参与召回，最终筛选和计算从结构化表中读取。
 
 ## 离线问答
 
@@ -102,6 +114,8 @@ python scripts/batch_answer.py --input data/eval/questions.csv --output results.
 ```
 
 参考资料由实际参与回答或计算的数据库记录自动生成，Qwen 的输出不会被当作引用。
+
+`app.py`、`scripts/batch_answer.py` 和 `scripts/check_offline.py` 均支持 `--config 路径`。交互与批量问答启动前核对数据库和索引的分块及来源元数据，防止混用；问答连接以只读方式打开数据库。
 
 ## 查询和计算安全边界
 

@@ -33,7 +33,8 @@ def test_rebuild_retains_baseline_and_protects_existing_files(tmp_path, monkeypa
     reparsed = ParsedDocument(base.source, [('正文', '同一原始文件在新版解析器中的不同文本表示。' * 10)])
     additional.write_text('\n'.join(json.dumps(entry(d)) for d in [base, reparsed, added]), encoding='utf-8')
     before = module.digest(baseline_db)
-    report = module.rebuild(baseline_db, baseline, additional, tmp_path / 'new')
+    report = module.rebuild(baseline_db, baseline, additional, tmp_path / 'new', database_name='campus_public.db')
+    assert (tmp_path / 'new/campus_public.db').is_file()
     assert report['counts']['documents'] == 2
     assert report['added_unique_documents'] == 1
     assert len(report['same_raw_parser_variants']) == 1
@@ -166,3 +167,31 @@ def test_v3_recipe_and_frozen_cases(monkeypatch):
     fixture = ROOT / 'data/eval/college_dataset_v3'
     snapshot = json.loads((fixture / 'verified_snapshot.json').read_text(encoding='utf-8'))
     assert hashlib.sha256((fixture / 'cases.json').read_bytes()).hexdigest() == snapshot['retrieval_cases_sha256']
+
+
+def test_public_corpus_recipe_keeps_the_original_baseline(monkeypatch):
+    import sys
+    monkeypatch.syspath_prepend(str(ROOT / 'scripts'))
+    module = importlib.import_module('rebuild_college_database')
+    captured = []
+    monkeypatch.setattr(module, 'rebuild', lambda *args: captured.append(args) or {})
+    monkeypatch.setattr(sys, 'argv', ['rebuild_college_database.py', '--recipe',
+                                    str(ROOT / 'config/dataset_campus_public.json'), '--build-index'])
+    module.main()
+    args, = captured
+    assert args[0] == ROOT / 'data/processed/campus.db'
+    assert args[3] == load_settings().database_path.parent
+    assert args[6] == 518 and args[8] == 'campus_public.db'
+
+
+def test_comparison_rejects_comparing_the_same_database(monkeypatch, tmp_path):
+    import sys
+    monkeypatch.syspath_prepend(str(ROOT / 'scripts'))
+    module = importlib.import_module('compare_college_retrieval')
+    profile = replace(load_settings(),database_path=tmp_path/'same.db',index_dir=tmp_path/'index')
+    monkeypatch.setattr(module,'load_settings',lambda _:profile)
+    monkeypatch.setattr(sys,'argv',['compare_college_retrieval.py','--baseline-config','a.json',
+        '--candidate-config','b.json','--cases','cases.json','--output',str(tmp_path/'results')])
+    with pytest.raises(SystemExit) as exc:
+        module.main()
+    assert exc.value.code==2 and not (tmp_path/'results').exists()

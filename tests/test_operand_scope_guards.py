@@ -68,6 +68,59 @@ def test_question_headcount_can_use_a_public_rate(engine):
     assert result.ok and result.value == 548
 
 
+@pytest.mark.parametrize('crossed', [False, True])
+@pytest.mark.parametrize('reverse', [False, True])
+@pytest.mark.parametrize('counts', [(4, 6), (4, 4)])
+def test_question_headcounts_bind_to_their_own_rate(engine, crossed, reverse, counts):
+    _, query = engine
+    facts = NumericEngine.text_facts([Evidence('a',
+        '技术组标准为137元/人。研习组标准为89元/人。',
+        1, 1, '公开补助办法', 'https://example.edu/a')])
+    ids = {f['subject'].removesuffix('标准'): fid for fid, f in facts.items()}
+    steps = []
+    for i, subject in enumerate(['技术组', '研习组']):
+        rate_subject = ['研习组', '技术组'][i] if crossed else subject
+        inputs = [f'n{i}', f'r{i}']
+        steps.extend([{'id': inputs[0], 'op': 'lookup', 'literal': str(counts[i]), 'unit': '人'},
+            {'id': inputs[1], 'op': 'lookup', 'fact_id': ids[rate_subject]},
+            {'id': f't{i}', 'op': 'multiply', 'inputs': inputs[::-1] if reverse else inputs}])
+    steps.append({'id': 'result', 'op': 'add', 'inputs': ['t0', 't1']})
+    question = f'技术组{counts[0]}人、研习组{counts[1]}人，按各自标准计算，预算合计多少元？'
+    result = query.execute_steps(parse_plan(json.dumps({'steps': steps})), [], question, facts)
+    # Equal quantities are interchangeable, but both groups must still be used.
+    assert result.ok is (not crossed or counts[0] == counts[1])
+    if result.ok:
+        assert result.value == counts[0]*137 + counts[1]*89
+    else:
+        assert result.repairable and '配对' in result.error
+
+
+@pytest.mark.parametrize('shared', [False, True])
+def test_question_headcount_can_explicitly_borrow_or_share_rate(engine, shared):
+    _, query = engine
+    text = '统一标准为89元/人。' if shared else '研习组标准为89元/人。'
+    facts = NumericEngine.text_facts([Evidence('a', text, 1, 1, '公开补助办法', 'https://example.edu/a')])
+    plan = {'steps': [{'id': 'n', 'op': 'lookup', 'literal': '4', 'unit': '人'},
+        {'id': 'rate', 'op': 'lookup', 'fact_id': next(iter(facts))},
+        {'id': 'result', 'op': 'multiply', 'inputs': ['n', 'rate']}]}
+    question = '技术组4人，按'+('统一' if shared else '研习组')+'标准计算，预算合计多少元？'
+    result = query.execute_steps(parse_plan(json.dumps(plan)), [], question, facts)
+    assert result.ok and result.value == 356
+
+
+def test_unnamed_multiple_question_counts_do_not_guess_rate_binding(engine):
+    _, query = engine
+    facts = NumericEngine.text_facts([Evidence('a',
+        '技术组标准为137元/人。研习组标准为89元/人。',
+        1, 1, '公开补助办法', 'https://example.edu/a')])
+    plan = {'steps': [{'id': 'n', 'op': 'lookup', 'literal': '4', 'unit': '人'},
+        {'id': 'rate', 'op': 'lookup', 'fact_id': next(iter(facts))},
+        {'id': 'result', 'op': 'multiply', 'inputs': ['n', 'rate']}]}
+    result = query.execute_steps(parse_plan(json.dumps(plan)), [],
+        '两组分别4人和6人，按各自标准计算预算。', facts)
+    assert not result.ok and result.repairable and '配对' in result.error
+
+
 @pytest.mark.parametrize('shared', [False, True])
 def test_explicit_shared_standard_is_not_an_accidental_cross_pair(engine, shared):
     _, query = engine
