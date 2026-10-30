@@ -5,7 +5,7 @@ import json
 import re
 from decimal import Decimal
 
-from campus_rag.tools.numbers import convert_unit, question_quantities, asks_total
+from campus_rag.tools.numbers import convert_unit, question_quantities, question_operand_roles, asks_total
 from campus_rag.types import CalculationResult, Evidence, FilterSpec, OperandSpec, QueryPlan
 from campus_rag.tools.temporal import matches_period, question_periods
 from campus_rag.ingest.navigation import navigation_table_ids
@@ -147,10 +147,11 @@ class StructuredQueryEngine:
                 if labels:
                     matched.append({'field_id':col['id'],'values':labels})
             business = _business_scope(table['title']+' '+table['name'])
+            row_metadata = self._row_metadata(tid)
             output.append({'table_id':tid,'name':table['name'],'document':table['title'],
                 'periods':question_periods(table['title']+' '+table['name']),
                 'columns':described,'question_matches':matched,'business_scope':business,
-                'total_row_count':sum(any(compact(c['raw_value']) in {'合计','总计','小计'} for c in cells) for _,_,_,cells in ranked),
+                'total_row_count':sum(row_metadata[str(row['id'])]['is_total'] for row in rows),
                 'row_count':len(rows),'examples_only':True,'examples':examples})
             signature = (business,tuple((compact(c['original_name']),c['unit'],c['data_type']) for c in columns),
                 tuple(tuple(compact(c['raw_value']) for c in cells) for _,_,_,cells in ranked))
@@ -173,6 +174,7 @@ class StructuredQueryEngine:
         trace, used = [], []
         values = {}
         facts = facts or {}
+        role_issues = self._operand_role_issues(plan,question)
         try:
             if not plan.steps:
                 raise ValueError('证据不足，未生成有效计算步骤')
@@ -268,7 +270,7 @@ class StructuredQueryEngine:
                         unit = units.pop()
                         numbers = [Decimal(d['numeric_value']) for d in details]
                         if op=='lookup' and len(numbers)!=1:
-                            raise ValueError(sid+': lookup匹配多个数值，统计范围不明确')
+                            raise PlanError(sid+': lookup匹配多个数值，统计范围不明确；请按问题明确的范围选择filters、sum或scope=total，不得猜测')
                         value = sum(numbers,Decimal(0))
                         expression = ' + '.join(format(v,'f') for v in numbers)
                         if op=='average':
@@ -296,6 +298,9 @@ class StructuredQueryEngine:
             if needed!={step['id'] for step in plan.steps}:
                 raise PlanError('存在未参与最终结果的步骤')
             try:
+                issues = self._operand_role_issues(plan,question,values)
+                if issues:
+                    raise PlanError('；'.join(issues))
                 self._check_question_operation(plan,question,result,facts)
                 final = next(s for s in plan.steps if s['id']==plan.output)
                 if final['op']=='ratio' and '占' in question:
@@ -340,20 +345,60 @@ class StructuredQueryEngine:
             return CalculationResult(True,result['value'],result['unit'],result['expression'],used,
                                      evidence=evidence,steps=trace)
         except (ValueError,ArithmeticError,KeyError,TypeError) as exc:
-            return CalculationResult(False,error=str(exc),steps=trace,repairable=isinstance(exc,PlanError))
+            extra = [issue for issue in role_issues if issue not in str(exc)]
+            message = str(exc)+('；同时发现：'+'；'.join(extra) if extra else '')
+            return CalculationResult(False,error=message,steps=trace,repairable=isinstance(exc,PlanError))
 
-    def _step_table(self,tid,periods):
-        table = self.connection.execute('SELECT t.*,d.title,d.source_url,d.department,d.published_at FROM tables t JOIN documents d ON d.id=t.doc_id WHERE t.id=?',(tid,)).fetchone()
+    @staticmethod
+    def _operand_role_issues(plan,question,values=None):
+        if not re.search(r'还差|还剩|剩余|尚缺|尚余|余下|剩多少|还需|结余|余量',question):return []
+        nodes={s['id']:s for s in plan.steps}
+        final=nodes.get(plan.output,{})
+        if final.get('op')!='subtract' or len(final.get('inputs',[]))!=2:return []
+        def operand(item):
+            if values is not None:
+                return values.get(item,{}) if isinstance(item,str) else item
+            return nodes.get(item,{}) if isinstance(item,str) else item
+        left,right=map(operand,final['inputs'])
+        unit=right.get('unit','')
+        if not unit:return []
+        quantities=question_operand_roles(question,unit)
+        completed=[q for q in quantities if q['role']=='completed']
+        if not completed:return []
+        amounts={Decimal(q['literal']) for q in completed}
+        if len(amounts)!=1 or any(not q['exact'] for q in completed):
+            return ['已完成量涉及多个对象、不同数值或非确定数量，不能猜测；请明确统计对象和已完成量']
+        expected=next(iter(amounts));current=right.get('value',right.get('literal'))
+        if current is None:return []
+        quoted='、'.join(q['quote']+'@'+str(q['span']) for q in completed)
+        issues=[]
+        if Decimal(current)!=expected:
+            issues.append('减数应为问题明确的已完成量'+str(expected)+unit+'（'+quoted+'），当前使用'+str(current)+unit+'；请重新核对常数角色')
+        elif values is not None and isinstance(final['inputs'][1],str) and not any(
+                Decimal(q['literal'])==expected and any(p.get('role')=='completed' for p in q.get('occurrences',[]))
+                for q in right.get('question_inputs',[])):
+            issues.append('已完成量必须使用问题中对应的数量及单位，不能用表格总量或正文额度代替')
+        totals={Decimal(q['literal']) for q in quantities if q['role']=='total' and q['exact']}
+        left_value=left.get('value',left.get('literal'))
+        if len(totals)==1 and left_value is not None and Decimal(left_value)!=next(iter(totals)):
+            issues.append('被减数与问题明确的总量不一致，请核对完整范围与总量角色')
+        return issues
+
+    def _row_metadata(self,tid):
         try:
             metadata = self.connection.execute('SELECT * FROM table_metadata WHERE table_id=?',(tid,)).fetchone()
         except sqlite3.OperationalError:
             metadata = None
         if metadata is None or metadata['version']!=VERSION:
             raise ValueError('表格尚未离线规范化，请运行scripts/normalize_tables.py')
+        return json.loads(metadata['row_metadata'])
+
+    def _step_table(self,tid,periods):
+        table = self.connection.execute('SELECT t.*,d.title,d.source_url,d.department,d.published_at FROM tables t JOIN documents d ON d.id=t.doc_id WHERE t.id=?',(tid,)).fetchone()
+        row_meta = self._row_metadata(tid)
         if not matches_period(table['title'],table['published_at'],periods):
             raise ValueError('表格年份与问题不符')
         columns = {c['id']:dict(c) for c in self.connection.execute('SELECT * FROM table_columns WHERE table_id=?',(tid,))}
-        row_meta = json.loads(metadata['row_metadata'])
         rows = []
         for row in self.connection.execute('SELECT * FROM table_rows WHERE table_id=? ORDER BY row_index',(tid,)):
             meta = row_meta.get(str(row['id']))
@@ -677,7 +722,7 @@ class StructuredQueryEngine:
                     # A category may match many rows. Only lookup must be unique.
                 else:
                     try:
-                        matched = re.search(r'(?<![\d.])'+re.escape(str(target))+r'(?![\d.])\s*(万元|亿元|元|万人|千人|人|平方米|㎡|台|本|项|个|年|天|小时|%)?',question)
+                        matched = re.search(r'(?<![\d.])'+re.escape(str(target))+r'(?![\d.])\s*(万元|亿元|元|万人|千人|人|平方米|㎡|台|本|项|个|年|天|小时|学分|学时|%)?',question)
                         raw_threshold = matched.group() if matched else str(target)
                         threshold,threshold_unit = quantity(raw_threshold,columns[fid]['unit'])
                         if threshold is None:
@@ -731,10 +776,10 @@ class StructuredQueryEngine:
         tokens = re.findall(r'\d+(?:\.\d+)?|[一二两三四五六七八九十]+',question)
         grounded = any((Decimal(t) if re.fullmatch(r'\d+(?:\.\d+)?',t) else Decimal(chinese_integer(t)))==value for t in tokens)
         canonical_unit = '人' if item['unit'] in {'名','位'} else item['unit']
-        if not grounded or canonical_unit not in {'','年','学年','学期','月','周','天','小时','分钟','次','个','台','人','元','平方米','门'}:
+        if not grounded or canonical_unit not in {'','年','学年','学期','月','周','天','小时','分钟','次','个','台','人','元','平方米','门','学分','学时'}:
             raise PlanError('常数或单位没有问题原文支持')
         if canonical_unit:
-            paired = [q for q in question_quantities(question,canonical_unit) if Decimal(q['literal'])==value]
+            paired = [q for q in question_operand_roles(question,canonical_unit) if Decimal(q['literal'])==value]
             if not paired:
                 raise PlanError('常数的单位未紧邻对应数值出现在问题中')
             source = paired[0]
@@ -758,7 +803,7 @@ class StructuredQueryEngine:
         if len(numbers)<2 and op not in {'average','sum'}:
             raise PlanError(op+'至少需要两个操作数')
         if op in {'add','sum','subtract','average','ratio'} and len(set(units))!=1:
-            raise ValueError('操作数单位不一致')
+            raise PlanError('操作数单位不一致；请核对字段、事实及必要的中间运算，不得改变原始单位')
         if op in {'add','sum','subtract','average'}:
             if len({x.get('per_unit') for x in operands})>1 and not (
                     op=='subtract' and len(operands)==2 and
@@ -787,7 +832,8 @@ class StructuredQueryEngine:
                 rate = periodic[0]
                 duration = operands[1] if operands[0] is rate else operands[0]
                 if duration['unit']!=rate['per_unit']:
-                    raise ValueError('周期单位不一致，不能猜测换算')
+                    selected='、'.join(d.get('fact_id','') for d in rate.get('details',[]) if d.get('fact_id'))
+                    raise PlanError('周期单位不一致：所选事实'+selected+'为每'+rate['per_unit']+'用量，但乘数为'+str(duration['value'])+duration['unit']+'；应选与'+duration['unit']+'匹配的事实，不能猜测换算')
                 return rate['value']*duration['value'],rate['unit'],' × '.join('('+x['expression']+')' for x in operands)
             for n,u in zip(numbers,units):
                 value *= n

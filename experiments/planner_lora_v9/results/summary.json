@@ -1,0 +1,325 @@
+{
+  "scope": "Historical completed V9 run, not a rerun of the reorganized scripts. Synthetic held-out evaluation and exposed real-corpus development regression; not a new real-document blind test.",
+  "model": "Qwen3-0.6B",
+  "selected_adapter": "models/adapters/planner_lora_v9/step_300",
+  "rank": 8,
+  "alpha": 16,
+  "learning_rate": 2.5e-05,
+  "training_examples": 1200,
+  "updates": 300,
+  "metrics": {
+    "validation": {
+      "base": {
+        "total": 240,
+        "first_correct": 38,
+        "final_correct": 65,
+        "repair_attempted": 148,
+        "repair_succeeded": 27,
+        "repair_introduced_wrong": [
+          "v9-validation-constants-12071",
+          "v9-validation-constants-12067",
+          "v9-validation-constants-12075",
+          "v9-validation-repair-12111"
+        ],
+        "wrong_executable": [
+          "v9-validation-credits_remaining-12156",
+          "v9-validation-repair-12112",
+          "v9-validation-course_ratio-12154",
+          "v9-validation-credits_remaining-12162",
+          "v9-validation-credits_remaining-12161",
+          "v9-validation-budget-12086",
+          "v9-validation-constants-12066",
+          "v9-validation-fields-12046",
+          "v9-validation-credits_remaining-12164",
+          "v9-validation-repair-12106",
+          "v9-validation-hours_remaining-12179",
+          "v9-validation-course_ratio-12145",
+          "v9-validation-hours_remaining-12174",
+          "v9-validation-credits_remaining-12167",
+          "v9-validation-course_ratio-12146",
+          "v9-validation-unanswerable-12099",
+          "v9-validation-unanswerable-12105",
+          "v9-validation-hours_remaining-12173",
+          "v9-validation-budget-12090",
+          "v9-validation-hours_remaining-12171",
+          "v9-validation-hours_remaining-12177",
+          "v9-validation-course_ratio-12151",
+          "v9-validation-constants-12071",
+          "v9-validation-course_ratio-12144",
+          "v9-validation-unanswerable-12101",
+          "v9-validation-credits_remaining-12166",
+          "v9-validation-fields-12040",
+          "v9-validation-credits_remaining-12159",
+          "v9-validation-constants-12070",
+          "v9-validation-hours_remaining-12169",
+          "v9-validation-unanswerable-12097",
+          "v9-validation-repair-12114",
+          "v9-validation-constants-12067",
+          "v9-validation-repair-12110",
+          "v9-validation-credits_remaining-12165",
+          "v9-validation-course_ratio-12149",
+          "v9-validation-course_ratio-12153",
+          "v9-validation-budget-12078",
+          "v9-validation-constants-12075",
+          "v9-validation-hours_remaining-12172",
+          "v9-validation-repair-12111",
+          "v9-validation-credits_remaining-12157",
+          "v9-validation-fields-12052",
+          "v9-validation-hours_remaining-12170",
+          "v9-validation-repair-12118",
+          "v9-validation-hours_remaining-12168",
+          "v9-validation-credits_remaining-12158",
+          "v9-validation-course_ratio-12152",
+          "v9-validation-unanswerable-12103",
+          "v9-validation-budget-12082",
+          "v9-validation-budget-12094",
+          "v9-validation-credits_remaining-12163",
+          "v9-validation-credits_remaining-12160",
+          "v9-validation-constants-12074",
+          "v9-validation-hours_remaining-12176",
+          "v9-validation-hours_remaining-12175",
+          "v9-validation-course_ratio-12150",
+          "v9-validation-hours_remaining-12178"
+        ]
+      },
+      "v8": {
+        "total": 240,
+        "first_correct": 143,
+        "final_correct": 145,
+        "repair_attempted": 65,
+        "repair_succeeded": 2,
+        "repair_introduced_wrong": [
+          "v9-validation-cycle_remaining-12217"
+        ],
+        "wrong_executable": [
+          "v9-validation-budget-12086",
+          "v9-validation-budget-12090",
+          "v9-validation-cycle_remaining-12217",
+          "v9-validation-wage_remaining-12231",
+          "v9-validation-retention-12012",
+          "v9-validation-budget-12088",
+          "v9-validation-budget-12084",
+          "v9-validation-retention-12028",
+          "v9-validation-repair-12110",
+          "v9-validation-budget-12078",
+          "v9-validation-budget-12082",
+          "v9-validation-budget-12094",
+          "v9-validation-wage_remaining-12230",
+          "v9-validation-wage_remaining-12229",
+          "v9-validation-retention-12020"
+        ]
+      },
+      "v9": {
+        "total": 240,
+        "first_correct": 168,
+        "final_correct": 175,
+        "repair_attempted": 49,
+        "repair_succeeded": 7,
+        "repair_introduced_wrong": [],
+        "wrong_executable": [
+          "v9-validation-constants-12077",
+          "v9-validation-budget-12086",
+          "v9-validation-constants-12065",
+          "v9-validation-budget-12090",
+          "v9-validation-retention-12012",
+          "v9-validation-budget-12088",
+          "v9-validation-repair-12108",
+          "v9-validation-budget-12078",
+          "v9-validation-budget-12092",
+          "v9-validation-constants-12069",
+          "v9-validation-budget-12094",
+          "v9-validation-repair-12117",
+          "v9-validation-repair-12116",
+          "v9-validation-budget-12096"
+        ]
+      },
+      "base_comparison": {
+        "gains_count": 110,
+        "regressions_count": 0,
+        "new_wrong_executable_count": 10
+      },
+      "v8_comparison": {
+        "gains_count": 43,
+        "regressions_count": 13,
+        "new_wrong_executable_count": 8
+      }
+    },
+    "test": {
+      "base": {
+        "total": 240,
+        "first_correct": 22,
+        "final_correct": 47,
+        "repair_attempted": 182,
+        "repair_succeeded": 25,
+        "repair_introduced_wrong": [],
+        "wrong_executable": [
+          "v9-test-repair-12112",
+          "v9-test-fields-12043",
+          "v9-test-constants-12077",
+          "v9-test-course_ratio-12147",
+          "v9-test-constants-12066",
+          "v9-test-fields-12046",
+          "v9-test-repair-12106",
+          "v9-test-constants-12065",
+          "v9-test-course_ratio-12145",
+          "v9-test-course_ratio-12146",
+          "v9-test-unanswerable-12099",
+          "v9-test-unanswerable-12105",
+          "v9-test-course_ratio-12151",
+          "v9-test-course_ratio-12155",
+          "v9-test-course_ratio-12144",
+          "v9-test-unanswerable-12101",
+          "v9-test-fields-12040",
+          "v9-test-constants-12070",
+          "v9-test-constants-12073",
+          "v9-test-unanswerable-12097",
+          "v9-test-repair-12114",
+          "v9-test-repair-12109",
+          "v9-test-fields-12037",
+          "v9-test-course_ratio-12149",
+          "v9-test-course_ratio-12153",
+          "v9-test-fields-12052",
+          "v9-test-repair-12118",
+          "v9-test-course_ratio-12152",
+          "v9-test-unanswerable-12103",
+          "v9-test-fields-12049",
+          "v9-test-constants-12069",
+          "v9-test-constants-12074",
+          "v9-test-repair-12115",
+          "v9-test-repair-12117",
+          "v9-test-course_ratio-12150"
+        ]
+      },
+      "v8": {
+        "total": 240,
+        "first_correct": 133,
+        "final_correct": 136,
+        "repair_attempted": 90,
+        "repair_succeeded": 3,
+        "repair_introduced_wrong": [],
+        "wrong_executable": [
+          "v9-test-cycle_remaining-12225",
+          "v9-test-role_competition-12235"
+        ]
+      },
+      "v9": {
+        "total": 240,
+        "first_correct": 141,
+        "final_correct": 150,
+        "repair_attempted": 86,
+        "repair_succeeded": 9,
+        "repair_introduced_wrong": [
+          "v9-test-credits_remaining-12161",
+          "v9-test-wage_remaining-12231",
+          "v9-test-cycle_remaining-12209"
+        ],
+        "wrong_executable": [
+          "v9-test-credits_remaining-12161",
+          "v9-test-wage_remaining-12231",
+          "v9-test-cycle_remaining-12209"
+        ]
+      },
+      "base_comparison": {
+        "gains_count": 108,
+        "regressions_count": 5,
+        "new_wrong_executable_count": 3
+      },
+      "v8_comparison": {
+        "gains_count": 31,
+        "regressions_count": 17,
+        "new_wrong_executable_count": 3
+      }
+    }
+  },
+  "current_corpus": {
+    "groups": {
+      "dev36": {
+        "base": {
+          "correct": 33,
+          "total": 36
+        },
+        "adapter": {
+          "correct": 35,
+          "total": 36
+        }
+      },
+      "new_numeric": {
+        "base": {
+          "correct": 4,
+          "total": 6
+        },
+        "adapter": {
+          "correct": 6,
+          "total": 6
+        }
+      },
+      "sample": {
+        "base": {
+          "correct": 8,
+          "total": 8
+        },
+        "adapter": {
+          "correct": 8,
+          "total": 8
+        }
+      },
+      "taskbook": {
+        "base": {
+          "correct": 4,
+          "total": 4
+        },
+        "adapter": {
+          "correct": 4,
+          "total": 4
+        }
+      }
+    },
+    "gains": [
+      "C01",
+      "C08",
+      "NEW05",
+      "NEW06"
+    ],
+    "regressions": [],
+    "pending_review": [],
+    "method": "Exposed regression only. Unchanged answers and references inherit the current-corpus frozen review; changed numeric cases check value, unit, sources and key qualifiers. Inspect changed plans before acceptance.",
+    "adapter_enabled": false,
+    "wrong_numeric": {
+      "base": [],
+      "adapter": []
+    },
+    "adapter_used_cases": [
+      "campus_area",
+      "C01",
+      "C02",
+      "C03",
+      "C04",
+      "C05",
+      "C06",
+      "C07",
+      "C08",
+      "NEW01",
+      "NEW02",
+      "NEW03",
+      "NEW04",
+      "NEW05",
+      "NEW06"
+    ],
+    "passed": true
+  },
+  "attribution": {
+    "base_outputs_identical": true,
+    "gains_over_v8": [
+      "NEW06"
+    ],
+    "regressions_from_v8": [
+      "C03"
+    ],
+    "v8_correct": 53,
+    "new_correct": 53,
+    "new_wrong_over_v8": []
+  },
+  "strict_gate_passed": false,
+  "wrong_executable_note": "Execution success is not semantic correctness. V9 test has two numerically wrong answers and one numerically correct answer missing required source evidence.",
+  "adapter_enabled_by_default": false
+}

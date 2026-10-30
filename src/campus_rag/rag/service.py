@@ -147,6 +147,7 @@ class RAGService:
                 return AnswerResult(question,checked.canonical,build_references(checked.result.evidence),
                     checked.result.evidence,checked.result,{'verified':True,'used_template':True,
                     'method':'evidence_bound_numeric_tool','facts':checked.facts})
+        evidence = self._academic_table_evidence(question,evidence)
         table_ids = list(dict.fromkeys(e.table_id for e in evidence if e.table_id is not None))
         schema = self.structured.schema_context(table_ids,periods,question)
         allowed_ids = [table['table_id'] for table in schema]
@@ -260,6 +261,36 @@ class RAGService:
                 if text and not any(old.doc_id==e.doc_id and old.text==text for old in chosen):
                     chosen.append(replace(e,text=text))
         return chosen
+
+    def _academic_table_evidence(self,question,evidence):
+        """Bind missing academic tables only within explicitly named, retrieved documents."""
+        units = sorted(set(re.findall(r'学分(?!绩点)|学时',question.replace('平均学分绩点','绩点'))))
+        titles = [re.sub(r'\s+','',title) for title in re.findall(r'《([^》]+)》',question)]
+        if not units or not titles:
+            return evidence
+        templates = {}
+        for item in evidence:
+            if any(title in re.sub(r'\s+','',item.title) for title in titles):
+                templates.setdefault(item.doc_id,item)
+        expanded = list(evidence)
+        known = {item.table_id for item in evidence if item.table_id is not None}
+        additions = []
+        placeholders = ','.join('?' for _ in units)
+        for doc_id,template in templates.items():
+            rows = self.structured.connection.execute(
+                'SELECT DISTINCT c.id,c.text,c.table_id,c.rowid FROM chunks c '
+                'JOIN table_columns col ON col.table_id=c.table_id '
+                'WHERE c.doc_id=? AND col.unit IN ('+placeholders+') ORDER BY c.rowid',
+                (doc_id,*units))
+            for row in rows:
+                if row['table_id'] in known:
+                    continue
+                expanded.append(replace(template,evidence_id=row['id'],chunk_id=row['id'],
+                                        text=row['text'],table_id=row['table_id'],row_ids=[]))
+                known.add(row['table_id'])
+                additions.append({'doc_id':doc_id,'table_id':row['table_id'],'chunk_id':row['id']})
+        self.last_diagnostics['academic_table_expansions'] = additions
+        return expanded
 
     def _source_order(self,evidence):
         def position(pair):

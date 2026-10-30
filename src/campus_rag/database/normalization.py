@@ -6,7 +6,7 @@ from decimal import Decimal
 from campus_rag.tools.temporal import question_periods
 
 
-VERSION = 1
+VERSION = 2
 UNITS = {'㎡':'平方米', 'm²':'平方米', '%':'ratio', '％':'ratio',
          '万元':'万元', '亿元':'亿元', '元':'元', '万人':'万人', '千人':'千人',
          '人':'人', '台':'台', '本':'本', '项':'项', '个':'个', '年':'年',
@@ -40,6 +40,12 @@ def header_unit(header):
         return '人'
     if text.endswith('百分比'):
         return 'ratio'
+    label = compact(field_label(header))
+    # A combined hours/credits cell is not one scalar measurement.
+    if not ('学分' in label and '学时' in label):
+        for unit in ('学分','学时'):
+            if label.endswith(unit):
+                return unit
     return ''
 
 
@@ -71,7 +77,7 @@ def normalize_table(connection, table_id):
     for row in rows:
         values = [c[0] for c in connection.execute('SELECT raw_value FROM table_cells WHERE row_id=? ORDER BY column_id',(row['id'],))]
         labels = [compact(v) for v in values]
-        total = any(re.fullmatch(r'合计|总计|小计|总额|总数|总面积',v) for v in labels)
+        total = any(re.fullmatch(r'合计|总计|共计|小计|总额|总数|总面积',v) for v in labels)
         year_columns = {c['id'] for c in columns if year_header(c['original_name'])}
         year_values = [c['raw_value'] for c in connection.execute('SELECT column_id,raw_value FROM table_cells WHERE row_id=?',(row['id'],)) if c['column_id'] in year_columns]
         periods = list(dict.fromkeys(p for v in year_values for p in question_periods(v)))

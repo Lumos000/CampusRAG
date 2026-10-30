@@ -5,7 +5,7 @@ import re
 from decimal import Decimal, InvalidOperation
 
 from campus_rag.types import CalculationSpec, FilterSpec, OperandSpec, QueryPlan
-from campus_rag.tools.numbers import question_quantities, asks_total
+from campus_rag.tools.numbers import question_quantities, question_operand_roles, asks_total
 
 
 PLAN_PROMPT = """你是校园资料查询规划器。只输出一个 JSON 对象，不要输出解释、Markdown 或 SQL。
@@ -266,7 +266,7 @@ class QueryPlanner:
         self.generator = generator
 
     def step_plan(self, question: str, context: str, error: str = '', previous=None) -> QueryPlan:
-        repair = '' if not error else ('修复以下校验错误，不改变问题统计范围。必须返回完整JSON，保留未出错的lookup，不能只返回修改的步骤。'
+        repair = '' if not error else ('修复以下校验错误，不改变问题统计范围。必须返回完整JSON，重新核对所有lookup、常数角色、对象、周期和完整运算链。未报错不代表正确，只保留重新核对后正确的步骤，不能只返回修改的步骤。'
             '输入id必须先定义，不能引用自身；问题明确给定的常数可以写literal。\n错误：'+error+
             '\n上次完整计划：'+json.dumps(previous,ensure_ascii=False))
         hint = operation_hint(question)
@@ -277,6 +277,11 @@ class QueryPlanner:
         text_only = text_plan_context(hint,payload)
         if text_only:
             context = json.dumps({'facts':payload['facts']},ensure_ascii=False)
+        quantities=[q for unit in ('学分','学时','小时','元','人') for q in question_operand_roles(question,unit) if q['role']!='unknown']
+        if quantities:
+            annotated=json.loads(context) if context else {}
+            annotated['question_quantities']=quantities
+            context=json.dumps(annotated,ensure_ascii=False)
         self.last_prompt = STEP_PROMPT.format(question=question,context=context,repair=repair,
             hint=hint,example=step_example(hint,context,question))
         raw = self.generator.generate(self.last_prompt,

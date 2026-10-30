@@ -31,6 +31,34 @@ def asks_total(question: str) -> bool:
     return bool(re.search(r'共需|共计|合计|总计|总额|总共|一共|总金额|共.*多少元',question))
 
 
+def question_operand_roles(question: str, unit: str) -> list[dict]:
+    """Locate explicit quantity roles; leave implicit or ambiguous roles unknown."""
+    output=[]
+    patterns={
+        'completed':r'已(?:经)?(?:完成|修读|修满|修|使用|用|支付|支出|消耗|缴纳)(?:了)?',
+        'total':r'总计|共计|合计|总量|总额|总数|总学分|总学时|总预算|总额度|总共|共需|预算',
+        'remaining':r'还需|还差|还剩|尚需|尚缺|尚余|剩余(?:量)?|余量',
+        'planned':r'计划(?:完成|修读|使用|支付|支出)?|拟(?:完成|修读|使用)?|预计(?:完成|修读|使用)?',
+    }
+    previous_end=0
+    for quantity in question_quantities(question,unit):
+        start,end=quantity['span']
+        left=question[previous_end:start];previous_end=end
+        left=re.split(r'[，,。；;！？?]',left)[-1]
+        right=question[end:end+10]
+        matches=[]
+        for role,pattern in patterns.items():
+            for match in re.finditer(pattern,left):
+                if re.fullmatch(r'(?:为|是|有|共|的|了|约|大约|至少|至多|不少于|不超过|\s)*',left[match.end():]):
+                    matches.append((match.start(),role,match.group()))
+        role=max(matches)[1] if matches else 'unknown'
+        if re.search(r'(?:计划|拟|预计)(?:已)?(?:经)?(?:完成|修读|使用)(?:了)?\s*$',left):role='planned'
+        if role=='unknown' and re.match(r'\s*(?:已完成|已修读|已使用)',right):role='completed'
+        exact=not bool(re.search(r'约|大约|至少|至多|不少于|不超过',left))
+        output.append({**quantity,'role':role,'exact':exact})
+    return output
+
+
 def chinese_integer(text: str) -> int | None:
     if not text or any(ch not in _DIGITS | _SMALL_UNITS | _BIG_UNITS for ch in text):
         return None
