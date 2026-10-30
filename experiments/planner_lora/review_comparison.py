@@ -51,7 +51,8 @@ def main():
                 'wrong_numeric': numeric and bool(calculation.get('ok')) and not correct}
     summary = {'groups': {}, 'gains': [], 'regressions': [], 'pending_review': pending,
         'method': 'Exposed regression only. Unchanged answers and references inherit the current-corpus frozen review; changed numeric cases check value, unit, sources and key qualifiers. Inspect changed plans before acceptance.',
-        'adapter_enabled': False}
+        'adapter_enabled': any(row.get('diagnostics', {}).get('planner_adapter_enabled', False)
+                               for row in report['results'] if row['mode'] == 'adapter')}
     for kind in sorted({case['kind'] for case in protocol['cases']}):
         cases = [case for case in protocol['cases'] if case['kind'] == kind]
         summary['groups'][kind] = {mode: {'correct': sum(judged[(case['id'], mode)]['correct'] is True for case in cases),
