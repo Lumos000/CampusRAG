@@ -11,7 +11,7 @@ from campus_rag.rag.numeric import NumericEngine
 from campus_rag.tools.numbers import normalize_cell
 from campus_rag.types import Evidence,ParsedTable,SourceDocument
 
-directory=Path(__file__).resolve().parents[1]/'experiments/planner_lora_v9'
+directory=Path(__file__).resolve().parents[1]/'experiments/planner_lora'
 sys.path.insert(0,str(directory))
 spec=importlib.util.spec_from_file_location('runtime_chain_audit',directory/'runtime_eval.py')
 runtime=importlib.util.module_from_spec(spec);spec.loader.exec_module(runtime)

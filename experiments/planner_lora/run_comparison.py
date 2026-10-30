@@ -20,7 +20,7 @@ from campus_rag.rag.service import RAGService
 from campus_rag.rag.planner import parse_plan
 from evaluate_formal import save, digest
 
-OUTPUT = ROOT / 'data/eval/planner_lora_v9/current_corpus'
+OUTPUT = ROOT / 'data/eval/planner_lora/current_corpus'
 
 
 def main():
@@ -30,7 +30,6 @@ def main():
     args = parser.parse_args()
     output = args.output
     import torch
-    from peft import PeftModel
     torch.set_num_threads(4)
     settings = load_settings()
     release = json.loads((ROOT / 'data/eval/campus_public/verified_release.json').read_text(encoding='utf-8'))
@@ -73,25 +72,24 @@ def main():
                 self.cache[key] = index.search(*args, **kwargs)
             return list(self.cache[key])
     cached_index = CachedIndex()
-    original = TransformersGenerator(settings.generator_model, settings.max_context_tokens)
-    original.model = PeftModel.from_pretrained(original.model, ROOT / selected['path'], is_trainable=False)
-    original.model.eval()
+    original = TransformersGenerator(settings.generator_model, settings.max_context_tokens,
+                                     planner_adapter_path=ROOT / selected['path'])
     class Generator:
+        planner_adapter_path = original.planner_adapter_path
         planning_calls = 0
         base_calls = 0
         def generate(self, *args, **kwargs):
             self.base_calls += 1
-            with original.model.disable_adapter():
-                return original.generate(*args, **kwargs)
+            return original.generate(*args, **kwargs)
         def planning_generate(self, *args, **kwargs):
             self.planning_calls += 1
-            return original.generate(*args, **kwargs)
+            return original.planning_generate(*args, **kwargs)
     generator = Generator()
     connection = sqlite3.connect(settings.database_path.resolve().as_uri() + '?mode=ro', uri=True)
     connection.row_factory = sqlite3.Row
     connection.execute('BEGIN')
-    services = {mode: RAGService(settings, cached_index, generator, connection) for mode in ['base', 'adapter']}
-    services['adapter'].planner.generator = SimpleNamespace(generate=generator.planning_generate)
+    services = {'base': RAGService(settings, cached_index, SimpleNamespace(generate=generator.generate), connection),
+                'adapter': RAGService(settings, cached_index, generator, connection)}
     path = output / 'results.json'
     report = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {'results': [], 'complete': False}
     done = {(row['id'], row['mode']) for row in report['results']}

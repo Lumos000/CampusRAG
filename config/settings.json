@@ -4,6 +4,7 @@
   "embedding_model": "models/bge-small-zh-v1.5",
   "reranker_model": "models/bge-reranker-base",
   "generator_model": "models/Qwen3-0.6B",
+  "planner_adapter_path": "models/adapters/planner_lora/step_300",
   "chunk_target_min": 280,
   "chunk_target_max": 420,
   "chunk_hard_max": 480,

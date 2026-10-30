@@ -1,4 +1,4 @@
-"""V9 reference scoring, independent of earlier experiment directories."""
+"""Reference scoring for the numeric planner adapter."""
 import json
 from decimal import Decimal
 from pathlib import Path

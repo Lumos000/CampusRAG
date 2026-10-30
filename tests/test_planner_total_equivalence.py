@@ -8,7 +8,7 @@ from campus_rag.rag.planner import parse_plan
 from campus_rag.tools.numbers import normalize_cell
 from campus_rag.types import ParsedTable,SourceDocument
 
-spec=importlib.util.spec_from_file_location('canonical_audit',Path(__file__).resolve().parents[1]/'experiments/planner_lora_v9/canonical_score.py')
+spec=importlib.util.spec_from_file_location('canonical_audit',Path(__file__).resolve().parents[1]/'experiments/planner_lora/canonical_score.py')
 audit=importlib.util.module_from_spec(spec);spec.loader.exec_module(audit)
 
 

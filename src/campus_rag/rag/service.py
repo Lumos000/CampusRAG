@@ -4,6 +4,7 @@ import sqlite3
 import json
 import re
 from dataclasses import asdict, replace
+from types import SimpleNamespace
 
 from campus_rag.config import Settings
 from campus_rag.database.query import StructuredQueryEngine
@@ -36,14 +37,16 @@ class RAGService:
         self.settings = settings
         self.index = index
         self.generator = generator
-        self.planner = QueryPlanner(generator)
+        planning_generate = getattr(generator, 'planning_generate', None)
+        self.planner = QueryPlanner(SimpleNamespace(generate=planning_generate) if callable(planning_generate) else generator)
         self.structured = StructuredQueryEngine(connection)
         self.numeric = NumericEngine(connection,self.structured.navigation_tables)
 
     def answer(self, question: str) -> AnswerResult:
         # Per-request diagnostics are local data, never inserted into model prompts.
         self.last_diagnostics = {'route':'retrieval','retrieved':[], 'facts':[],
-            'schema':[], 'attempts':[], 'citations':[], 'semantic_correct':None}
+            'schema':[], 'attempts':[], 'citations':[], 'semantic_correct':None,
+            'planner_adapter_enabled':bool(getattr(self.generator, 'planner_adapter_path', None))}
         self.planner.last_raw = ''
         self.planner.last_prompt = ''
         try:

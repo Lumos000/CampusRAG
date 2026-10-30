@@ -26,6 +26,7 @@ class Settings:
     max_context_tokens: int = 7168
     max_new_tokens: int = 512
     numeric_shortcuts: bool = True
+    planner_adapter_path: Path | None = None
 
 
 def _path(value: str) -> Path:
@@ -38,5 +39,9 @@ def load_settings(path: str | Path | None = None) -> Settings:
     data = json.loads(config_path.read_text(encoding="utf-8"))
     for key in ("database_path", "index_dir", "embedding_model", "reranker_model", "generator_model"):
         data[key] = _path(data[key])
+    if data.get('planner_adapter_path'):
+        data['planner_adapter_path'] = _path(data['planner_adapter_path'])
+    else:
+        data['planner_adapter_path'] = None
     return Settings(**data)
 

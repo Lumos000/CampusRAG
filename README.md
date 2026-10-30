@@ -31,7 +31,7 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 # 如需 CUDA，请先按 PyTorch 官网给出的当前命令安装对应版本 torch。
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[dev,lora]"
 ```
 
 不要把密码、Cookie、Token 或登录后的网页数据放入项目。本系统只采集公开页面，并遵守域名白名单、访问间隔和 `robots.txt`。
@@ -116,6 +116,8 @@ python scripts/batch_answer.py --input data/eval/questions.csv --output results.
 参考资料由实际参与回答或计算的数据库记录自动生成，Qwen 的输出不会被当作引用。
 
 `app.py`、`scripts/batch_answer.py` 和 `scripts/check_offline.py` 均支持 `--config 路径`。交互与批量问答启动前核对数据库和索引的分块及来源元数据，防止混用；问答连接以只读方式打开数据库。
+
+默认配置启用数值规划 LoRA，权重放在 `models/adapters/planner_lora/step_300/`，仅参与数值计划和修复。普通文本回答仍使用基础模型；计算与引用由程序校验。权重文件不随代码上传，需另行放入本地目录。`python app.py --no-adapter` 或批量命令追加 `--no-adapter` 可临时关闭；配置 `planner_adapter_path: null` 可长期关闭。完整说明及基线对照见 [数值规划 LoRA](experiments/planner_lora/README.md)。
 
 ## 查询和计算安全边界
 

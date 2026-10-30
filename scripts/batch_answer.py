@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-from dataclasses import asdict
+from dataclasses import asdict, replace
 import sqlite3
 from pathlib import Path
 
@@ -30,10 +30,14 @@ def main() -> None:
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument('--audit-output', type=Path, help='另存原文数值、计算过程和答案核对日志')
     parser.add_argument('--config', type=Path, help='指定数据库和索引配置，默认使用校园公开资料库')
+    parser.add_argument('--no-adapter', action='store_true', help='本次推理关闭数值规划 LoRA')
     args = parser.parse_args()
     settings = load_settings(args.config)
+    if args.no_adapter:
+        settings = replace(settings, planner_adapter_path=None)
     index = HybridIndex.load(settings.index_dir, settings.embedding_model, settings.reranker_model, settings.database_path)
-    generator = TransformersGenerator(settings.generator_model, settings.max_context_tokens)
+    generator = TransformersGenerator(settings.generator_model, settings.max_context_tokens,
+                                      planner_adapter_path=settings.planner_adapter_path)
     connection = sqlite3.connect(settings.database_path.resolve().as_uri() + '?mode=ro', uri=True)
     try:
         service = RAGService(settings, index, generator, connection)
@@ -42,7 +46,7 @@ def main() -> None:
         for question in _read_questions(args.input):
             result = service.answer(question)
             if args.audit_output:
-                audits.append(asdict(result))
+                audits.append({**asdict(result), 'diagnostics':service.last_diagnostics})
             rows.append({
                 "问题": question,
                 "答案": result.answer,

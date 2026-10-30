@@ -1,0 +1,141 @@
+{
+  "scope": "Completed numeric-planner LoRA experiment. Historical scores; exposed real-corpus development regression and synthetic held-out evaluation, not a new real-document blind test.",
+  "model": "Qwen3-0.6B",
+  "selected_adapter": "models/adapters/planner_lora/step_300",
+  "rank": 8,
+  "alpha": 16,
+  "learning_rate": 2.5e-05,
+  "training_examples": 1200,
+  "updates": 300,
+  "metrics": {
+    "validation": {
+      "base": {
+        "total": 240,
+        "first_correct": 38,
+        "final_correct": 65,
+        "repair_attempted": 148,
+        "repair_succeeded": 27,
+        "repair_introduced_wrong": 4,
+        "wrong_executable": 58
+      },
+      "base_comparison": {
+        "gains_count": 110,
+        "regressions_count": 0,
+        "new_wrong_executable_count": 10
+      },
+      "adapter": {
+        "total": 240,
+        "first_correct": 168,
+        "final_correct": 175,
+        "repair_attempted": 49,
+        "repair_succeeded": 7,
+        "repair_introduced_wrong": 0,
+        "wrong_executable": 14
+      }
+    },
+    "test": {
+      "base": {
+        "total": 240,
+        "first_correct": 22,
+        "final_correct": 47,
+        "repair_attempted": 182,
+        "repair_succeeded": 25,
+        "repair_introduced_wrong": 0,
+        "wrong_executable": 35
+      },
+      "base_comparison": {
+        "gains_count": 108,
+        "regressions_count": 5,
+        "new_wrong_executable_count": 3
+      },
+      "adapter": {
+        "total": 240,
+        "first_correct": 141,
+        "final_correct": 150,
+        "repair_attempted": 86,
+        "repair_succeeded": 9,
+        "repair_introduced_wrong": 3,
+        "wrong_executable": 3
+      }
+    }
+  },
+  "current_corpus": {
+    "groups": {
+      "dev36": {
+        "base": {
+          "correct": 33,
+          "total": 36
+        },
+        "adapter": {
+          "correct": 35,
+          "total": 36
+        }
+      },
+      "new_numeric": {
+        "base": {
+          "correct": 4,
+          "total": 6
+        },
+        "adapter": {
+          "correct": 6,
+          "total": 6
+        }
+      },
+      "sample": {
+        "base": {
+          "correct": 8,
+          "total": 8
+        },
+        "adapter": {
+          "correct": 8,
+          "total": 8
+        }
+      },
+      "taskbook": {
+        "base": {
+          "correct": 4,
+          "total": 4
+        },
+        "adapter": {
+          "correct": 4,
+          "total": 4
+        }
+      }
+    },
+    "gains": [
+      "C01",
+      "C08",
+      "NEW05",
+      "NEW06"
+    ],
+    "regressions": [],
+    "pending_review": [],
+    "method": "Exposed regression only. Unchanged answers and references inherit the current-corpus frozen review; changed numeric cases check value, unit, sources and key qualifiers. Inspect changed plans before acceptance.",
+    "adapter_enabled": false,
+    "wrong_numeric": {
+      "base": [],
+      "adapter": []
+    },
+    "adapter_used_cases": [
+      "campus_area",
+      "C01",
+      "C02",
+      "C03",
+      "C04",
+      "C05",
+      "C06",
+      "C07",
+      "C08",
+      "NEW01",
+      "NEW02",
+      "NEW03",
+      "NEW04",
+      "NEW05",
+      "NEW06"
+    ],
+    "passed": true
+  },
+  "strict_gate_passed": false,
+  "wrong_executable_note": "Execution success is not semantic correctness. The held-out test has two numerically wrong answers and one numerically correct answer missing required source evidence.",
+  "historical_run_adapter_enabled_by_default": false
+}

@@ -1,5 +1,5 @@
 {
-  "scope": "Exposed development labels retained only for V9 real-corpus review; not training data. Source document IDs bind this fixture to the evaluated campus database.",
+  "scope": "Exposed development labels retained only for real-corpus review; not training data. Source document IDs bind this fixture to the evaluated campus database.",
   "original_gold_sha256": "dd633cfb78d6187ed83e11887f3f893f98930168c1726e00e3343a0947babf45",
   "cases": [
     {

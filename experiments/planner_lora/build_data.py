@@ -19,9 +19,9 @@ from campus_rag.rag.service import RAGService
 from campus_rag.tools.numbers import normalize_cell
 from campus_rag.types import Chunk,Evidence,ParsedTable,SourceDocument
 
-spec=importlib.util.spec_from_file_location('v9_legacy_data',Path(__file__).with_name('legacy_data.py'))
-legacy=importlib.util.module_from_spec(spec);spec.loader.exec_module(legacy)
-ORIGINAL_WORDS={k:list(v) for k,v in legacy.WORDS.items()}
+spec=importlib.util.spec_from_file_location('planner_data_templates',Path(__file__).with_name('data_templates.py'))
+templates=importlib.util.module_from_spec(spec);spec.loader.exec_module(templates)
+ORIGINAL_WORDS={k:list(v) for k,v in templates.WORDS.items()}
 TEST_WORDS = {
     'lookup': '单独查询{a}这一行：{field}数值为多少{unit}？',
     'sum': '将整表所有明细的{field}累加，结果为多少{unit}？',
@@ -59,9 +59,9 @@ def build(repo,split,index,kind):
     a,b=prefix+'综合实践',prefix+'应用设计'
     es=[];raw_sources=[];tables=[];required_fields=[];required_rows=[]
     def source(title,text,tid=None):
-        url=f'https://example.edu/synthetic-v9/{split}/{index}/{len(es)}'
+        url=f'https://example.edu/synthetic-planner/{split}/{index}/{len(es)}'
         did=repo.add_document(SourceDocument(title,url,sha256=hashlib.sha256((url+text).encode()).hexdigest()))
-        eid=f'v9-{split}-{index}-{len(es)}'
+        eid=f'planner-{split}-{index}-{len(es)}'
         repo.add_chunks([Chunk(eid,did,text,'',len(text),table_id=tid)])
         es.append(Evidence(eid,text,1,did,title,url,chunk_id=eid,table_id=tid))
         raw_sources.append({'doc_id':did,'title':title,'text':text})
@@ -217,8 +217,8 @@ def build(repo,split,index,kind):
     diag=service.last_diagnostics
     required_facts=[s['fact_id'] for s in plan['steps'] if 'fact_id' in s]
     assert set(required_facts)<={f['fact_id'] for f in diag['facts']}
-    return {'id':f'v9-{split}-{kind}-{index}','family':kind,'kind':kind,'split':split,'template_family':f'{kind}-grammar-{variant}',
-        'source_family':f'v9-{split}-{kind}-{index}','question':question,'prompt':capture.prompts[-1],
+    return {'id':f'planner-{split}-{kind}-{index}','family':kind,'kind':kind,'split':split,'template_family':f'{kind}-grammar-{variant}',
+        'source_family':f'planner-{split}-{kind}-{index}','question':question,'prompt':capture.prompts[-1],
         'context':{'tables':diag['schema'],'facts':diag['facts']},'plan':plan,'expected':str(expected),'unit':unit,
         'table_ids':tables,'source_doc_ids':[did],'evidence_map':{e.evidence_id:asdict(e) for e in es},
         'reference':{'value':str(expected),'unit':unit,'measure_field_ids':required_fields,'row_ids':required_rows,'required_fact_ids':required_facts,'required_doc_ids':[did],'kind':kind,'raw_sources':raw_sources},
@@ -229,7 +229,7 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--pilot',action='store_true')
     parser.add_argument('--output',type=Path,help='New output directory; existing data is never overwritten.')
     args=parser.parse_args()
-    out=args.output or ROOT/'data/eval/planner_lora_v9'/('pilot' if args.pilot else 'data');out.mkdir(parents=True,exist_ok=False)
+    out=args.output or ROOT/'data/eval/planner_lora'/('pilot' if args.pilot else 'data');out.mkdir(parents=True,exist_ok=False)
     all_rows={}
     with Repository(out/'fixtures.db') as repo:
         repo.initialize()
@@ -244,9 +244,9 @@ def main():
                         phrase=ORIGINAL_WORDS[k][grammar] if grammar<3 else '计算：'+TEST_WORDS[k]
                         if split=='train' and k=='ratio' and (j//8)%2:
                             phrase='分母取{b}的{field}，分子取{a}的{field}，百分比为多少？'
-                        legacy.WORDS[k]=[phrase]*3
-                    with repo.transaction(): row=legacy.build(repo,split,offset+j,family)
-                    row['id']=row['id'].replace('v4-','v9-',1);row['template_family']=f'legacy-{row["kind"]}-grammar-{grammar}'
+                        templates.WORDS[k]=[phrase]*3
+                    with repo.transaction(): row=templates.build(repo,split,offset+j,family)
+                    row['template_family']=f'general-{row["kind"]}-grammar-{grammar}'
                     rows.append(row)
                 offset+=count
             for kind in KINDS:

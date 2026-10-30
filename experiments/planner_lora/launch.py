@@ -8,8 +8,8 @@ import sys
 import psutil
 
 ROOT=Path(__file__).resolve().parents[2]
-WORK=ROOT/'data/eval/planner_lora_v9'
-script=WORK/'snapshot/experiments/planner_lora_v9/run.py'
+WORK=ROOT/'data/eval/planner_lora'
+script=WORK/'snapshot/experiments/planner_lora/run.py'
 assert os.name=='nt'
 assert json.loads((WORK/'preflight.json').read_text(encoding='utf-8'))['passed']
 assert not (WORK/'acceptance.json').exists(),'This experiment already finished.'

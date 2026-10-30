@@ -62,9 +62,9 @@ def build(repo, split, index, family):
     es=[]; tables=[]; required_docs=set(); required_rows=[]; required_fields=[]
     raw_sources=[]
     def source(title, text, required=True):
-        url=f'https://example.edu/synthetic-v4/{split}/{index}/{len(es)}'
+        url=f'https://example.edu/synthetic-planner/{split}/{index}/{len(es)}'
         did=repo.add_document(SourceDocument(title,url,sha256=hashlib.sha256((url+text).encode()).hexdigest()))
-        eid=f'v4-{split}-{index}-{len(es)}'
+        eid=f'planner-{split}-{index}-{len(es)}'
         repo.add_chunks([Chunk(eid,did,text,'',len(text))])
         es.append(Evidence(eid,text,1,did,title,url,chunk_id=eid))
         raw_sources.append({'doc_id':did,'title':title,'text':text})
@@ -249,7 +249,7 @@ def build(repo, split, index, family):
         'required_fact_ids':[s['fact_id'] for s in plan['steps'] if 'fact_id' in s],
         'required_doc_ids':sorted(required_docs),'kind':kind,'raw_sources':raw_sources}
     assert set(reference['required_fact_ids'])<={f['fact_id'] for f in diag['facts']}
-    return {'id':f'v4-{split}-{family}-{index}','family':family,'kind':kind,'split':split,
+    return {'id':f'planner-{split}-{family}-{index}','family':family,'kind':kind,'split':split,
         'template_family':f'{kind}-wording-{wording}','source_family':f'{split}-{family}-{index}',
         'question':question,'prompt':capture.prompts[-1],'context':payload,'plan':plan,
         'expected':reference['value'],'unit':unit,'table_ids':tables,

@@ -10,7 +10,7 @@ import sqlite3
 import sys
 
 ROOT=Path(__file__).resolve().parents[2]
-WORK=ROOT/'data/eval/planner_lora_v9'
+WORK=ROOT/'data/eval/planner_lora'
 sys.path[:0]=[str(ROOT/'src')]
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 from campus_rag.config import load_settings
@@ -29,8 +29,6 @@ def save(path,value):
 
 def main():
     assert not (WORK/'protocol.json').exists(),'Never replace a frozen experiment.'
-    baseline=json.loads((WORK/'interface_baseline/results.json').read_text(encoding='utf-8'))
-    assert baseline['complete'],'Finish the frozen V8 + new guards comparison before preparing training.'
     settings=load_settings()
     tokenizer=AutoTokenizer.from_pretrained(settings.generator_model,local_files_only=True)
     connection=sqlite3.connect(WORK/'data/fixtures.db'); connection.row_factory=sqlite3.Row
@@ -99,17 +97,16 @@ def main():
         ROOT/'config/settings.json',settings.database_path, settings.index_dir/'records.jsonl',settings.index_dir/'vectors.npy',
         *sorted(settings.generator_model.glob('*.safetensors')),*sorted(settings.generator_model.glob('*.json')),
         *sorted((WORK/'data').glob('*')),WORK/'data_review.json',WORK/'coverage.json',
-        ROOT/'experiments/planner_lora_v9/run_comparison.py',ROOT/'experiments/planner_lora_v9/review_comparison.py',
-        ROOT/'data/eval/campus_public/verified_release.json',ROOT/'experiments/planner_lora_v9/fixtures/dev36_gold.json',
-        WORK/'interface_baseline/results.json',WORK/'interface_baseline/comparison_summary.json',WORK/'role_coverage.json',
-        ROOT/'models/adapters/planner_lora_v8/step_300/adapter_model.safetensors',ROOT/'models/adapters/planner_lora_v8/step_300/adapter_config.json']
+        ROOT/'experiments/planner_lora/run_comparison.py',ROOT/'experiments/planner_lora/review_comparison.py',
+        ROOT/'data/eval/campus_public/verified_release.json',ROOT/'experiments/planner_lora/fixtures/dev36_gold.json',
+        WORK/'role_coverage.json']
     protocol={'training':{'seed':9909,'r':8,'alpha':16,'dropout':.05,'target_modules':'all-linear','learning_rate':2.5e-5,
         'epochs':2,'micro_batch_size':1,'gradient_accumulation':8,'max_length':6144,'updates':300,
         'full_state_every_updates':25,'adapter_every_updates':75,'loss':'completion JSON and assistant end only'},
         'model_path':settings.generator_model.relative_to(ROOT).as_posix(),
-        'selection':'Validation only, checkpoints 150/300: minimize base regressions/new errors, then V8 regressions/new errors, maximize correctness, earlier on ties. Test only after selection.',
-        'evaluation':'All synthetic modes run actual RAGService initial -> validation -> own repair -> validation. Compare base/current guards, frozen V8/current guards, and new adapter/current guards.',
-        'gate':'No base or V8 correct-case regression, gains over both, no new wrong executable outputs or repair-introduced wrong answers, and current 54-case comparison passes. Remain disabled pending review.',
+        'selection':'Validation only, checkpoints 150/300: minimize base regressions/new errors, maximize correctness, earlier on ties. Test only after selection.',
+        'evaluation':'All synthetic modes run actual RAGService initial -> validation -> own repair -> validation. Compare the base model and trained adapter under identical guards.',
+        'gate':'No base correct-case regression, gains over base, no new wrong executable outputs or repair-introduced wrong answers, and current 54-case comparison passes. Remain disabled pending review.',
         'files':{p.relative_to(ROOT).as_posix():digest(p) for p in files if p.is_file()}}
     save(WORK/'protocol.json',protocol)
     print(json.dumps({'coverage':coverage,'token_budgets':budgets,'frozen_files':len(protocol['files'])}),flush=True)

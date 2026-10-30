@@ -13,9 +13,9 @@ import sys
 import time
 
 ROOT=Path(os.environ.get('CAMPUSRAG_EXPERIMENT_ROOT',Path(__file__).resolve().parents[2]))
-WORK=ROOT/'data/eval/planner_lora_v9'
+WORK=ROOT/'data/eval/planner_lora'
 SNAPSHOT=WORK/'snapshot'
-sys.path[:0]=[str(SNAPSHOT/'src'),str(SNAPSHOT/'experiments/planner_lora_v9')]
+sys.path[:0]=[str(SNAPSHOT/'src'),str(SNAPSHOT/'experiments/planner_lora')]
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import campus_rag.config as campus_config
 campus_config.ROOT=ROOT
@@ -81,13 +81,11 @@ def main():
             loss.backward(); torch.nn.utils.clip_grad_norm_(parameters,1.); optimizer.step(); torch.cuda.synchronize()
             checks.append({'tokens':length,'all_attention_positions_active':True,'loss':float(loss.detach()),
                 'peak_allocated_bytes':torch.cuda.max_memory_allocated(),'peak_reserved_bytes':torch.cuda.max_memory_reserved()})
-        model.load_adapter(ROOT/'models/adapters/planner_lora_v8/step_300',adapter_name='v8_reference',is_trainable=False)
         model.eval();model.config.use_cache=True
         smoke_connection=sqlite3.connect((WORK/'data/fixtures.db').resolve().as_uri()+'?mode=ro',uri=True);smoke_connection.row_factory=sqlite3.Row
         smoke_case=min([r for r in read_cases(WORK/'data/train.jsonl') if r['family']=='credits_remaining'],key=lambda r:len(r['prompt']))
         smoke=[]
-        for mode in ['base','v8']:
-            model.set_adapter('v8_reference' if mode=='v8' else 'default')
+        for mode in ['base','adapter']:
             row=evaluate_case(generator,smoke_case,smoke_connection,mode,ROOT)
             smoke.append({'mode':mode,'case_id':smoke_case['id'],'api_completed':True,'correct':row['correct'],'was_repaired':row['was_repaired']})
         smoke_connection.close()
@@ -134,18 +132,16 @@ def main():
             print(json.dumps(metric),flush=True); save(WORK/'training.json',report); status('training',**{k:v for k,v in metric.items() if k!='step'})
         if report['step']%25==0: persist()
         if report['step']%75==0:
-            checkpoint=ROOT/'models/adapters/planner_lora_v9'/f'step_{report["step"]}'
+            checkpoint=ROOT/'models/adapters/planner_lora'/f'step_{report["step"]}'
             model.save_pretrained(checkpoint,safe_serialization=True)
     report['training_complete']=True; save(WORK/'training.json',report)
     model.gradient_checkpointing_disable(); model.eval(); model.config.use_cache=True
     connection=sqlite3.connect((WORK/'data/fixtures.db').resolve().as_uri()+'?mode=ro',uri=True); connection.row_factory=sqlite3.Row
-    model.load_adapter(ROOT/'models/adapters/planner_lora_v8/step_300',adapter_name='v8_reference',is_trainable=False)
     def evaluate(split,mode):
         path=WORK/f'{split}_{mode}.json'
         results=json.loads(path.read_text(encoding='utf-8'))['results'] if path.exists() else []
         cases=read_cases(WORK/f'data/{split}.jsonl'); done={r['id'] for r in results}
         status('evaluation',split=split,mode=mode,completed=len(results),total=len(cases))
-        model.set_adapter('v8_reference' if mode=='v8' else 'default');model.eval()
         for case in cases:
             if case['id'] in done: continue
             results.append(evaluate_case(generator,case,connection,mode,ROOT))
@@ -166,25 +162,25 @@ def main():
         result['passed']=not regressions and bool(gains) and not new_wrong and len(wrong(adapted))<=len(wrong(base))
         return result
     from safetensors.torch import load_file
-    base=evaluate('validation','base');v8=evaluate('validation','v8'); candidates=[]
+    base=evaluate('validation','base'); candidates=[]
     for step in [150,300]:
-        checkpoint=ROOT/'models/adapters/planner_lora_v9'/f'step_{step}'
+        checkpoint=ROOT/'models/adapters/planner_lora'/f'step_{step}'
         set_peft_model_state_dict(model,load_file(str(checkpoint/'adapter_model.safetensors')))
         adapted=evaluate('validation',f'adapter_step_{step}')
-        candidates.append({'step':step,**compare(base,adapted),'v8_comparison':compare(v8,adapted),
+        candidates.append({'step':step,**compare(base,adapted),
             'runtime_metrics':summarize(list(adapted.values()))})
         save(WORK/'checkpoint_comparison.json',candidates)
     selected=min(candidates,key=lambda c:(len(c['regressions']),len(c['new_wrong_executable']),
-        len(c['v8_comparison']['regressions']),len(c['v8_comparison']['new_wrong_executable']),-c['adapter_correct'],c['step']))
-    checkpoint=ROOT/'models/adapters/planner_lora_v9'/f'step_{selected["step"]}'
+        -c['adapter_correct'],c['step']))
+    checkpoint=ROOT/'models/adapters/planner_lora'/f'step_{selected["step"]}'
     set_peft_model_state_dict(model,load_file(str(checkpoint/'adapter_model.safetensors')))
     report['selected_step']=selected['step'];save(WORK/'training.json',report)
     save(WORK/'selected_adapter.json',{'step':selected['step'],'path':checkpoint.relative_to(ROOT).as_posix(),
-        'selection':'Validation only, steps 150/300: minimize base regressions/new errors, then V8 regressions/new errors, then maximize correctness; earlier on ties.',
+        'selection':'Validation only, steps 150/300: minimize base regressions/new errors, then maximize correctness; earlier on ties.',
         'adapter_enabled':False})
     summaries={'validation':selected};save(WORK/'synthetic_comparison.json',summaries)
-    test_base=evaluate('test','base');test_v8=evaluate('test','v8');test_new=evaluate('test','adapter')
-    summaries['test']={**compare(test_base,test_new),'v8_comparison':compare(test_v8,test_new),'runtime_metrics':summarize(list(test_new.values()))}
+    test_base=evaluate('test','base');test_new=evaluate('test','adapter')
+    summaries['test']={**compare(test_base,test_new),'runtime_metrics':summarize(list(test_new.values()))}
     save(WORK/'synthetic_comparison.json',summaries)
     connection.close(); del generator.model; del model; del optimizer; del scheduler; del parameters
     import gc
@@ -192,24 +188,12 @@ def main():
     # A separate process releases the training allocator before the full RAG check.
     status('current_corpus_evaluation')
     verify(protocol)
-    subprocess.run([sys.executable,str(ROOT/'experiments/planner_lora_v9/run_comparison.py'),'--output',str(WORK/'current_corpus'),'--adapter',str(checkpoint)],cwd=ROOT,check=True)
-    subprocess.run([sys.executable,str(ROOT/'experiments/planner_lora_v9/review_comparison.py'),'--directory',str(WORK/'current_corpus')],cwd=ROOT,check=True)
+    subprocess.run([sys.executable,str(ROOT/'experiments/planner_lora/run_comparison.py'),'--output',str(WORK/'current_corpus'),'--adapter',str(checkpoint)],cwd=ROOT,check=True)
+    subprocess.run([sys.executable,str(ROOT/'experiments/planner_lora/review_comparison.py'),'--directory',str(WORK/'current_corpus')],cwd=ROOT,check=True)
     current=json.loads((WORK/'current_corpus/comparison_summary.json').read_text(encoding='utf-8'))
-    previous=json.loads((WORK/'interface_baseline/comparison_summary.json').read_text(encoding='utf-8'))
-    old_rows=json.loads((WORK/'interface_baseline/results.json').read_text(encoding='utf-8'))['results']
-    new_rows=json.loads((WORK/'current_corpus/results.json').read_text(encoding='utf-8'))['results']
-    old_base={r['id']:{k:r['result'][k] for k in ['answer','references']} for r in old_rows if r['mode']=='base'}
-    new_base={r['id']:{k:r['result'][k] for k in ['answer','references']} for r in new_rows if r['mode']=='base'}
-    gains=sorted((set(current['gains'])-set(previous['gains']))|(set(previous['regressions'])-set(current['regressions'])))
-    regressions=sorted((set(previous['gains'])-set(current['gains']))|(set(current['regressions'])-set(previous['regressions'])))
-    attribution={'base_outputs_identical':old_base==new_base,'gains_over_v8':gains,'regressions_from_v8':regressions,
-        'v8_correct':sum(v['adapter']['correct'] for v in previous['groups'].values()),
-        'new_correct':sum(v['adapter']['correct'] for v in current['groups'].values()),
-        'new_wrong_over_v8':sorted(set(current['wrong_numeric']['adapter'])-set(previous['wrong_numeric']['adapter']))}
-    save(WORK/'attribution.json',attribution)
-    passed=all(r['passed'] and r['v8_comparison']['passed'] and not r['runtime_metrics']['repair_introduced_wrong'] for r in summaries.values())
-    passed=passed and current['passed'] and attribution['base_outputs_identical'] and not regressions and not attribution['new_wrong_over_v8']
-    save(WORK/'acceptance.json',{'passed':passed,'synthetic':summaries,'current_corpus':current,'attribution':attribution,
+    passed=all(r['passed'] and not r['runtime_metrics']['repair_introduced_wrong'] for r in summaries.values())
+    passed=passed and current['passed']
+    save(WORK/'acceptance.json',{'passed':passed,'synthetic':summaries,'current_corpus':current,
         'adapter_enabled':False,'requires_review_before_activation':True})
     report['complete']=True; save(WORK/'training.json',report); status('complete')
 

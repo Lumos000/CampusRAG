@@ -5,6 +5,7 @@ import json
 import os
 import sqlite3
 import sys
+import importlib.util
 from pathlib import Path
 
 import _bootstrap  # noqa: F401
@@ -29,6 +30,11 @@ def main() -> None:
         ("Index records", (settings.index_dir / "records.jsonl").is_file(), str(settings.index_dir / "records.jsonl")),
         ("Index vectors", (settings.index_dir / "vectors.npy").is_file(), str(settings.index_dir / "vectors.npy")),
     ])
+    if settings.planner_adapter_path:
+        checks.append(('LoRA dependency', importlib.util.find_spec('peft') is not None, 'peft'))
+        for name in ('adapter_config.json', 'adapter_model.safetensors'):
+            path = settings.planner_adapter_path / name
+            checks.append(('Planner adapter '+name, path.is_file() and path.stat().st_size > 0, str(path)))
     if settings.database_path.exists():
         connection = sqlite3.connect(settings.database_path.resolve().as_uri() + '?mode=ro', uri=True)
         try:

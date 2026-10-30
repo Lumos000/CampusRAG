@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import sqlite3
 import sys
+from dataclasses import replace
 from pathlib import Path
 
 SRC = Path(__file__).resolve().parent / "src"
@@ -18,10 +19,14 @@ from campus_rag.rag.generator import TransformersGenerator
 def main() -> None:
     parser = argparse.ArgumentParser(description='南邮离线校园问答')
     parser.add_argument('--config', type=Path, help='指定数据库和索引配置，默认使用原配置')
+    parser.add_argument('--no-adapter', action='store_true', help='本次推理关闭数值规划 LoRA')
     args = parser.parse_args()
     settings = load_settings(args.config)
+    if args.no_adapter:
+        settings = replace(settings, planner_adapter_path=None)
     index = HybridIndex.load(settings.index_dir, settings.embedding_model, settings.reranker_model, settings.database_path)
-    generator = TransformersGenerator(settings.generator_model, settings.max_context_tokens)
+    generator = TransformersGenerator(settings.generator_model, settings.max_context_tokens,
+                                      planner_adapter_path=settings.planner_adapter_path)
     connection = sqlite3.connect(settings.database_path.resolve().as_uri() + '?mode=ro', uri=True)
     try:
         service = RAGService(settings, index, generator, connection)

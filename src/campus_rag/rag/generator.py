@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import re
+from contextlib import nullcontext
 from pathlib import Path
 
 
@@ -10,7 +11,10 @@ class ContextBudgetError(ValueError):
 
 
 class TransformersGenerator:
-    def __init__(self, model_path: str | Path, max_context_tokens: int = 7168):
+    planner_adapter_path: Path | None = None
+
+    def __init__(self, model_path: str | Path, max_context_tokens: int = 7168,
+                 *, planner_adapter_path: str | Path | None = None):
         os.environ['HF_HUB_OFFLINE'] = '1'
         os.environ['TRANSFORMERS_OFFLINE'] = '1'
         import torch
@@ -26,8 +30,29 @@ class TransformersGenerator:
         self.model.eval()
         self.max_position_tokens = self.model.config.max_position_embeddings
         self.max_context_tokens = min(max_context_tokens, self.max_position_tokens)
+        self.planner_adapter_path = Path(planner_adapter_path) if planner_adapter_path else None
+        if self.planner_adapter_path:
+            for name in ('adapter_config.json', 'adapter_model.safetensors'):
+                if not (self.planner_adapter_path / name).is_file():
+                    raise FileNotFoundError(f'数值规划适配器缺少 {name}：{self.planner_adapter_path}')
+            try:
+                from peft import PeftModel
+            except ImportError as exc:
+                raise RuntimeError('启用数值规划适配器需要安装项目的 lora 依赖：pip install -e ".[lora]"') from exc
+            self.model = PeftModel.from_pretrained(
+                self.model, self.planner_adapter_path, is_trainable=False, local_files_only=True,
+            )
+            self.model.eval()
 
     def generate(self, prompt: str, thinking: bool = False, temperature: float = 0.0, max_new_tokens: int = 512) -> str:
+        context = self.model.disable_adapter() if self.planner_adapter_path else nullcontext()
+        with context:
+            return self._generate(prompt, thinking, temperature, max_new_tokens)
+
+    def planning_generate(self, prompt: str, **kwargs) -> str:
+        return self._generate(prompt, **kwargs)
+
+    def _generate(self, prompt: str, thinking: bool = False, temperature: float = 0.0, max_new_tokens: int = 512) -> str:
         messages = [{"role": "user", "content": prompt}]
         kwargs = dict(tokenize=True, add_generation_prompt=True, return_tensors="pt", return_dict=True)
         try:
