@@ -1,78 +1,78 @@
 # 南京邮电大学离线校园问答系统
 
-《大数据项目实践》课程项目。采集学校、职能部门和学院的公开资料，在本地使用 Qwen3-0.6B 完成校园问答，支持交互查询和批量 CSV 输出。
+本项目用于根据南京邮电大学公开资料回答问题，支持终端交互问答和批量生成测试结果 CSV。请按以下步骤使用。
 
-系统使用 BM25、BGE 向量检索、RRF 融合和 Reranker 查找证据。正文和结构化表格存入 SQLite；模型负责查询规划和回答组织，Python 校验来源、年份、单位并执行数值计算。资料不足时拒答，引用来自实际使用的资料。
+## 1. 解压代码和资源
 
-## 安装
+准备两个文件：
 
-已验证环境：Windows、Python 3.11、NVIDIA RTX 4050 Laptop 6GB。CUDA 不是任务书的硬性要求；其他设备的速度和内存占用需实测。
+- 代码包：从 GitHub 下载的源码 ZIP，或随提交材料提供的 `campus-rag-code.zip`。
+- 资源包：随提交材料提供的 `campus-rag-resources.zip`，包含模型、LoRA 权重、数据库和索引。
 
-```powershell
-conda create -n campusrag python=3.11
-conda activate campusrag
-python -m pip install -e ".[dev,lora]"
-```
+将代码包解压到一个目录，例如 `E:\CampusRAG`。找到 `app.py`，它所在的文件夹就是项目根目录。
 
-已有合适的 Conda 环境时直接激活，无需重复创建，也不需要再使用 `venv`。以上安装命令在项目根目录执行。如使用 GPU，先安装与本机驱动匹配的 CUDA 版 PyTorch。默认启用数值规划 LoRA，需安装 `lora` 依赖并准备对应权重。
-
-## 准备离线资源
-
-GitHub 仓库包含项目代码，不包含大体积模型、数据库和索引。复现同一数据快照和答案，需要另行取得配套的 `campus-rag-resources.zip`，将其解压到项目根目录：
-
-```text
-models/Qwen3-0.6B/
-models/bge-small-zh-v1.5/
-models/bge-reranker-base/
-models/adapters/planner_lora/step_300/
-data/processed/campus_public/campus_public.db
-data/processed/campus_public/clean_documents.jsonl
-data/processed/campus_public/index/records.jsonl
-data/processed/campus_public/index/vectors.npy
-```
-
-资源包的文件哈希和运行环境见 [资源清单](config/resources.json)。已有资源时无需重新采集、建索引或训练。请在新检出的项目目录解压，避免覆盖已有资料。
+把资源包放入项目根目录，在该目录打开 PowerShell，执行：
 
 ```powershell
 Expand-Archive .\campus-rag-resources.zip -DestinationPath .
 ```
 
-完整资源包解压后，可直接执行下面的资源检查和运行命令；不需要再下载模型、重新建库或训练。资源包 SHA256：
+也可以使用解压软件。解压后应有以下目录结构：
 
 ```text
-983a1db86fe4cadf1e55f94a6804b83b8931ca3d31ecb7164f7d0f09eacded4d
+CampusRAG/
+├── app.py
+├── pyproject.toml
+├── config/
+├── scripts/
+├── src/
+├── models/
+│   ├── Qwen3-0.6B/
+│   ├── bge-small-zh-v1.5/
+│   ├── bge-reranker-base/
+│   └── adapters/planner_lora/step_300/
+└── data/processed/campus_public/
+    ├── campus_public.db
+    └── index/
 ```
 
-可用 `Get-FileHash .\campus-rag-resources.zip -Algorithm SHA256` 核对。资源已存在的当前工作目录无需重复解压。
+资源解压完成后，直接进行下面的安装和运行步骤。
 
-仅在没有配套资源、需要从头准备时，才联网下载基础模型：
+## 2. 安装运行环境
+
+以下命令在 Windows 的 Anaconda Prompt 或已配置 Conda 的 PowerShell 中执行。将 `E:\CampusRAG` 替换为实际项目路径：
 
 ```powershell
-python scripts/prepare_models.py
+cd E:\CampusRAG
+conda create -n campusrag python=3.11
+conda activate campusrag
+python -m pip install -e ".[lora]"
 ```
 
-数据采集、清洗、建库及从清洗快照恢复的步骤见 [数据准备](docs/data.md)。最终 LoRA 的训练方法见 [数值规划适配器](experiments/planner_lora/README.md)。实时重爬会受网页变化影响，不能保证还原同一快照。
+已有 Python 3.11 的 Conda 环境时，激活该环境并执行最后一条安装命令即可。依赖安装需要联网，安装完成后的问答可以断网运行。
 
-## 运行
+程序会自动使用可用的 CUDA 显卡，没有可用显卡时使用 CPU。若需要使用 NVIDIA 显卡，请安装与本机驱动匹配的 CUDA 版 PyTorch。已验证的设备为 RTX 4050 Laptop 6GB；CPU 推理速度和内存占用需按实际设备确认。
 
-在项目根目录执行，资源检查通过后可以断网运行：
+## 3. 检查资源
+
+保持 Conda 环境已激活，在项目根目录执行：
 
 ```powershell
 python scripts/check_database.py
 python scripts/check_offline.py
 ```
 
-### 终端交互问答
+检查结果中的 `checks` 和 `ok` 项应为 `true`。如果提示文件缺失，检查资源包是否完整解压到了 `app.py` 所在目录。
 
-安装依赖并准备好资源后，打开 PowerShell，激活 Conda 环境并进入项目目录：
+## 4. 在终端输入问题
+
+执行：
 
 ```powershell
-conda activate campusrag
-cd E:\CampusRAG
 python app.py
 ```
 
-环境名和项目路径按实际情况替换。每次启动会先加载本地模型，等待终端出现以下提示后，直接输入问题并按回车：
+首次加载模型需要等待一段时间。出现 `问题>` 提示后，输入问题并按回车，例如：
 
 ```text
 南邮离线校园问答。输入 exit 退出。
@@ -80,61 +80,52 @@ python app.py
 问题> 根据2026年本科招生章程，工科类优势学科专业的学费和住宿费预收标准分别是多少？
 ```
 
-等待推理完成，终端会输出答案，并在有引用时显示参考资料。随后再次出现 `问题>`，可以继续输入下一个问题，无需重启程序。输入 `exit`、`quit` 或 `q` 并按回车即可退出。
+程序会输出答案，有引用时还会显示参考资料。随后可继续输入下一道问题。输入 `exit` 并按回车退出。
 
-默认使用配置中的本地模型、校园数据库和数值规划 LoRA，问答过程无需联网。临时关闭 LoRA 可运行 `python app.py --no-adapter`。
+以后重新打开终端时，只需执行：
 
-### 批量回答
+```powershell
+conda activate campusrag
+cd E:\CampusRAG
+python app.py
+```
+
+## 5. 批量测试并导出结果
+
+将测试题保存为 `questions.csv`，放在项目根目录。文件采用 UTF-8 编码，第一行为列名 `问题`，之后每行一道题：
+
+```csv
+问题
+图书馆如何办理续借？
+2026年本科生住宿费标准是多少？
+```
+
+可使用 Excel 编辑一列题目，第一格填写“问题”，再另存为“CSV UTF-8（逗号分隔）”。如果收到的是 XLSX 或 Word 文件，先整理为上述 CSV 格式。
+
+运行：
 
 ```powershell
 python scripts/batch_answer.py --input questions.csv --output results.csv
 ```
 
-输入 CSV 使用 `问题` 列；输出为 UTF-8 with BOM，固定三列：
+等待全部题目处理完成后，项目根目录会生成 `results.csv`。输出采用 UTF-8 with BOM 编码，固定包含三列：
 
-```text
+```csv
 问题,答案,参考资料
 ```
 
-可用 `--audit-output audit.json` 另存计算和诊断。`app.py`、批量入口和离线检查均支持 `--config 配置路径`。交互和批量入口支持 `--no-adapter`；长期关闭 LoRA 可将配置的 `planner_adapter_path` 设为 `null`。关闭适配器可能影响数值规划效果。
+正式测试时，提交生成的 `results.csv` 即可。默认使用配套的校园数据库和数值规划 LoRA。
 
-## 验证
-
-```powershell
-python -m pytest -q
-python scripts/batch_answer.py --input data/eval/campus_public/questions.csv --output results.csv
-```
-
-固定验收题覆盖任务书四例、校园事实、时效、拒答及学分学时计算。题集及复测方法见 [验收数据](data/eval/README.md)。这些是开发回归题，不能代表未知问题的正确率。
-
-配套参考输出为 54 题中 53 题通过核对，任务书四例通过；贷款上限差额题被校验拦截并拒答。输出及核对摘要与当前正式源码、配置和数据资源的哈希绑定，详见验收数据说明。
-
-对比基础模型与最终适配器，使用同一个正式批量入口：
+文件也可以放在其他位置，命令中填写完整路径，含空格的路径用双引号包住：
 
 ```powershell
-python experiments/planner_lora/verify_production.py --output .tmp/verification
+python scripts/batch_answer.py --input "D:\测试题\questions.csv" --output "D:\测试结果\results.csv"
 ```
 
-该命令阻断推理期间的网络连接，输出两份三列 CSV、逐题核对及汇总；输出目录必须不存在。改变的文字答案需要人工复核。复测结果见该目录的 `comparison_summary.json`。
-
-检索对照支持 BM25、纯向量、融合和重排四种模式：
+如需先使用项目附带的 54 道问题试运行，执行：
 
 ```powershell
-python scripts/evaluate_retrieval.py --dataset retrieval.jsonl
+python scripts/batch_answer.py --input data/eval/campus_public/questions.csv --output sample_results.csv
 ```
 
-`retrieval.jsonl` 每行包含 `question` 和当前索引中的 `relevant_ids`。按文档内容键标注的来源题集及数据库间检索对比入口见 [验收数据](data/eval/README.md)。
-
-## 文件用途
-
-| 目录 | 内容 |
-| --- | --- |
-| `src/campus_rag/` | 采集、解析、数据库、检索、问答与计算 |
-| `config/` | 运行参数、站点和固定数据构建配置 |
-| `scripts/` | 资源准备、采集清洗、建库、检查、评测和批量入口 |
-| `experiments/planner_lora/` | 最终适配器的数据生成、训练和验证 |
-| `data/eval/` | 最终验收题及来源标签 |
-| `tests/` | 当前功能的单元和集成回归测试，无需加载真实模型 |
-| `docs/data.md` | 数据恢复与构建说明 |
-
-当前快照包含 518 篇公开资料。支持 HTML、PDF、DOCX、XLSX、TXT、Markdown；扫描 PDF 不自动 OCR。多级表头和来源时效需要人工抽查，系统不保证回答任意校园问题。只采集公开页面，遵守站点白名单、访问间隔和 `robots.txt`。
+附带的参考输出位于 `data/eval/campus_public/answers.csv`。
