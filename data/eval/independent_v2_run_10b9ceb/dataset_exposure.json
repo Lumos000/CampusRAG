@@ -1,7 +1,0 @@
-{
-  "dataset": "independent_v2",
-  "evaluated_commit": "10b9ceb3ee8817fc954475dff228ce6096a23fc0",
-  "first_run_completed": true,
-  "future_use": "Exposed evaluation set; use for regression only if future changes are informed by these results. Prepare an unseen v3 for the next independent assessment.",
-  "sealed_inputs_not_modified": true
-}

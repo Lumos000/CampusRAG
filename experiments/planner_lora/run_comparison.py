@@ -18,7 +18,7 @@ from campus_rag.index.hybrid import HybridIndex
 from campus_rag.rag.generator import TransformersGenerator
 from campus_rag.rag.service import RAGService
 from campus_rag.rag.planner import parse_plan
-from evaluate_formal import save, digest
+from common import save, digest
 
 OUTPUT = ROOT / 'data/eval/planner_lora/current_corpus'
 

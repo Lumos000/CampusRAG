@@ -2,4 +2,3 @@
 # Install a compatible CUDA Torch wheel separately; the tested environment used:
 # torch==2.14.1+cu126, transformers==5.20.2, safetensors==0.8.0.
 peft==0.21.2
-psutil==7.2.2

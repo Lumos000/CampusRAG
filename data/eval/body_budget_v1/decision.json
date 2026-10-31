@@ -1,8 +1,0 @@
-{
-  "retained": true,
-  "reason": "L3N02 and L3N05 newly correct; no known correct regressions; 236 tests and complete exposed regression passed",
-  "base": "execution_guards_v1",
-  "rejected_repair_candidate": "repair_input_v1",
-  "sealed_tests_opened": false,
-  "adapter_enabled": false
-}

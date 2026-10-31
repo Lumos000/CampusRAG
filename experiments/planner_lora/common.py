@@ -1,4 +1,5 @@
 """Reference scoring for the numeric planner adapter."""
+import hashlib
 import json
 from decimal import Decimal
 from pathlib import Path
@@ -30,3 +31,17 @@ def original_score(raw,case,connection):
             unit=result.unit,expression=result.expression,source_ids=sorted(sources),field_ids=sorted(fields))
     except (ValueError,KeyError,TypeError) as exc:record['error']=str(exc)
     return record
+
+
+def digest(path):
+    value = hashlib.sha256()
+    with Path(path).open('rb') as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b''):
+            value.update(block)
+    return value.hexdigest()
+
+
+def save(path, data):
+    temporary = Path(path).with_suffix('.tmp')
+    temporary.write_text(json.dumps(data, ensure_ascii=False, indent=2, default=str), encoding='utf-8')
+    temporary.replace(path)

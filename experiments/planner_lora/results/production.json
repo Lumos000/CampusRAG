@@ -1,5 +1,6 @@
 {
-  "scope": "Fresh official batch CLI run, 54 exposed development-regression cases per mode. Not a new blind benchmark or rerun of the synthetic held-out test.",
+  "scope": "Fresh official batch CLI verification after extracting the compact code and offline resources into a clean directory. 54 exposed regression cases per mode, not blind testing.",
+  "date": "2026-10-31",
   "correct": {
     "base": 49,
     "adapter": 53
@@ -8,6 +9,48 @@
   "accuracy": {
     "base": 0.907407,
     "adapter": 0.981481
+  },
+  "groups": {
+    "dev36": {
+      "base": {
+        "correct": 33,
+        "total": 36
+      },
+      "adapter": {
+        "correct": 35,
+        "total": 36
+      }
+    },
+    "new_numeric": {
+      "base": {
+        "correct": 4,
+        "total": 6
+      },
+      "adapter": {
+        "correct": 6,
+        "total": 6
+      }
+    },
+    "sample": {
+      "base": {
+        "correct": 8,
+        "total": 8
+      },
+      "adapter": {
+        "correct": 8,
+        "total": 8
+      }
+    },
+    "taskbook": {
+      "base": {
+        "correct": 4,
+        "total": 4
+      },
+      "adapter": {
+        "correct": 4,
+        "total": 4
+      }
+    }
   },
   "gains": [
     "C01",
@@ -20,6 +63,7 @@
     "base": [],
     "adapter": []
   },
+  "pending_review": [],
   "adapter_loaded_in_enabled_run": true,
   "adapter_loaded_in_base_run": false,
   "actual_planning_cases": 15,
@@ -27,16 +71,15 @@
   "network_attempts": 0,
   "runtime_including_loading": {
     "base": {
-      "seconds": 121.86261980000018,
+      "seconds": 124.63512209999999,
       "network_attempts": 0
     },
     "adapter": {
-      "seconds": 160.49920769999972,
+      "seconds": 375.8827874000001,
       "network_attempts": 0
     }
   },
   "remaining_failure": "C03: chose undergraduate loan lower bound instead of upper bound; validation rejected both initial and unchanged repair plan.",
-  "date": "2026-10-31",
   "adapter_path": "models/adapters/planner_lora/step_300",
   "files": {
     "src/campus_rag/__init__.py": "a60fb04f5e72e78dfbbffa355e1a253f19fa53394a9e5c217ee63de738424ab6",
@@ -70,12 +113,14 @@
     "config/settings.json": "4ed404e30ed81f9f90377d9cdca58836709aa8793a313dfa13d6e141a88dc587",
     "scripts/batch_answer.py": "60a460cf0b3d2668c13fc384041da389434c474b8e31199675b7c296fc063c24",
     "app.py": "3ac1c75c5b65fb97822f1ebc05d0e5756eace62ebe0521eb15ce332ace7934a0",
-    "experiments/planner_lora/verify_production.py": "878fe2e39696c152c0869049430fd6b1dcc72de3313d9064be34ead8b702833f",
+    "experiments/planner_lora/verify_production.py": "f9df3d92cea370c1333ca885a2d00ca354a320928606d59b2ce17832b4acb458",
     "data/processed/campus_public/campus_public.db": "451730abaadad78ec5101f9a2c441e00d1e84d723b59e13c07cf8eabe3ef06c8",
     "data/processed/campus_public/index/records.jsonl": "34d70fa2004d095d756a1e9db4a247532097cf1e183b66533aa2089ad386fd54",
     "data/processed/campus_public/index/vectors.npy": "3ca4bbe8eaff33fb3628a7d6e407176eb4f0aaf6b2910a30820385c559b8809f",
     "models/adapters/planner_lora/step_300/adapter_config.json": "25fb8bc43788a64eafd6e022aaaf151e19d57d1e7e7863747e8eba1889be5c3f",
     "models/adapters/planner_lora/step_300/adapter_model.safetensors": "cf2bb4370b46667b861a81f305d91bd2da156b927a746815f6245caa8c1322c8"
   },
-  "reviewer_sha256": "420130abf59f1baf96ffc86a2f544f5555a59071ddd3487a0515a08e47ace9fb"
+  "reviewer_sha256": "420130abf59f1baf96ffc86a2f544f5555a59071ddd3487a0515a08e47ace9fb",
+  "common_sha256": "01fd1fe39d03b3f13f7b264593038e9761ab54fadfc6587124c8f323e00034c7",
+  "resource_manifest_sha256": "29a69b93c879e6276dda297041e3fab65b7d6e213a0ee3a51be4b0732ce8cb36"
 }

@@ -117,56 +117,6 @@ def test_comparison_rejects_duplicate_ids_and_wrong_source_metadata(tmp_path, mo
         module.load_profile(settings, None, None)
 
 
-def test_smoke_custom_questions_are_not_truncated_to_seven(tmp_path, monkeypatch):
-    import sys
-    from types import SimpleNamespace
-    from campus_rag.types import AnswerResult, QueryPlan
-
-    monkeypatch.syspath_prepend(str(ROOT / 'scripts'))
-    module = importlib.import_module('smoke_qa')
-    questions = [f'问题{i}' for i in range(8)]
-    path = tmp_path / 'questions.json'
-    path.write_text(json.dumps(questions), encoding='utf-8')
-    database = tmp_path / 'test.db'
-    database.touch()
-    monkeypatch.setattr(module, 'load_settings', lambda _: replace(load_settings(), database_path=database))
-    monkeypatch.setattr(module.HybridIndex, 'load', lambda *_: None)
-    monkeypatch.setattr(module, 'TransformersGenerator', lambda _: None)
-    seen = []
-
-    def answer(question):
-        seen.append(question)
-        return AnswerResult(question, '测试回答', [])
-
-    monkeypatch.setattr(module, 'RAGService', lambda *_: SimpleNamespace(last_plan=QueryPlan(), answer=answer))
-    monkeypatch.setattr(sys, 'argv', ['smoke_qa.py', '--questions-file', str(path),
-                                    '--output', str(tmp_path / 'answers.json')])
-    module.main()
-    assert seen == questions
-
-
-def test_v3_recipe_and_frozen_cases(monkeypatch):
-    import hashlib
-    import sys
-
-    monkeypatch.syspath_prepend(str(ROOT / 'scripts'))
-    module = importlib.import_module('rebuild_college_database')
-    captured = []
-    monkeypatch.setattr(module, 'rebuild', lambda *args: captured.append(args) or {})
-    monkeypatch.setattr(sys, 'argv', ['rebuild_college_database.py', '--recipe',
-                                    str(ROOT / 'config/dataset_v3.json'), '--build-index'])
-    module.main()
-    args = captured[0]
-    assert args[0] == ROOT / 'data/processed/campus.db'
-    assert args[3] == ROOT / 'data/processed/colleges_20261029_v3'
-    assert args[4] is True
-    assert args[6] == 518
-    assert set(args[7]) == {'cs.njupt.edu.cn', 'ai.njupt.edu.cn'}
-    assert set(args[5]) == {'https://scie.njupt.edu.cn/2761/list.htm',
-                            'https://coa.njupt.edu.cn/2206/list.htm', 'https://coa.njupt.edu.cn/zyjs/list.htm'}
-    fixture = ROOT / 'data/eval/college_dataset_v3'
-    snapshot = json.loads((fixture / 'verified_snapshot.json').read_text(encoding='utf-8'))
-    assert hashlib.sha256((fixture / 'cases.json').read_bytes()).hexdigest() == snapshot['retrieval_cases_sha256']
 
 
 def test_public_corpus_recipe_keeps_the_original_baseline(monkeypatch):

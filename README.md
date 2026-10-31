@@ -1,179 +1,119 @@
 # 南京邮电大学离线校园问答系统
 
-这是《大数据项目实践》的离线 RAG 实现。系统将公开校园资料解析为正文块和结构化 SQLite 表格，通过 BM25、BGE 向量检索、RRF 和小型 Reranker 找到证据。Qwen3-0.6B 只负责查询规划和回答组织；Python 负责参数化筛选、单位验证、Decimal 计算以及参考资料生成。
+《大数据项目实践》课程项目。采集学校、职能部门和学院的公开资料，在本地使用 Qwen3-0.6B 完成校园问答，支持交互查询和批量 CSV 输出。
 
-当前默认使用 **校园公开资料库**（518篇），数据库为 `data/processed/campus_public/campus_public.db`，配套索引为同目录下的 `index/`。交互问答、批量 CSV 和离线检查共用此默认配置；原497篇库保留用于历史对照。最新适配及验证见 [校园公开资料库验收说明](docs/campus_public_acceptance.md)。
+系统使用 BM25、BGE 向量检索、RRF 融合和 Reranker 查找证据。正文和结构化表格存入 SQLite；模型负责查询规划和回答组织，Python 校验来源、年份、单位并执行数值计算。资料不足时拒答，引用来自实际使用的资料。
 
-版本与评测入口见 [代码与版本核对记录（2026-10-27）](docs/current_code_status.md)，包括本地与 GitHub 提交差异、模块职责及当前可用边界。
+## 安装
 
-上一轮可靠性优化见 [修改与验证报告](docs/reliability_optimization_v1.md)及 [36 题逐题对照](docs/reliability_case_comparison.md)。冻结开发诊断的核心要点评分由 24/36 增至 33/36；文字回答主要依赖保守原文回退，平均长度明显增加，数值规划仍为 5/8；当时独立 v2 尚未评测。
-
-候选优化见 [小范围优化与淘汰记录](docs/reliability_trials_v2.md)：保持开发诊断33/36及数值5/8，文字/时效题平均长度从610字降至313字，141项自动测试与12题回归通过。无收益的数值约束生成已撤回，该版本冻结为 `10b9ceb`。
-
-该提交的 [独立v2首次评测](docs/independent_v2_evaluation_10b9ceb.md) 严格正确6/16，数值0/8，普通文字3/4，时效2/2，暴露了Facts抽取、对象绑定、误路由及漏算人数的语义校验问题。首次结果与原金标保留，不能把开发成绩作为通用问答可靠率。
-
-后续 [检索后处理修复与逐题回归](docs/post_retrieval_reliability_fix_v1.md)：165项自动测试、12题回归及任务书四例通过；36题保持33/36；已公开v2回归为13/16，数值5/8。v2已用于调试，这不是新的独立准确率；剩余问题包括规划漏操作数及文字回答冗长。数据库和索引无需重建。
-
-进一步保留 [Facts主体/口径绑定与LoRA重评](docs/fact_scope_lora_recheck_v1.md)：215项自动测试通过，12题与任务书四例保持；开发36题33/36、已公开v2为13/16，旧校园10题人工语义评分4/10→6/10。原自动单位匹配与人工人均语义评分分开报告，金标未改。两种规划输入候选因回归撤回，冻结LoRA v2/v3重评后仍不启用；默认使用基础模型与已验证校验修复，未重建数据库或索引，新封存测试未运行。此次提交范围及评测归档边界见 [保留代码说明](docs/retained_reliability_changes.md)。
-
-最新 [执行校验与正文预算规划验证](docs/execution_and_planning_reliability_v1.md)：236项自动测试通过，12题及任务书四例保持全对，开发36题33/36、已公开v2为13/16，旧校园题人工语义6/10→8/10。修复输入候选出现回归，已撤回；保留来源/配对校验及正文预算示例。新封存测试未运行，模型和索引不变。项目进程临时文件与pytest目录统一放在 `.tmp/runtime`，当前位于E盘。
-
-## 运行环境
-
-- Windows 10/11，Python 3.10 或 3.11。
-- NVIDIA RTX 4050 Laptop GPU 6GB，建议使用支持当前显卡驱动的 CUDA 版 PyTorch。
-- 正式运行不需要网络；下载依赖、模型和采集公开资料属于准备阶段。
-
-创建环境并安装项目：
+已验证环境：Windows、Python 3.11、NVIDIA RTX 4050 Laptop 6GB。CUDA 不是任务书的硬性要求；其他设备的速度和内存占用需实测。
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-# 如需 CUDA，请先按 PyTorch 官网给出的当前命令安装对应版本 torch。
+conda create -n campusrag python=3.11
+conda activate campusrag
 python -m pip install -e ".[dev,lora]"
 ```
 
-不要把密码、Cookie、Token 或登录后的网页数据放入项目。本系统只采集公开页面，并遵守域名白名单、访问间隔和 `robots.txt`。
+已有合适的 Conda 环境时直接激活，无需重复创建，也不需要再使用 `venv`。以上安装命令在项目根目录执行。如使用 GPU，先安装与本机驱动匹配的 CUDA 版 PyTorch。默认启用数值规划 LoRA，需安装 `lora` 依赖并准备对应权重。
 
-## 准备模型
+## 准备离线资源
 
-联网准备阶段运行：
-
-```powershell
-python scripts/prepare_models.py
-```
-
-模型保存为：
+GitHub 仓库包含项目代码，不包含大体积模型、数据库和索引。复现同一数据快照和答案，需要另行取得配套的 `campus-rag-resources.zip`，将其解压到项目根目录：
 
 ```text
 models/Qwen3-0.6B/
 models/bge-small-zh-v1.5/
 models/bge-reranker-base/
+models/adapters/planner_lora/step_300/
+data/processed/campus_public/campus_public.db
+data/processed/campus_public/clean_documents.jsonl
+data/processed/campus_public/index/records.jsonl
+data/processed/campus_public/index/vectors.npy
 ```
 
-正式运行通过 `local_files_only=True` 加载模型，并设置 Hugging Face/Transformers 离线环境变量。Qwen3-0.6B 的 BF16 权重应能放入 6GB 显存；若实际机器上显存不足，可另行准备 Q5_K_M 或 Q6_K GGUF，并使用本地 `llama-server` 适配生成器。默认实现采用 Transformers，避免第一版同时维护两套推理后端。
-
-## 数据准备
-
-校园公开资料库的独立构建、原库保护、学院来源及历史复测见 [数据集说明](docs/college_database.md)。固定构建配置为 [config/dataset_campus_public.json](config/dataset_campus_public.json)，本地数据库和原始资料不随代码提交。
-
-已有本地资料及模型时，确认目标目录不存在后构建：
+资源包的文件哈希和运行环境见 [资源清单](config/resources.json)。已有资源时无需重新采集、建索引或训练。请在新检出的项目目录解压，避免覆盖已有资料。
 
 ```powershell
-python scripts/rebuild_college_database.py --recipe config/dataset_campus_public.json --build-index
+Expand-Archive .\campus-rag-resources.zip -DestinationPath .
+```
+
+完整资源包解压后，可直接执行下面的资源检查和运行命令；不需要再下载模型、重新建库或训练。资源包 SHA256：
+
+```text
+983a1db86fe4cadf1e55f94a6804b83b8931ca3d31ecb7164f7d0f09eacded4d
+```
+
+可用 `Get-FileHash .\campus-rag-resources.zip -Algorithm SHA256` 核对。资源已存在的当前工作目录无需重复解压。
+
+仅在没有配套资源、需要从头准备时，才联网下载基础模型：
+
+```powershell
+python scripts/prepare_models.py
+```
+
+数据采集、清洗、建库及从清洗快照恢复的步骤见 [数据准备](docs/data.md)。最终 LoRA 的训练方法见 [数值规划适配器](experiments/planner_lora/README.md)。实时重爬会受网页变化影响，不能保证还原同一快照。
+
+## 运行
+
+在项目根目录执行，资源检查通过后可以断网运行：
+
+```powershell
 python scripts/check_database.py
-python scripts/check_offline.py
-```
-
-当前机器已完成默认库切换，无须重建。新检出代码还需要原始资料、两份清洗清单和原497篇基线库；固定配置不能代替数据文件。以下采集、导入命令用于准备或更新资料，更新默认库后必须重新建索引并检查，不能继续沿用原快照的评测成绩。
-
-采集完成后按 [数据清洗与可靠入库](docs/cleaning.md) 执行 clean_data.py、清洗清单导入和数据库校验；不建议把原始网页清单直接全量入库。
-
-爬虫参数、采集清单字段和试运行步骤见 [采集操作说明](docs/crawling.md)。
-
-先检查并扩充 [config/sites.json](config/sites.json) 中的公开站点种子，然后运行：
-
-```powershell
-python scripts/crawl_sites.py
-python scripts/clean_data.py
-python scripts/ingest_data.py --clean-manifest data/processed/clean/clean_documents.jsonl
-python scripts/check_database.py
-python scripts/build_index.py
-```
-
-也可以直接导入人工下载的文件：
-
-```powershell
-python scripts/ingest_data.py "data/raw/example.pdf" "data/raw/example.xlsx"
-```
-
-支持 HTML、PDF、DOCX、XLSX、TXT 和 Markdown。正文使用本地 BGE tokenizer 分块，目标 280～420 tokens，硬上限 480 tokens。HTML/XLSX 合并单元格会展开；重复的上层表头与下一行组合为多级表头。PDF 扫描页或表格解析失败会写入 `audit_issues`，需要人工检查。
-
-默认 SQLite 位于 `data/processed/campus_public/campus_public.db`，其中原始单元格值、规范化值、数值、单位及来源位置分别保存。表格描述块只参与召回，最终筛选和计算从结构化表中读取。
-
-## 离线问答
-
-完成模型、数据库和索引准备后，先断开网络并执行：
-
-```powershell
 python scripts/check_offline.py
 python app.py
 ```
 
-未知测试集批处理：
+批量回答：
 
 ```powershell
-python scripts/batch_answer.py --input data/eval/questions.csv --output results.csv
+python scripts/batch_answer.py --input questions.csv --output results.csv
 ```
 
-输入 CSV 至少包含一列问题，推荐列名为 `问题`。输出固定为 UTF-8 with BOM 编码，列顺序严格是：
+输入 CSV 使用 `问题` 列；输出为 UTF-8 with BOM，固定三列：
 
 ```text
 问题,答案,参考资料
 ```
 
-参考资料由实际参与回答或计算的数据库记录自动生成，Qwen 的输出不会被当作引用。
+可用 `--audit-output audit.json` 另存计算和诊断。`app.py`、批量入口和离线检查均支持 `--config 配置路径`。交互和批量入口支持 `--no-adapter`；长期关闭 LoRA 可将配置的 `planner_adapter_path` 设为 `null`。关闭适配器可能影响数值规划效果。
 
-`app.py`、`scripts/batch_answer.py` 和 `scripts/check_offline.py` 均支持 `--config 路径`。交互与批量问答启动前核对数据库和索引的分块及来源元数据，防止混用；问答连接以只读方式打开数据库。
-
-默认配置启用数值规划 LoRA，权重放在 `models/adapters/planner_lora/step_300/`，仅参与数值计划和修复。普通文本回答仍使用基础模型；计算与引用由程序校验。权重文件不随代码上传，需另行放入本地目录。`python app.py --no-adapter` 或批量命令追加 `--no-adapter` 可临时关闭；配置 `planner_adapter_path: null` 可长期关闭。完整说明及基线对照见 [数值规划 LoRA](experiments/planner_lora/README.md)。
-
-## 查询和计算安全边界
-
-新的通用数值路径见 [受限分步数值推理](docs/step_reasoning.md)：先检索，再向 Qwen 提供真实 Schema，使用字段 ID 和 JSON 步骤在 SQLite 全表执行，直接输出程序核验的结果与来源。既有数据库请先运行 `python scripts/normalize_tables.py`；该操作自动备份并保留原始数据及所有 ID，不需要重建当前索引。
-
-当前新增的数值核验支持专业类别学费及上浮比例、住宿费与多年合计、师资人数及折算/生师比、首选/再选科目筛选招生计划。来源缺失、同一字段冲突、选科关系不明确时拒绝计算。核验日志保留原文数值和单元格位置；最终数值回答使用经过校验的模板，不接受模型任意改写数值或字段。详见 [数值核验说明](docs/numeric_validation.md)。
-
-数值计划必须通过 JSON、字段、范围、年份、单位和完整性校验。格式或计划错误最多共享一次修复机会；证据或统计条件不足时明确拒答。普通文字事实题不预先调用规划器。模型不能提交 SQL 或 Python，已核验的数值答案不再交给模型改写。
-
-结构化查询仅支持白名单筛选操作 `contains/eq/gt/gte/lt/lte`，以及 `sum/count/avg/ratio/difference/multiply/average`。Python 将字段映射为数据库列并使用参数化查询；数值使用 `Decimal`。多值歧义、空结果、单位冲突、分母为零和不支持的单位转换都会拒绝计算。
-
-## 评测
-
-运行核心测试：
+## 验证
 
 ```powershell
 python -m pytest -q
+python scripts/batch_answer.py --input data/eval/campus_public/questions.csv --output results.csv
 ```
 
-检索评测集采用 JSONL，每行包括 `question` 和 `relevant_ids`：
+固定验收题覆盖任务书四例、校园事实、时效、拒答及学分学时计算。题集及复测方法见 [验收数据](data/eval/README.md)。这些是开发回归题，不能代表未知问题的正确率。
 
-```json
-{"question":"图书馆开放时间是什么？","relevant_ids":["实际chunk_id"]}
-```
+配套参考输出为 54 题中 53 题通过核对，任务书四例通过；贷款上限差额题被校验拦截并拒答。输出及核对摘要与当前正式源码、配置和数据资源的哈希绑定，详见验收数据说明。
 
-执行：
+对比基础模型与最终适配器，使用同一个正式批量入口：
 
 ```powershell
-python scripts/evaluate_retrieval.py --dataset data/eval/retrieval.jsonl
+python experiments/planner_lora/verify_production.py --output .tmp/verification
 ```
 
-至少比较 BM25、纯向量、RRF 融合、融合加小型 Reranker 四组配置，并记录 Recall@5/10/20、MRR、答案准确率、数值准确率、引用支持率、拒答准确率、耗时和峰值显存。
+该命令阻断推理期间的网络连接，输出两份三列 CSV、逐题核对及汇总；输出目录必须不存在。改变的文字答案需要人工复核。复测结果见该目录的 `comparison_summary.json`。
 
-## 目录
+检索对照支持 BM25、纯向量、融合和重排四种模式：
 
-```text
-config/                 站点和运行参数
-data/raw/               原始公开资料及 manifest
-data/processed/         SQLite 数据库和处理产物
-data/index/             向量与检索记录
-data/eval/              测试集
-models/                 完整离线模型
-src/campus_rag/crawl/   白名单爬虫
-src/campus_rag/ingest/  文档解析、token 分块和表格导入
-src/campus_rag/index/   BM25、向量、RRF、Reranker
-src/campus_rag/database/SQLite schema 和受限查询
-src/campus_rag/rag/     查询规划、回答与系统引用
-src/campus_rag/tools/   数字、单位和计算工具
-scripts/                准备、建库、评测和批处理入口
-tests/                  单元与集成测试
+```powershell
+python scripts/evaluate_retrieval.py --dataset retrieval.jsonl
 ```
 
-## 当前边界
+`retrieval.jsonl` 每行包含 `question` 和当前索引中的 `relevant_ids`。按文档内容键标注的来源题集及数据库间检索对比入口见 [验收数据](data/eval/README.md)。
 
-- 扫描版 PDF 不自动 OCR，系统会报告并要求人工补录；这比静默产生错误文本更可靠。
-- 多级表头采用通用启发式，重要招生和质量报告应在导入后抽查 SQLite。
-- 默认只启用小型 Reranker。只有消融实验证明更大的模型有稳定收益，才应把它作为实验分支。
-- 当前不包含 QLoRA。应先完成可追溯数据、检索和计算基线，避免用微调掩盖检索错误。
+## 文件用途
 
+| 目录 | 内容 |
+| --- | --- |
+| `src/campus_rag/` | 采集、解析、数据库、检索、问答与计算 |
+| `config/` | 运行参数、站点和固定数据构建配置 |
+| `scripts/` | 资源准备、采集清洗、建库、检查、评测和批量入口 |
+| `experiments/planner_lora/` | 最终适配器的数据生成、训练和验证 |
+| `data/eval/` | 最终验收题及来源标签 |
+| `tests/` | 当前功能的单元和集成回归测试，无需加载真实模型 |
+| `docs/data.md` | 数据恢复与构建说明 |
+
+当前快照包含 518 篇公开资料。支持 HTML、PDF、DOCX、XLSX、TXT、Markdown；扫描 PDF 不自动 OCR。多级表头和来源时效需要人工抽查，系统不保证回答任意校园问题。只采集公开页面，遵守站点白名单、访问间隔和 `robots.txt`。

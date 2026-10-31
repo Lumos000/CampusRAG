@@ -14,7 +14,7 @@ import time
 ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT / 'src'), str(ROOT / 'scripts')]
 from campus_rag.config import load_settings
-from evaluate_formal import digest, save
+from common import digest, save
 
 
 def main():

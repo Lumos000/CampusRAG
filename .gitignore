@@ -16,3 +16,20 @@ models/*
 !models/.gitkeep
 results.csv
 
+
+# Local experiment history and generated evaluation output are not deliverables.
+data/eval/*
+!data/eval/README.md
+!data/eval/campus_public/
+data/eval/campus_public/*
+!data/eval/campus_public/verified_release.json
+!data/eval/campus_public/questions.csv
+!data/eval/campus_public/answers.csv
+!data/eval/college_dataset_v3/
+data/eval/college_dataset_v3/*
+!data/eval/college_dataset_v3/cases.json
+experiments/*
+!experiments/planner_lora/
+experiments/reliability_scope_v1/
+docs/*
+!docs/data.md

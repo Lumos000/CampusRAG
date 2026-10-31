@@ -1,9 +1,0 @@
-{
-  "baseline": "semantic_guard_v3: no LoRA,12/12,4/4,dev33/36,exposed13/16,oldcampus4/10",
-  "scope": "Normalize fullwidth slash 1:1, bind adjacent exact headcount to explicit per-person monetary rate; no cross-sentence or missing-unit inference. Preserve original text spans and conflicts.",
-  "retention": "No loss of previously correct answers; keep entire single runs and gold unchanged. No model adapter, retraining, corpus/index rebuild or new sealed test access.",
-  "files": {
-    "src/campus_rag/rag/numeric.py": "ee601e1db707d0ea3899dea2616f67416a3041119b2708ee326a7b003e295ddd",
-    "tests/test_text_rate_extraction.py": "9257adc704e1999ee2e334e337bd9ea75e86bf0c0084dd58489c5e933f2e2abc"
-  }
-}

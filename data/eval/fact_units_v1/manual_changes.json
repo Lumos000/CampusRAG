@@ -1,9 +1,0 @@
-{
-  "L3N01": {
-    "correct": true,
-    "citation_relevant": [
-      true
-    ],
-    "reason": "Same policy and annual per-person basis:12000yuan/person minus8000yuan/person equals4000yuan/person. Question explicitly asks per-person standard difference, not a total. Gold expected unit yuan unchanged; literal unit-matching score remains false and is reported separately."
-  }
-}

@@ -1,7 +1,0 @@
-{
-  "reason": "Windows WinError 5 during atomic checkpoint replacement",
-  "preserved_prefix_cases": 15,
-  "recovered_checkpoint_cases": 16,
-  "case_generation_repeated": false,
-  "action": "Verified prefix and manifest, recovered completed last case; resume frozen run"
-}
