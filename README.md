@@ -60,10 +60,31 @@ python scripts/prepare_models.py
 ```powershell
 python scripts/check_database.py
 python scripts/check_offline.py
+```
+
+### 终端交互问答
+
+安装依赖并准备好资源后，打开 PowerShell，激活 Conda 环境并进入项目目录：
+
+```powershell
+conda activate campusrag
+cd E:\CampusRAG
 python app.py
 ```
 
-批量回答：
+环境名和项目路径按实际情况替换。每次启动会先加载本地模型，等待终端出现以下提示后，直接输入问题并按回车：
+
+```text
+南邮离线校园问答。输入 exit 退出。
+
+问题> 根据2026年本科招生章程，工科类优势学科专业的学费和住宿费预收标准分别是多少？
+```
+
+等待推理完成，终端会输出答案，并在有引用时显示参考资料。随后再次出现 `问题>`，可以继续输入下一个问题，无需重启程序。输入 `exit`、`quit` 或 `q` 并按回车即可退出。
+
+默认使用配置中的本地模型、校园数据库和数值规划 LoRA，问答过程无需联网。临时关闭 LoRA 可运行 `python app.py --no-adapter`。
+
+### 批量回答
 
 ```powershell
 python scripts/batch_answer.py --input questions.csv --output results.csv
