@@ -1,4 +1,5 @@
 {
+  "default_department": "南京邮电大学",
   "allowed_domains": [
     "njupt.edu.cn"
   ],

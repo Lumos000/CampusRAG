@@ -17,6 +17,13 @@ def test_academic_year_precedes_publication_date():
     assert not matches_period('收费标准', None, ['2026'])
 
 
+@pytest.mark.parametrize('quantity',['2026元','2026.5元','2026人','2026学分','2023-2024元'])
+def test_quantity_operands_are_not_mistaken_for_document_years(quantity):
+    assert question_periods('按每期'+quantity+'计算合计')==[]
+    assert question_periods('按2025年办法，每期'+quantity+'计算合计')==['2025']
+    assert matches_period('每期'+quantity+'的标准','2025-01-01',['2025'])
+
+
 def test_filters_before_topk_and_no_wrong_year_fallback():
     rows = [{'id': str(year), 'text': '招生计划 物理', 'doc_id': year, 'title': f'{year}招生简章',
              'source_url': 'local'} for year in [2023,2024,2026]]

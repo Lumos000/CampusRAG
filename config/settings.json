@@ -14,6 +14,9 @@
   "fusion_top_k": 25,
   "rerank_top_k": 8,
   "max_context_tokens": 7168,
-  "max_new_tokens": 512
+  "max_new_tokens": 512,
+  "field_units": {
+    "招生专业及计划 / 计划": "人"
+  }
 }
 

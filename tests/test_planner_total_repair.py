@@ -59,7 +59,7 @@ def test_service_repairs_multiple_lookup_once(table_repo):
             self.prompts.append(prompt)
             return json.dumps({'table_id':tid,'steps':[{'id':'total','op':'lookup' if len(self.prompts)==1 else 'sum','field_id':field}]})
     root=Path('.'); generator=Generator()
-    service=RAGService(Settings(root,root,root,root,root,numeric_shortcuts=False),Index(),generator,table_repo.connection)
+    service=RAGService(Settings(root,root,root,root,root),Index(),generator,table_repo.connection)
     answer=service.answer('按《课程核算办法》，学分合计多少学分？')
     assert answer.calculation and answer.calculation.ok and answer.calculation.value==5
     assert len(generator.prompts)==2 and 'lookup匹配多个数值' in generator.prompts[1]

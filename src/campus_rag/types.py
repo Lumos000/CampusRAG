@@ -114,6 +114,7 @@ class CalculationResult:
     evidence: list[Evidence] = field(default_factory=list)
     steps: list[dict[str, Any]] = field(default_factory=list)
     repairable: bool = False
+    outputs: list[dict[str, Any]] = field(default_factory=list)
 
 
 @dataclass

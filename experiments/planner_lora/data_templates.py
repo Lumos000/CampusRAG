@@ -231,7 +231,7 @@ def build(repo, split, index, family):
             else:raw=json.dumps(plan,ensure_ascii=False)
             self.outputs.append(raw);return raw
     capture=Capture()
-    service=RAGService(Settings(ROOT,ROOT,ROOT,ROOT,ROOT,numeric_shortcuts=False),Index(),capture,repo.connection)
+    service=RAGService(Settings(ROOT,ROOT,ROOT,ROOT,ROOT),Index(),capture,repo.connection)
     result=service.answer(question)
     assert capture.prompts,(family,kind,question,service.last_diagnostics)
     if expected is not None:

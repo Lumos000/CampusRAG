@@ -31,7 +31,7 @@ def evaluate_case(generator,case,connection,mode,root):
                 with generator.model.disable_adapter():return generator.generate(*args,**kwargs)
             return generator.generate(*args,**kwargs)
     router=Router()
-    service=RAGService(Settings(root,root,root,root,root,numeric_shortcuts=False),Index(),router,connection)
+    service=RAGService(Settings(root,root,root,root,root),Index(),router,connection)
     service.planner.generator=SimpleNamespace(generate=router.planning_generate)
     answer=service.answer(case['question'])
     attempts=service.last_diagnostics.get('attempts',[])

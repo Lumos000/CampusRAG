@@ -52,6 +52,15 @@ class TransformersGenerator:
     def planning_generate(self, prompt: str, **kwargs) -> str:
         return self._generate(prompt, **kwargs)
 
+    def count_tokens(self, prompt: str) -> int:
+        messages = [{"role":"user", "content":prompt}]
+        kwargs = dict(tokenize=True, add_generation_prompt=True)
+        try:
+            tokens = self.tokenizer.apply_chat_template(messages, enable_thinking=False, **kwargs)
+        except TypeError:
+            tokens = self.tokenizer.apply_chat_template(messages, **kwargs)
+        return len(tokens)
+
     def _generate(self, prompt: str, thinking: bool = False, temperature: float = 0.0, max_new_tokens: int = 512) -> str:
         messages = [{"role": "user", "content": prompt}]
         kwargs = dict(tokenize=True, add_generation_prompt=True, return_tensors="pt", return_dict=True)

@@ -84,7 +84,7 @@ def test_named_academic_document_supplies_its_missing_table(academic_table, unit
             return json.dumps({'table_id': tid, 'steps': [{'id': 'result', 'op': 'sum', 'field_id': columns[unit]}]})
     from pathlib import Path
     root = Path('.')
-    service = RAGService(Settings(root, root, root, root, root, numeric_shortcuts=False), Index(), Generator(), repo.connection)
+    service = RAGService(Settings(root, root, root, root, root), Index(), Generator(), repo.connection)
     result = service.answer(f'按《课程安排》的课程表，课程甲与课程乙的{unit}合计多少{unit}？')
     assert result.calculation and result.calculation.ok, result.answer
     assert result.calculation.value == expected
@@ -107,7 +107,7 @@ def test_academic_expansion_does_not_guess_document_or_gpa_unit(academic_table, 
             return '{"table_id":null,"steps":[]}'
     from pathlib import Path
     root = Path('.')
-    service = RAGService(Settings(root, root, root, root, root, numeric_shortcuts=False), Index(), Generator(), repo.connection)
+    service = RAGService(Settings(root, root, root, root, root), Index(), Generator(), repo.connection)
     service.answer(question)
     assert not service.last_diagnostics.get('academic_table_expansions')
 

@@ -10,6 +10,7 @@ from campus_rag.types import CalculationResult, Evidence, FilterSpec, OperandSpe
 from campus_rag.tools.temporal import matches_period, question_periods
 from campus_rag.ingest.navigation import navigation_table_ids
 from campus_rag.database.normalization import compact, quantity, VERSION, header_unit, field_label, year_header
+from campus_rag.tools.requirements import satisfies
 
 
 class PlanError(ValueError):
@@ -74,7 +75,7 @@ def _object_mentioned(value, question):
     alias = _award_alias(text)
     if alias!=text and alias in query:
         return True
-    suffix = re.search(r'((?:工程)?实验教学中心|实验室|中心|场馆)$',text)
+    suffix = re.search(r'((?:工程)?实验教学中心|实验室|中心|场馆|专业|服务|项目)$',text)
     if not suffix:
         return False
     core = text[:suffix.start()]
@@ -104,11 +105,50 @@ def _business_scope(text):
     return tuple(word for word in ['对照','替代','安排','汇总','明细','预算','名单','统计','本科','研究生'] if word in text)
 
 
+def _requirement_filters(columns, question):
+    """Bind explicitly named requirement fields to question-supplied options."""
+    output = []
+    query = compact(question)
+    markers = {}
+    for fid,col in columns.items():
+        name = re.sub(r'\([^)]*\)','',compact(field_label(col['original_name'])))
+        stem = re.sub(r'科目|条件|要求','',name) or name
+        if len(stem)>=2:
+            markers[fid] = re.escape(stem)+r'(?:科目|条件|要求)?'
+    for fid,col in columns.items():
+        name = compact(field_label(col['original_name']))
+        if col['data_type']!='text' or not re.search(r'科目|条件|要求',name) or fid not in markers:
+            continue
+        match = re.search(markers[fid]+r'(?:为|是|[：:])?',query)
+        if not match:
+            continue
+        remainder = query[match.end():]
+        boundaries = [m.start() for other,pattern in markers.items() if other!=fid
+                      for m in [re.search(pattern,remainder)] if m]
+        boundaries += [m.start() for m in re.finditer(r'[。；;？?]',remainder)]
+        phrase = remainder[:min(boundaries,default=len(remainder))]
+        phrase = re.split(r'的|考生|人员|仅|可报|合计|总计',phrase)[0].strip('，,、 ')
+        if not phrase or re.search(r'^(?:有|是)?(?:什么|哪些|多少|几(?:个|项|门|种)|如何|怎样|是否|能否)|吗$',phrase):
+            continue  # Asking what a condition is does not supply an option set.
+        if re.search(r'或|任选|至少|不选|不含|不考虑',phrase):
+            raise QuestionConstraintError('问题约束：条件选项不是明确的已选集合，请明确所持有或选定的全部选项')
+        options = re.split(r'[和与及、,，]',phrase)
+        if options and all(re.fullmatch(r'[\u4e00-\u9fffA-Za-z0-9_-]{1,30}',v) for v in options):
+            output.append({'field_id':fid,'op':'satisfies','value':options})
+    return output
+
+
 class StructuredQueryEngine:
-    def __init__(self, connection: sqlite3.Connection):
+    def __init__(self, connection: sqlite3.Connection, field_units=None):
         self.connection = connection
         self.connection.row_factory = sqlite3.Row
         self.navigation_tables = navigation_table_ids(connection)
+        self.field_units = field_units or {}
+
+    def _header_unit(self, header, table_unit=''):
+        # Dataset-specific missing metadata is explicit configuration, not an
+        # inference from a business topic such as "plan" or "admissions".
+        return header_unit(header) or table_unit or self.field_units.get(header,'')
 
     def schema_context(self, table_ids, periods, question=''):
         output = []
@@ -139,8 +179,9 @@ class StructuredQueryEngine:
             for col in columns:
                 values = [next(c['raw_value'] for c in cells if c['column_id']==col['id']) for _,_,_,cells in ranked]
                 role = _field_role(dict(col),values)
+                unit = col['unit'] or (self._header_unit(col['original_name'],table['unit']) if role=='measure' else '')
                 described.append({'field_id':col['id'],'name':col['original_name'],
-                    'type':col['data_type'],'unit':col['unit'],'role':role})
+                    'type':col['data_type'],'unit':unit,'role':role})
                 labels = _mentioned_objects(values,question) if role in {'entity','category'} else []
                 labels.sort(key=lambda v:_object_query(question).find(_award_alias(v)) if _award_alias(v) in _object_query(question)
                     else compact(question).find(_object_key(v)))
@@ -153,6 +194,9 @@ class StructuredQueryEngine:
                 'columns':described,'question_matches':matched,'business_scope':business,
                 'total_row_count':sum(row_metadata[str(row['id'])]['is_total'] for row in rows),
                 'row_count':len(rows),'examples_only':True,'examples':examples})
+            requirements = _requirement_filters({c['id']:dict(c) for c in columns},question)
+            if requirements:
+                output[-1]['required_filters'] = requirements
             signature = (business,tuple((compact(c['original_name']),c['unit'],c['data_type']) for c in columns),
                 tuple(tuple(compact(c['raw_value']) for c in cells) for _,_,_,cells in ranked))
             if signature in seen_contents:
@@ -189,12 +233,18 @@ class StructuredQueryEngine:
                 sid, op = step['id'],step['op']
                 inputs = step.get('inputs')
                 if inputs is not None:
-                    if set(step)-{'id','op','inputs'} or op not in {'add','subtract','multiply','divide','ratio','average','sum'}:
+                    if set(step)-{'id','op','inputs'} or op not in {'add','subtract','multiply','divide','ratio','average','sum','increase','decrease','report'}:
                         raise PlanError(sid+': 算术步骤字段不合法')
                     operands = [self._step_input(v,values,question) for v in inputs]
                     if op=='multiply':
                         self._check_person_rate_pair(operands,question,facts)
-                    value,unit,expression = self._step_arithmetic(op,operands)
+                    if op=='report':
+                        if sid!=plan.output or len(inputs)<2 or len(set(inputs))!=len(inputs):
+                            raise PlanError('report只能作为最终步骤，引用至少两个不同结果')
+                        value,unit = operands[-1]['value'],operands[-1]['unit']
+                        expression = '；'.join(v['expression']+' = '+str(v['value'])+v['unit'] for v in operands)
+                    else:
+                        value,unit,expression = self._step_arithmetic(op,operands)
                     value_record = {'value':value,'unit':unit,'expression':expression,
                                     'details':[d for v in operands for d in v['details']],
                                     'question_inputs':[q for v in operands for q in v.get('question_inputs',[])]}
@@ -207,6 +257,28 @@ class StructuredQueryEngine:
                         value_record['per_unit'] = operands[0]['per_unit']
                     if op=='multiply' and any(v.get('per_unit') for v in operands):
                         value_record['expanded_period'] = True
+                    if op in {'increase','decrease'} and operands[0].get('per_unit'):
+                        value_record['per_unit'] = operands[0]['per_unit']
+                    if op in {'increase','decrease'} and operands[0].get('label'):
+                        value_record['label'] = operands[0]['label']+'（比例调整后）'
+                    names = {'add':('合计',' + '),'sum':('合计',' + '),
+                        'subtract':('差额',' - '),'multiply':('乘积',' × '),
+                        'divide':('比值',' ÷ '),'ratio':('百分比',' ÷ '),'average':('平均值','、')}
+                    if op in names:
+                        name,separator = names[op]
+                        labels = [v.get('label') or str(v['value'])+v['unit'] for v in operands]
+                        value_record['label'] = name+'（'+separator.join(labels)+'）'
+                    if op in {'increase','decrease'} and operands[0].get('period_label'):
+                        value_record['period_label'] = operands[0]['period_label']
+                    if op in {'add','sum','subtract','average','multiply','increase','decrease'}:
+                        bases = {v['basis'] for v in operands if v.get('basis')}
+                        if len(bases)>1 or (bases and op in {'add','sum','subtract','average'} and any(not v.get('basis') for v in operands)):
+                            raise PlanError('计费对象口径不一致，不能混算每人金额与整体金额')
+                        if bases:
+                            value_record['basis'] = next(iter(bases))
+                    if op=='report':
+                        value_record['outputs'] = [{k:v[k] for k in ('value','unit','expression','label','per_unit','basis','period_label','note') if k in v}
+                                                   for v in operands]
                 elif 'literal' in step:
                     if op!='lookup' or set(step)!={'id','op','literal','unit'}:
                         raise PlanError(sid+': 问题常数只能使用lookup和literal、unit')
@@ -217,7 +289,8 @@ class StructuredQueryEngine:
                     fact = facts[step['fact_id']]
                     self._check_fact_scope(fact,question)
                     value_record = {'value':Decimal(fact['value']),'unit':fact['unit'],
-                                    'expression':fact['value'],'details':[fact]}
+                                    'expression':fact['value'],'details':[fact],'label':fact['field']}
+                    value_record.update({k:fact['scope'][k] for k in ('basis','period_label','note') if k in fact.get('scope',{})})
                     period = re.fullmatch(r'每(小时|分钟|天|周|月|年|学期|学年)',fact.get('scope',{}).get('period',''))
                     if period and '/' not in fact['unit']:
                         value_record['per_unit'] = period[1]
@@ -253,6 +326,9 @@ class StructuredQueryEngine:
                         raise PlanError(sid+': field_id不在所选表格Schema内'+_legal_fields(columns))
                     if op in {'sum','average'} and _field_role(columns[field]) in {'identifier','time'}:
                         raise PlanError(sid+': 标识或时间字段不可求和或平均，请选择度量字段或使用count统计记录')
+                    if (op in {'sum','average'} and _field_role(columns[field]) in {'entity','category'}
+                            and not header_unit(columns[field]['original_name'])):
+                        raise PlanError(sid+': 文字字段不可求和或平均，请选择数值度量字段'+_legal_fields(columns))
                     details = []
                     for row in selected:
                         cell = row['cells'].get(field) if field else None
@@ -343,7 +419,7 @@ class StructuredQueryEngine:
                 if 'evidence' in d and d['evidence'] not in evidence:
                     evidence.append(d['evidence'])
             return CalculationResult(True,result['value'],result['unit'],result['expression'],used,
-                                     evidence=evidence,steps=trace)
+                                     evidence=evidence,steps=trace,outputs=result.get('outputs',[]))
         except (ValueError,ArithmeticError,KeyError,TypeError) as exc:
             extra = [issue for issue in role_issues if issue not in str(exc)]
             message = str(exc)+('；同时发现：'+'；'.join(extra) if extra else '')
@@ -399,6 +475,12 @@ class StructuredQueryEngine:
         if not matches_period(table['title'],table['published_at'],periods):
             raise ValueError('表格年份与问题不符')
         columns = {c['id']:dict(c) for c in self.connection.execute('SELECT * FROM table_columns WHERE table_id=?',(tid,))}
+        # Resolve missing legacy units from the full header without rewriting
+        # stored data or accepting altered numeric values.
+        missing_units = {fid:self._header_unit(c['original_name'],table['unit']) for fid,c in columns.items()
+                         if not c['unit'] and _field_role(c)=='measure' and self._header_unit(c['original_name'],table['unit'])}
+        for fid,unit in missing_units.items():
+            columns[fid]['unit'] = unit
         rows = []
         for row in self.connection.execute('SELECT * FROM table_rows WHERE table_id=? ORDER BY row_index',(tid,)):
             meta = row_meta.get(str(row['id']))
@@ -411,8 +493,10 @@ class StructuredQueryEngine:
                 if compact(cell['raw_value'])!=cell['normalized_value']:
                     raise ValueError('单元格原始值与规范化值不一致，需要离线复核')
                 if columns[fid]['data_type']=='number':
-                    expected,unit = quantity(cell['raw_value'],header_unit(columns[fid]['original_name']) or table['unit'])
+                    expected,unit = quantity(cell['raw_value'],self._header_unit(columns[fid]['original_name'],table['unit']))
                     stored = Decimal(cell['numeric_value']) if cell['numeric_value'] is not None else None
+                    if fid in missing_units and not cell['unit']:
+                        cell['unit'] = missing_units[fid]
                     if expected!=stored or (expected is not None and unit!=cell['unit']):
                         raise ValueError('数值缺失或单位规范化与原始数据不一致，需要离线复核')
             actual_periods = {p for fid,cell in cells.items() if year_header(columns[fid]['original_name'])
@@ -452,7 +536,8 @@ class StructuredQueryEngine:
             if len(candidates)!=1:
                 raise QuestionConstraintError('问题约束：数值阈值无法唯一绑定字段'+_legal_fields(columns))
             numeric_filters.append({'field_id':candidates[0]['id'],'op':relations[match[1]],'value':match[2]})
-        domain = self._step_filter([r for r in rows if not r['is_total']],columns,numeric_filters,question)
+        requirements = _requirement_filters(columns,question)
+        domain = self._step_filter([r for r in rows if not r['is_total']],columns,[*numeric_filters,*requirements],question)
         candidates = []
         for fid,col in columns.items():
             if col['data_type']!='text' or _field_role(col) in {'identifier','time'}:
@@ -466,7 +551,7 @@ class StructuredQueryEngine:
                     and (not included or r['cells'][fid]['normalized_value'] in included)}
                 candidates.append((len(labels),_field_question_score(col,question,labels),fid,required,labels))
         if not candidates:
-            if numeric_filters or re.search(r'全部|所有|整张',question):
+            if numeric_filters or requirements or re.search(r'全部|所有|整张',question):
                 required = {r['id'] for r in domain}
                 actual = {d['row_id'] for d in details if 'row_id' in d}
                 if actual!=required:
@@ -528,6 +613,8 @@ class StructuredQueryEngine:
     def _check_fact_sources(question,details,facts):
         used = [d for d in details if 'fact_id' in d or 'table_id' in d]
         if not used:
+            if StructuredQueryEngine.requested_fact_sources(question,facts):
+                raise PlanError('问题指定了资料来源，必须用对应表格或正文核验，不能仅用问题常数替代原文')
             return
         requested = StructuredQueryEngine.requested_fact_sources(question,
             {**facts,**{'used_'+str(i):d for i,d in enumerate(used)}})
@@ -661,9 +748,13 @@ class StructuredQueryEngine:
         def subject(fact):
             return re.sub(r'\([^)]*\)','',compact(fact.get('subject','')))
         text_only = bool(result['details']) and all('fact_id' in d for d in result['details'])
-        named = {subject(f) for f in (facts or {}).values() if text_only and len(subject(f))>=2 and subject(f) in compact(question)}
+        excluded = {subject(f) for f in (facts or {}).values() if text_only and _excluded_object(subject(f),question)}
+        named = {subject(f) for f in (facts or {}).values() if text_only and len(subject(f))>=2
+                 and _object_mentioned(subject(f),question) and subject(f) not in excluded}
         actual = {subject(f) for f in result['details']}
-        if len(named)>1 and named-actual:
+        if excluded & actual:
+            raise PlanError('使用了问题明确排除的正文对象：'+'、'.join(sorted(excluded & actual)))
+        if (len(named)>1 or compare) and named-actual:
             raise PlanError('未覆盖问题列举的正文对象：'+'、'.join(sorted(named-actual)))
         if '上限' in question and '下限' in question:
             available = {f.get('comparison') for f in (facts or {}).values()}
@@ -683,6 +774,10 @@ class StructuredQueryEngine:
         rate_difference = (compare and person_basis and result['unit']=='元/人'
             and not re.search(r'总额|预算|合计|总计|总金额|共需',question))
         target_unit = '元/人' if target and target[1]=='元' and rate_difference else target[1] if target else ''
+        if not target_unit and asks_total(question) and re.search(r'费|金额|预算|预收额|总额',question) and not re.search(r'占|百分比|比例|系数',question):
+            target_unit = '元'
+            if result['unit']!=target_unit:
+                raise PlanError('费用问题的结果必须是金额，不能用费率或年数代替；请补齐原值、比例调整及必要的加总')
         if target and result['unit']!=target_unit:
             raise PlanError('结果单位与问题要求不符：要求'+target[1]+'；请补齐费率、时长等必要运算')
         periods = {d.get('scope',{}).get('period') for d in result['details'] if isinstance(d.get('scope'),dict)}
@@ -701,6 +796,16 @@ class StructuredQueryEngine:
             fid,op = spec['field_id'],spec['op']
             if fid not in columns:
                 raise PlanError('筛选field_id不在所选表格中'+_legal_fields(columns))
+            if op=='satisfies':
+                targets = spec['value']
+                if not isinstance(targets,list) or not targets or any(not isinstance(t,str) or not _object_mentioned(t,question) for t in targets):
+                    raise PlanError('条件筛选只能使用问题明确给定的选项')
+                name = compact(field_label(columns[fid]['original_name']))
+                stem = re.sub(r'科目|条件|要求','',name)
+                if name not in compact(question) and (len(stem)<2 or stem not in compact(question)):
+                    raise QuestionConstraintError('问题约束：条件字段必须由问题明确指定')
+                selected = [r for r in selected if satisfies(r['cells'][fid]['raw_value'],set(targets))]
+                continue
             targets = spec['value'] if op in {'in','not_in'} else [spec['value']]
             matches = set()
             for target in targets:
@@ -790,7 +895,7 @@ class StructuredQueryEngine:
                 **({'within_period':next(iter(periods))} if completed and len(periods)==1 else {}),
                 'source':{'kind':'question','quote':source['quote'],'span':source['span']}}
         token = next(t for t in tokens if (Decimal(t) if re.fullmatch(r'\d+(?:\.\d+)?',t) else Decimal(chinese_integer(t)))==value)
-        located = re.search(r'(?<!\d)'+re.escape(token)+r'(?!\d)'+(r'\s*(?:个)?(?:学)?'+re.escape(item['unit']) if item['unit'] else ''),question)
+        located = re.search(r'(?<!\d)'+re.escape(token)+r'(?!\d)',question)
         return {'value':value,'unit':item['unit'],'expression':str(value),'details':[],
             'question_inputs':[{'literal':str(value),'unit':item['unit']}],
             'source':{'kind':'question','quote':located.group(),'span':list(located.span())}}
@@ -798,6 +903,13 @@ class StructuredQueryEngine:
     @staticmethod
     def _step_arithmetic(op,operands):
         numbers, units = [x['value'] for x in operands],[x['unit'] for x in operands]
+        if op in {'increase','decrease'}:
+            if len(numbers)!=2 or units[1] not in {'ratio','%'} or numbers[1]<0:
+                raise PlanError('比例调整需要原值和有证据支持的非负比例')
+            value = numbers[0]*(1+numbers[1] if op=='increase' else 1-numbers[1])
+            if value<0:
+                raise ValueError('比例调整后的数值为负')
+            return value,units[0],'('+operands[0]['expression']+') × (1 '+('+' if op=='increase' else '-')+' '+operands[1]['expression']+')'
         if op in {'subtract','divide','ratio'} and len(numbers)!=2:
             raise PlanError(op+'需要两个操作数')
         if len(numbers)<2 and op not in {'average','sum'}:

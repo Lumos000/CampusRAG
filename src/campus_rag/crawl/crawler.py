@@ -212,7 +212,7 @@ class CampusCrawler:
         for domain, name in sorted(self.config.get('departments', {}).items(), key=lambda item: -len(item[0])):
             if host == domain or host.endswith('.' + domain):
                 return name
-        return '南京邮电大学'
+        return self.config.get('default_department',host)
 
     def _follow_link(self, url, label, parent_title=''):
         keywords = self.config.get('follow_keywords', [])

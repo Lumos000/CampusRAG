@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+import re
 from contextlib import closing
 from pathlib import Path
 
@@ -57,12 +58,16 @@ class HybridIndex:
         if mode not in {"bm25", "dense", "hybrid", "rerank"}:
             raise ValueError(f"不支持的检索模式：{mode}")
         periods = question_periods(query) if time_range is None else time_range
-        anchors = [term for term in ['招生章程','综合评价','教学质量报告'] if term in query]
-        title_term = anchors[0] if len(anchors) == 1 else ''
-        allowed = {i for i,r in enumerate(self.records)
-                   if r.get('table_id') not in self.navigation_tables
-                   and (not title_term or title_term in r.get('title',''))
-                   and matches_period(r.get('title',''), r.get('published_at'), periods)}
+        eligible = {i for i,r in enumerate(self.records)
+                    if r.get('table_id') not in self.navigation_tables
+                    and matches_period(r.get('title',''),r.get('published_at'),periods)}
+        # A topic word is not a document boundary. Only explicitly quoted,
+        # resolvable source names may constrain the search domain.
+        titles = [re.sub(r'\s+','',s) for s in re.findall(r'《([^》]+)》',query)]
+        title_matches = [{i for i in eligible
+                          if title in re.sub(r'\s+','',self.records[i].get('title',''))} for title in titles]
+        named = set().union(*title_matches) if title_matches and all(title_matches) else None
+        allowed = eligible if named is None else eligible & named
         if not allowed:
             return []
         bm25 = [(i,s) for i,s in self.bm25.search(query, len(self.records)) if i in allowed][:bm25_top_k]

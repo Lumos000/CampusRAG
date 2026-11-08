@@ -11,7 +11,7 @@ from campus_rag.database.query import StructuredQueryEngine
 from campus_rag.rag.citations import build_references, select_evidence
 from campus_rag.index.bm25 import lexical_tokens
 from campus_rag.rag.planner import QueryPlanner, bind_legacy_plan, repair_json_delimiter, parse_plan
-from campus_rag.types import AnswerResult, CalculationResult, Evidence, QueryPlan
+from campus_rag.types import AnswerResult, CalculationResult, QueryPlan
 from campus_rag.tools.temporal import question_periods, matches_period
 from campus_rag.rag.numeric import NumericEngine, render_calculation
 from campus_rag.rag.generator import ContextBudgetError
@@ -38,9 +38,12 @@ class RAGService:
         self.index = index
         self.generator = generator
         planning_generate = getattr(generator, 'planning_generate', None)
-        self.planner = QueryPlanner(SimpleNamespace(generate=planning_generate) if callable(planning_generate) else generator)
-        self.structured = StructuredQueryEngine(connection)
-        self.numeric = NumericEngine(connection,self.structured.navigation_tables)
+        self.planner = QueryPlanner(SimpleNamespace(generate=planning_generate,
+            base_generate=getattr(generator,'generate',None),count_tokens=getattr(generator,'count_tokens',None),
+            max_context_tokens=settings.max_context_tokens)
+            if callable(planning_generate) else generator)
+        self.structured = StructuredQueryEngine(connection,settings.field_units)
+        self.numeric = NumericEngine()
 
     def answer(self, question: str) -> AnswerResult:
         # Per-request diagnostics are local data, never inserted into model prompts.
@@ -141,18 +144,12 @@ class RAGService:
             self.last_diagnostics['route'] = 'missing_question_inputs'
             return self._refuse(question,'未提供'+missing[1].strip('，, ')+
                 '，不能用公共资料中的示例或上下限代替个人计算条件。')
-        if self.settings.numeric_shortcuts:
-            checked = self.numeric.resolve(question,evidence)
-            if checked.handled:
-                self.last_diagnostics['route'] = 'numeric_shortcut'
-                if not checked.result.ok:
-                    return self._refuse(question,checked.result.error,checked.result)
-                return AnswerResult(question,checked.canonical,build_references(checked.result.evidence),
-                    checked.result.evidence,checked.result,{'verified':True,'used_template':True,
-                    'method':'evidence_bound_numeric_tool','facts':checked.facts})
         evidence = self._academic_table_evidence(question,evidence)
         table_ids = list(dict.fromkeys(e.table_id for e in evidence if e.table_id is not None))
-        schema = self.structured.schema_context(table_ids,periods,question)
+        try:
+            schema = self.structured.schema_context(table_ids,periods,question)
+        except (ValueError,TypeError) as exc:
+            return self._refuse(question,str(exc))
         allowed_ids = [table['table_id'] for table in schema]
         facts = self.numeric.text_facts(evidence, academic_units=bool(
             re.search(r'学分(?!绩点)|学时',question.replace('平均学分绩点','绩点'))))
@@ -175,12 +172,15 @@ class RAGService:
             try:
                 if syntax_repair is not None:
                     plan = parse_plan(syntax_repair,require_final=True)
+                    plan = self.planner.bind_visible_facts(plan)
                     diagnostic.update(kind='syntax_repair',raw_plan=syntax_repair,syntax_ok=True,
                         normalization='single_closing_delimiter; repair budget consumed')
                 else:
                     plan = self.planner.step_plan(question,context,error,previous)
                     diagnostic.update(raw_plan=self.planner.last_raw,syntax_ok=True)
+                    diagnostic['fact_bindings'] = self.planner.last_fact_bindings
                 diagnostic['prompt'] = getattr(self.planner,'last_prompt','')
+                diagnostic['planning_backend'] = getattr(self.planner,'last_backend','configured')
                 if plan.steps and plan.table_id is None and any(
                         s.get('op') in {'filter','lookup','sum','average','count'} and
                         not any(k in s for k in ['fact_id','literal','inputs']) for s in plan.steps):
@@ -222,7 +222,8 @@ class RAGService:
             if not calculation.repairable or attempt == 1:
                 return self._refuse(question,calculation.error,calculation)
             error = calculation.error
-            previous = {'table_id':plan.table_id,'steps':plan.steps,'output':plan.output}
+            previous = (self.planner.last_raw if self.planner.last_fact_bindings else
+                        {'table_id':plan.table_id,'steps':plan.steps,'output':plan.output})
         return self._refuse(question,'未生成有效计算计划。')
 
     @staticmethod
@@ -261,7 +262,7 @@ class RAGService:
                         grouped.append(span)
             for span in grouped:
                 text = span.strip()
-                if text and not any(old.doc_id==e.doc_id and old.text==text for old in chosen):
+                if not any(old.doc_id==e.doc_id and old.text==text for old in chosen):
                     chosen.append(replace(e,text=text))
         return chosen
 
@@ -417,8 +418,3 @@ class RAGService:
         self.last_diagnostics['text_context'] = {'expanded_chunks':expansions,
             'snippets':[{'evidence_id':e.evidence_id,'text':e.text,'doc_id':e.doc_id} for e in chosen]}
         return chosen
-
-    @staticmethod
-    def _format_evidence(evidence: list[Evidence]) -> str:
-        return "\n\n".join(f"[证据{i}] {item.text}" for i, item in enumerate(evidence, 1)) or "无"
-

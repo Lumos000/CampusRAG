@@ -524,7 +524,7 @@ def test_service_retrieves_first_repairs_once_and_skips_final_llm(table_db):
             return json.dumps({'table_id':tid,'steps':[{'id':'a','op':'sum','field_id':999 if len(calls)==2 else area,
                 'filters':[{'field_id':name,'op':'eq','value':'东馆'}]}],'output':'a'})
     dummy = Path('.')
-    settings = Settings(dummy,dummy,dummy,dummy,dummy,numeric_shortcuts=False)
+    settings = Settings(dummy,dummy,dummy,dummy,dummy)
     service = RAGService(settings,Index(),Generator(),repo.connection)
     result = service.answer('东馆面积合计多少？')
     assert result.calculation.ok and result.calculation.value==12
@@ -570,7 +570,7 @@ def test_plan_repair_budget_is_shared_between_parse_and_execution(table_db):
             calls.append(1)
             return 'invalid JSON' if len(calls)==1 else json.dumps({'table_id':tid,'steps':[{'id':'a','op':'sum','field_id':999}],'output':'a'})
     p=Path('.')
-    result=RAGService(Settings(p,p,p,p,p,numeric_shortcuts=False),Index(),Generator(),repo.connection).answer('面积合计多少？')
+    result=RAGService(Settings(p,p,p,p,p),Index(),Generator(),repo.connection).answer('面积合计多少？')
     assert len(calls)==2 and not result.calculation.ok and not result.references
 
 

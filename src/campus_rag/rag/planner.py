@@ -17,7 +17,7 @@ needs_text,needs_table,calculation。calculation 包含 operation,operands,multi
 每个 operand 包含 field,aggregate,filters。不要生成 SQL 或 Python。
 完整格式示例（只参考结构，不复制内容）：{example}
 可用表格信息：{context}
-选科筛选时，考生必须满足所有要求；“不限”表示不限制再选科目。不能把考生选了政治和地理误解释为专业要求同时包含这两科。
+筛选时区分记录本身的条件与用户提供的选项；“不限”表示该条件不限制选项。且要求全部满足，或要求至少一项满足。
 问题：{question}"""
 
 EXAMPLE = {'question_type':'aggregate','time_range':[],'keywords':['学生人数'],'entities':[],
@@ -80,6 +80,114 @@ def _example_json(table_id, steps):
     return json.dumps({'table_id':table_id,'steps':output},ensure_ascii=False)
 
 
+def _label_overlap(label, question):
+    label = re.split(r'[:：]',label)[-1]
+    terms = {label[i:i+n] for n in range(2,min(12,len(label))+1)
+             for i in range(len(label)-n+1) if label[i:i+n] in question}
+    return (max(map(len,terms),default=0),sum(len(t)**2 for t in terms))
+
+
+def _adjustment_example(facts, question):
+    from campus_rag.database.query import _excluded_object
+    if re.search(r'不(?:再)?(?:上浮|上调|提高|下调|降低)|不考虑[^，。]*(?:上浮|调整)',question):
+        return None
+    changes = [f for f in facts if f['unit']=='ratio' and
+        re.search(r'上浮|上调|提高|下调|降低',f.get('quote','')) and
+        (re.search(r'上浮|上调|提高|下调|降低',question) or
+         _label_overlap(re.split(r'在|上述',f['field'])[0],question)[0]>=4)]
+    if len(changes)!=1:
+        return None
+    rate = changes[0]
+    # A preceding-standard reference gives an observable dependency. Do not
+    # assign a percentage to an arbitrary amount from its name alone.
+    if not re.search(r'上述|前述',rate.get('quote','')) or not rate.get('span'):
+        return None
+    recurring = [f for f in facts if f['unit']!='ratio' and f.get('scope',{}).get('period')
+                 and re.search(r'每(?:生|人)?每?(?:小时|分钟|天|周|月|学期|学年|年)',f.get('quote',''))
+                 and f.get('evidence_id')==rate.get('evidence_id')
+                 and f.get('span') and f['span'][1]<rate['span'][1]
+                 and not _excluded_object(re.split(r'[:：]',f['field'])[-1],question)]
+    scored = [(f,_label_overlap(f['field'],question)) for f in recurring]
+    best = max((s for _,s in scored),default=(0,0))
+    selected = [f for f,s in scored if s==best and s[0]>=2]
+    if len(selected)!=1:
+        return None
+    base = selected[0]
+    extras = [f for f in facts if f not in recurring and f['unit']==base['unit']
+              and f.get('scope',{}).get('period')==base['scope']['period']
+              and _label_overlap(f['field'],question)[0]>=2
+              and not _excluded_object(f['field'],question)]
+    if len(extras)>1:
+        return None
+    op = 'decrease' if re.search(r'下调|降低',rate['quote']) else 'increase'
+    steps = [{'id':'base','op':'lookup','fact_id':base['fact_id']},
+             {'id':'rate','op':'lookup','fact_id':rate['fact_id']},
+             {'id':'adjusted','op':op,'inputs':['base','rate']}]
+    outputs = ['adjusted']
+    if extras:
+        steps.append({'id':'extra','op':'lookup','fact_id':extras[0]['fact_id']})
+        outputs.append('extra')
+    if asks_total(question):
+        from campus_rag.tools.temporal import question_periods
+        dates = {p for period in question_periods(question) for p in period.split('-')}
+        period = re.fullmatch(r'每(小时|分钟|天|周|月|学期|学年|年)',base['scope']['period'])
+        if not period:
+            return None
+        duration_unit = period[1]
+        durations = [q for q in question_quantities(question,duration_unit)
+                     if duration_unit!='年' or q['literal'] not in dates]
+        if len(durations)!=1:
+            return None
+        amount = 'adjusted'
+        if extras:
+            steps.append({'id':'period_cost','op':'add','inputs':['adjusted','extra']})
+            amount = 'period_cost'
+        steps.extend([{'id':'periods','op':'lookup','literal':durations[0]['literal'],'unit':duration_unit},
+                      {'id':'total','op':'multiply','inputs':[amount,'periods']}])
+        outputs.append('total')
+    if len(outputs)>1:
+        steps.append({'id':'results','op':'report','inputs':outputs})
+    return _example_json(None,steps)
+
+
+def _inverse_weight_example(facts, question):
+    target = re.search(r'反推(.{1,12}?)(?:折算|加权|折合)?系数',question)
+    if not target:
+        return None
+    weighted = [f for f in facts if re.search(r'折合|加权|等效',f['field']) and f['unit']!='ratio'
+                and not re.search(r'平均|均值',f['field'])]
+    best = max((_label_overlap(f['field'],question) for f in weighted),default=(0,0))
+    weighted = [f for f in weighted if _label_overlap(f['field'],question)==best]
+    if len(weighted)!=1:
+        return None
+    total = weighted[0]
+    same = [f for f in facts if f['unit']==total['unit'] and f.get('doc_id')==total.get('doc_id')
+            and f.get('scope',{}).get('context')==total.get('scope',{}).get('context')]
+    entity = re.sub(r'^(?:折合|加权|等效)','',total['field'])
+    entity = re.sub(r'(?:总数|人数|数量|数)$','',entity)
+    if len(entity)<2:
+        return None
+    ordinary = [f for f in same if f!=total and re.sub(r'(?:总数|人数|数量|数)$','',f['field']).endswith(entity)]
+    extra = [f for f in ordinary if target[1] in f['field']]
+    if not extra:
+        extra = [f for f in ordinary if set(target[1])<=set(f.get('quote',''))]
+    base = [f for f in ordinary if f not in extra]
+    other = [f for f in same if f!=total and f not in ordinary]
+    needs_ratio = bool(re.search(r'复算.*比|再(?:算|计算).*比|比值|比率',question))
+    if len(extra)!=1 or len(base)!=1 or (needs_ratio and len(other)!=1):
+        return None
+    steps = [{'id':name,'op':'lookup','fact_id':fact['fact_id']} for name,fact in
+             [('base',base[0]),('extra',extra[0]),('weighted',total)]]
+    if needs_ratio:
+        steps.append({'id':'quantity','op':'lookup','fact_id':other[0]['fact_id']})
+    steps.extend([{'id':'delta','op':'subtract','inputs':['weighted','base']},
+                  {'id':'coefficient','op':'divide','inputs':['delta','extra']}])
+    if needs_ratio:
+        steps.extend([{'id':'ratio','op':'divide','inputs':['quantity','weighted']},
+                      {'id':'results','op':'report','inputs':['base','extra','weighted','quantity','coefficient','ratio']}])
+    return _example_json(None,steps)
+
+
 def _body_budget_example(operation,payload,question):
     """Show complete body count/rate pairs without dropping retrieved tables."""
     if (operation not in {'sum','multiply'} or not asks_total(question)
@@ -135,6 +243,10 @@ def _body_budget_example(operation,payload,question):
 
 def step_example(operation,context='',question=''):
     payload = json.loads(context) if context else {}
+    facts = payload.get('facts',[])
+    extended = _adjustment_example(facts,question) or _inverse_weight_example(facts,question)
+    if extended:
+        return extended
     budget = _body_budget_example(operation,payload,question)
     if budget is not None:
         return budget
@@ -222,11 +334,15 @@ def step_example(operation,context='',question=''):
         a['field_id'] = columns[0]['field_id']
     if filters:
         a['filters'] = filters
+    if table.get('required_filters'):
+        a['filters'] = table['required_filters']
     threshold = re.search(r'(大于等于|不少于|至少|小于等于|不超过|大于|超过|小于|低于)\s*(\d+(?:\.\d+)?)',question)
     if operation=='count' and threshold and columns:
         a.setdefault('filters',[]).append({'field_id':columns[0]['field_id'],
             'op':{'大于等于':'gte','不少于':'gte','至少':'gte','小于等于':'lte','不超过':'lte','大于':'gt','超过':'gt','小于':'lt','低于':'lt'}[threshold[1]],'value':threshold[2]})
     steps = [a]
+    completed = [q for q in question_operand_roles(question,columns[0]['unit'])
+                 if q['role']=='completed'] if operation=='subtract' and columns else []
     if operation=='ratio':
         a['op'] = 'count' if count else 'sum'
         b = {'id':'b','op':'count'} if count else {'id':'b','op':'sum','field_id':columns[0]['field_id']}
@@ -248,6 +364,12 @@ def step_example(operation,context='',question=''):
                 b.update(op='lookup',filters=[{'field_id':chosen['field_id'],'op':'eq','value':right[0]}])
                 b.pop('scope',None)
         steps += [b,{'id':'c','op':'ratio','inputs':['a','b']}]
+    elif len(completed)==1 and completed[0]['exact']:
+        a['op'] = 'sum'
+        if not a.get('filters') and table.get('total_row_count')==1:
+            a.update(op='lookup',scope='total')
+        steps += [{'id':'b','op':'lookup','literal':completed[0]['literal'],'unit':completed[0]['unit']},
+                  {'id':'c','op':'subtract','inputs':['a','b']}]
     elif operation in {'subtract','multiply','divide'} and columns and filters:
         b = {**a,'id':'b'}
         if operation=='multiply' and len(columns)>1:
@@ -264,6 +386,16 @@ def step_example(operation,context='',question=''):
 class QueryPlanner:
     def __init__(self, generator):
         self.generator = generator
+        self.last_fact_bindings = {}
+        self.last_visible_fact_ids = set()
+
+    def bind_visible_facts(self, plan):
+        if any(s.get('fact_id') not in self.last_visible_fact_ids for s in plan.steps if 'fact_id' in s):
+            raise ValueError('fact_id未提供给本次规划，不能猜测未展示的事实ID')
+        for step in plan.steps:
+            if 'fact_id' in step:
+                step['fact_id'] = self.last_fact_bindings.get(step['fact_id'],step['fact_id'])
+        return plan
 
     def step_plan(self, question: str, context: str, error: str = '', previous=None) -> QueryPlan:
         repair = '' if not error else ('修复以下校验错误，不改变问题统计范围。必须返回完整JSON，重新核对所有lookup、常数角色、对象、周期和完整运算链。未报错不代表正确，只保留重新核对后正确的步骤，不能只返回修改的步骤。'
@@ -271,10 +403,20 @@ class QueryPlanner:
             '\n上次完整计划：'+json.dumps(previous,ensure_ascii=False))
         hint = operation_hint(question)
         payload = json.loads(context) if context else {}
+        example = _adjustment_example(payload.get('facts',[]),question) or _inverse_weight_example(payload.get('facts',[]),question)
+        self.last_fact_bindings = {}
+        if example:
+            needed = {s['fact_id'] for s in json.loads(example)['steps'] if 'fact_id' in s}
+            selected = [f for f in payload['facts'] if f['fact_id'] in needed]
+            self.last_fact_bindings = {'f'+str(i):f['fact_id'] for i,f in enumerate(selected,1)}
+            payload = {**payload,'facts':[{**f,'fact_id':'f'+str(i)} for i,f in enumerate(selected,1)]}
+            context = json.dumps(payload,ensure_ascii=False)
         if hint in {'lookup','sum'} and asks_total(question) and question_quantities(question,'人') and any(
                 f['unit']=='元/人' for f in payload.get('facts',[])):
             hint = 'multiply'
         text_only = text_plan_context(hint,payload)
+        if example and json.loads(example).get('table_id') is None:
+            text_only = True
         if text_only:
             context = json.dumps({'facts':payload['facts']},ensure_ascii=False)
         quantities=[q for unit in ('学分','学时','小时','元','人') for q in question_operand_roles(question,unit) if q['role']!='unknown']
@@ -284,10 +426,60 @@ class QueryPlanner:
             context=json.dumps(annotated,ensure_ascii=False)
         self.last_prompt = STEP_PROMPT.format(question=question,context=context,repair=repair,
             hint=hint,example=step_example(hint,context,question))
-        raw = self.generator.generate(self.last_prompt,
+        extensions = []
+        if any(t.get('required_filters') for t in payload.get('tables',[])):
+            extensions.append('Schema的required_filters由问题明确给定的条件绑定。必须完整保留。satisfies的value是选项数组，判断整条记录的要求是否被所给选项满足；不限始终满足，和表示全部，或表示任一。之后对完整匹配记录sum。')
+        if re.search(r'上浮|上调|提高|下调|降低',question) or any(
+                f['unit']=='ratio' and re.search(r'上浮|上调|提高|下调|降低',f.get('quote',''))
+                for f in payload.get('facts',[])):
+            extensions.append('比例调整使用increase或decrease，inputs=[原值步骤,比例事实步骤]；执行器计算原值×(1±比例)，不需要发明常数1。同周期数值先调整、按问题要求加总，再乘明确给定的周期数；周期单位必须一致。')
+        suggested = json.loads(example)['steps'] if example else []
+        if '分别' in question or any(s['op']=='report' for s in suggested):
+            extensions.append('同时要求多个结果时，最后用report，inputs引用各结果步骤，保留全部计算。report不做加总。')
+        if _inverse_weight_example(payload.get('facts',[]),question):
+            extensions.append('加权合计=原始数量+附加数量×系数，系数反推为(加权合计-原始数量)/附加数量；比值使用divide。所有数值必须lookup实际fact_id。最多8步；可在算术inputs中使用问题明确给定的literal和unit。')
+        if extensions:
+            self.last_prompt += '\n通用运算补充：'+'\n'.join(extensions)
+        counter = getattr(self.generator,'count_tokens',None)
+        budget = getattr(self.generator,'max_context_tokens',None)
+        if callable(counter) and budget and counter(self.last_prompt)>budget:
+            budget //= 2  # Leave room for complete repair feedback on long contexts.
+        visible = json.loads(context) if context else {}
+        def relevance(fact):
+            label = fact.get('subject','')+' '+fact.get('field','')
+            return sum(len(term)**2 for term in {label[i:i+n] for n in range(2,9)
+                for i in range(len(label)-n+1) if label[i:i+n] in question})
+        items = visible.get('facts',[])
+        scores = {f['fact_id']:relevance(f) for f in items}
+        def group(fact):
+            return (fact.get('doc_id'),fact.get('scope',{}).get('context') or fact['fact_id'])
+        grouped = {}
+        for fact in items:
+            grouped[group(fact)] = max(grouped.get(group(fact),0),scores[fact['fact_id']])
+        scores = {f['fact_id']:grouped[group(f)] for f in items}
+        while callable(counter) and budget and counter(self.last_prompt)>budget and len(visible.get('facts',[]))>1:
+            items = visible['facts']
+            # Drop a whole, least relevant fact, never part of its conditions.
+            # Original order breaks ties; all facts remain in the executor for
+            # ambiguity checks, but only visible IDs may appear in the plan.
+            remove = min(range(len(items)),key=lambda i:(scores[items[i]['fact_id']],-i))
+            visible['facts'] = [f for i,f in enumerate(items) if i!=remove]
+            context = json.dumps(visible,ensure_ascii=False)
+            self.last_prompt = STEP_PROMPT.format(question=question,context=context,repair=repair,
+                hint=hint,example=step_example(hint,context,question))
+            if extensions:
+                self.last_prompt += '\n通用运算补充：'+'\n'.join(extensions)
+        # The shipped adapter predates these tool operations. Keep the base
+        # instruction model for an extended grammar, irrespective of subject.
+        generate = getattr(self.generator,'base_generate',None) if extensions else None
+        self.last_backend = 'base' if callable(generate) else 'configured'
+        generate = generate or self.generator.generate
+        self.last_visible_fact_ids = {f['fact_id'] for f in visible.get('facts',[])}
+        raw = generate(self.last_prompt,
             thinking=False,temperature=0.0,max_new_tokens=1024)
         self.last_raw = raw
         plan = parse_plan(raw,require_final=True)
+        plan = self.bind_visible_facts(plan)
         if text_only and (plan.table_id is not None or any(not any(k in s for k in ('fact_id','literal','inputs')) for s in plan.steps)):
             raise ValueError('正文计划只能使用提供的fact_id和问题常数，没有可绑定的表格Schema')
         return plan
@@ -297,14 +489,14 @@ class QueryPlanner:
         raw = self.generator.generate(prompt, thinking=False, temperature=0.0, max_new_tokens=512)
         try:
             return parse_plan(raw)
-        except (ValueError, json.JSONDecodeError):
+        except ValueError:
             repair = self.generator.generate(
                 prompt + '\n上次格式错误，请按照示例修复，只输出JSON：\n' + raw,
                 thinking=False, temperature=0.0, max_new_tokens=512,
             )
             try:
                 return parse_plan(repair)
-            except (ValueError, json.JSONDecodeError):
+            except ValueError:
                 return QueryPlan(keywords=[question], needs_text=True, needs_table=False)
 
 
@@ -326,7 +518,7 @@ def repair_json_delimiter(raw):
         candidate = body[:position]+closer+body[position:]
         try:
             data = json.loads(candidate)
-            if isinstance(data,dict) and isinstance(data.get('steps'),list):
+            if isinstance(data.get('steps'),list):
                 parse_plan(candidate,require_final=True)
                 candidates.append(candidate)
         except (ValueError,TypeError):
@@ -339,8 +531,6 @@ def parse_plan(raw: str, *, require_final: bool = False) -> QueryPlan:
     if not match:
         raise ValueError("规划结果不包含 JSON")
     data = json.loads(match.group())
-    if not isinstance(data, dict):
-        raise ValueError('查询计划必须是对象')
     if 'steps' in data:
         return _step_plan(data,require_final=require_final)
     for key in ['needs_text','needs_table']:
@@ -401,7 +591,7 @@ def _filter(data: dict) -> FilterSpec:
 
 
 def _strings(value) -> list[str]:
-    return [str(item) for item in value] if isinstance(value, list) else []
+    return [str(item) for item in value]
 
 
 def _step_plan(data, *, require_final=False):
@@ -422,15 +612,22 @@ def _step_plan(data, *, require_final=False):
             step = dict(step)
             step.pop('output')
             steps[index] = step
-        if not isinstance(step,dict) or set(step)-allowed:
-            raise ValueError('步骤包含未知字段')
+        if not isinstance(step,dict):
+            raise ValueError('步骤必须是JSON对象')
+        if set(step)-allowed:
+            raise ValueError('步骤'+str(step.get('id',''))+'包含未知字段：'+','.join(sorted(set(step)-allowed))+
+                '；必须删除这些字段，尤其不得添加value或计算结果，只保留合法的操作与输入引用')
         if 'field_id' in step:
             step['field_id'] = canonical_id(step['field_id'])
         sid = step.get('id')
         if not isinstance(sid,str) or not re.fullmatch(r'[a-zA-Z][a-zA-Z0-9_]{0,31}',sid) or sid in known:
             raise ValueError('步骤id不合法或重复')
-        if not isinstance(step.get('op'),str) or step['op'] not in {'lookup','filter','sum','count','add','subtract','multiply','divide','ratio','average'}:
+        if not isinstance(step.get('op'),str) or step['op'] not in {'lookup','filter','sum','count','add','subtract','multiply','divide','ratio','average','increase','decrease','report'}:
             raise ValueError('不支持的步骤操作')
+        if step['op']=='report' and (index!=len(steps)-1 or not isinstance(step.get('inputs'),list)
+                or len(step['inputs'])<2 or any(not isinstance(v,str) for v in step['inputs'])
+                or len(set(step['inputs']))!=len(step['inputs'])):
+            raise ValueError('report只能作为最后一步，引用至少两个已有结果')
         if 'field_id' in step and (type(step['field_id']) is not int or step['field_id']<=0):
             raise ValueError(sid+': field_id必须是整数ID')
         if not isinstance(step.get('scope','detail'),str) or step.get('scope','detail') not in {'detail','total'}:
@@ -445,9 +642,9 @@ def _step_plan(data, *, require_final=False):
                 f['field_id'] = canonical_id(f['field_id'])
             if not isinstance(f,dict) or set(f)!={'field_id','op','value'} or type(f['field_id']) is not int:
                 raise ValueError(sid+': 筛选必须包含field_id,op,value')
-            if not isinstance(f['op'],str) or f['op'] not in {'eq','contains','in','not_in','gt','gte','lt','lte'}:
+            if not isinstance(f['op'],str) or f['op'] not in {'eq','contains','in','not_in','gt','gte','lt','lte','satisfies'}:
                 raise ValueError(sid+': 筛选操作无效')
-            values = f['value'] if f['op'] in {'in','not_in'} else [f['value']]
+            values = f['value'] if f['op'] in {'in','not_in','satisfies'} else [f['value']]
             if not isinstance(values,list) or not values or len(values)>30 or any(not isinstance(v,(str,int,float)) or isinstance(v,bool) for v in values):
                 raise ValueError(sid+': 筛选值无效')
         if 'fact_id' in step and not isinstance(step['fact_id'],str):

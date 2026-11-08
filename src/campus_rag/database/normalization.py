@@ -7,7 +7,7 @@ from campus_rag.tools.temporal import question_periods
 
 
 VERSION = 2
-UNITS = {'㎡':'平方米', 'm²':'平方米', '%':'ratio', '％':'ratio',
+UNITS = {'㎡':'平方米', 'm²':'平方米', '%':'ratio',
          '万元':'万元', '亿元':'亿元', '元':'元', '万人':'万人', '千人':'千人',
          '人':'人', '台':'台', '本':'本', '项':'项', '个':'个', '年':'年',
          '平方米':'平方米', '小时':'小时', '天':'天', '次':'次', '件':'件',
@@ -30,6 +30,7 @@ def year_header(header):
 
 def header_unit(header):
     text = compact(header)
+    label = compact(field_label(header))
     for level in reversed(re.split(r'\s+/\s+',str(header))):
         units = {UNITS[u] for u in re.findall(r'\(([^()]+)\)',compact(level)) if u in UNITS}
         if len(units)>1:
@@ -40,7 +41,6 @@ def header_unit(header):
         return '人'
     if text.endswith('百分比'):
         return 'ratio'
-    label = compact(field_label(header))
     # A combined hours/credits cell is not one scalar measurement.
     if not ('学分' in label and '学时' in label):
         for unit in ('学分','学时'):
@@ -60,7 +60,7 @@ def quantity(raw, default_unit=''):
         return None, ''
     unit = UNITS.get(suffix,default_unit)
     value = Decimal(match.group(1))
-    if suffix in {'%','％'} or (not suffix and unit == 'ratio'):
+    if suffix == '%' or (not suffix and unit == 'ratio'):
         value /= 100
     scale = {'万元':('元',10000),'亿元':('元',100000000),'万人':('人',10000),'千人':('人',1000)}
     if unit in scale:

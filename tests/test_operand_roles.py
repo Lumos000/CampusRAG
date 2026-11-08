@@ -80,7 +80,7 @@ def test_repair_receives_range_and_role_errors_and_rechecks_all_steps(tmp_path):
                     {'id':'done','op':'lookup','literal':'5' if len(self.prompts)==1 else '2','unit':'学分'},
                     {'id':'result','op':'subtract','inputs':['total','done']}]})
         root=Path('.');generator=Generator()
-        service=RAGService(Settings(root,root,root,root,root,numeric_shortcuts=False),Index(),generator,repo.connection)
+        service=RAGService(Settings(root,root,root,root,root),Index(),generator,repo.connection)
         result=service.answer('按《课程规定》，总计5学分，已完成2学分，还差多少学分？')
         assert result.calculation and result.calculation.ok and result.calculation.value==3,result.answer
         assert len(generator.prompts)==2

@@ -207,7 +207,7 @@ def build(repo,split,index,kind):
             raw=json.dumps(broken if repair and len(self.prompts)==1 else plan,ensure_ascii=False)
             self.outputs.append(raw);return raw
     capture=Capture()
-    service=RAGService(Settings(ROOT,ROOT,ROOT,ROOT,ROOT,numeric_shortcuts=False),Index(),capture,repo.connection)
+    service=RAGService(Settings(ROOT,ROOT,ROOT,ROOT,ROOT),Index(),capture,repo.connection)
     answer=service.answer(question)
     assert capture.prompts and answer.calculation and answer.calculation.ok,(kind,question,answer.answer,service.last_diagnostics)
     assert answer.calculation.unit==unit and abs(answer.calculation.value-Decimal(expected))<Decimal('.000001'),(kind,expected,asdict(answer))
